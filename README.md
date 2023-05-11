@@ -12,10 +12,10 @@ The R scripts have the following function (and need to be used in this order) -
   It currently has basic plots - they will be moved to a new script for exploratory analysis later.  
   
 3. Model for expected rates.R  
-  Currently builds a simple predictive model for expected short term rates. 
-  Step 1 - Estimate rho for: dy_t = rho*dy_t-1 + e_t. 
-  Step 2 - Forecast dy_t+i+1 using the estimated rho. 
-  Use these values to calculate the term premia. 
+  Currently builds a simple predictive model for expected short term rates.  
+  Step 1 - Estimate rho for: dy_t = rho*dy_t-1 + e_t.  
+  Step 2 - Forecast dy_t+i+1 using the estimated rho.  
+  Use these values to calculate the term premia.  
   
 4. Using Consensus Forecasts for R  
   Reads the consensus forecast files. 
