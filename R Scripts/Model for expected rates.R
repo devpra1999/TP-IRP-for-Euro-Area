@@ -8,7 +8,7 @@ rho = mod$coefficients[1]
 #Forecasts for the expected short rates using rho
 
 #How many time periods -> T
-T = 8
+T = 40
 sum_Er <- rep(0,length(df$l1))
 curr <- df$l1
 for (i in 1:T){
