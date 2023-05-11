@@ -23,10 +23,15 @@ plot(df$Date,df$TP, type = "l", ylab = "TP", xlab = "Date",
 lines(df$Date,rep(0,length(df$Date)), lty = "dotted")
 
 #Decomposing the long term yield
-plot(df$Date,df$Yield, type = "l", ylab = "Yield & Term Premia", xlab = "Date",
-     main = "Decomposing yield", ylim = c(min(df$Yield)-2,max(df$Yield)))
+plot(df$Date,df$Yield, type = "l", ylab = "Yield & Composition", xlab = "Date",
+     main = "Decomposition of yield", ylim = c(min(df$Yield)-2,max(df$Yield)))
 lines(df$Date,df$TP, lty = "dashed", col = "red")
+lines(df$Date,(df$Yield - df$TP), lty = "dashed", col = "blue")
 lines(df$Date,rep(0,length(df$Date)), lty = "dotted")
+legend("topright",
+       legend = c("Bond Yield","Term Premia","Short-term"),
+       lty = c("solid","dashed","dashed"),
+       col = c("black","red","blue"))
 
 
 

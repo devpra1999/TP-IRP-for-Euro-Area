@@ -1,6 +1,6 @@
 #Building Database
 #Merge 10 year bond yield and short term rate
-df <- merge(Y_G_10,Y_st, by = "Date")
+df <- merge(Y_F_10,Y_st, by = "Date")
 df <- df %>% select(Date, Yield, Rate) %>% filter(Date >= "1999-01-01")
 
 #Compute the spreads (long bond yield - short term rate)
