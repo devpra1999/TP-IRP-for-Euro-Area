@@ -1,0 +1,14 @@
+Data Source in SDW: https://sdw.ecb.europa.eu/quickview.do?SERIES_KEY=138.SPF.Q.U2.ASSU.IR.2023.Q.AVG
+,SPF.Q.U2.ASSU.IR.2023.Q.AVG
+,Euro area (changing composition) - Assumptions - Interest rate - 2023 - Quarterly survey
+Collection:,Average of observations through period (A)
+Period\Unit:,[Percent per annum ]
+,,obs. status
+2022Q4,2.75,Forecast value (F)
+2022Q3,1.53,Forecast value (F)
+2022Q2,0.60,Forecast value (F)
+2022Q1,0.11,Forecast value (F)
+2021Q4,0.06,Forecast value (F)
+2021Q3,0.03,Forecast value (F)
+2021Q2,0.04,Forecast value (F)
+2021Q1,0.04,Forecast value (F)

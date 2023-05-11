@@ -1,0 +1,14 @@
+Data Source in SDW: https://sdw.ecb.europa.eu/quickview.do?SERIES_KEY=138.SPF.Q.U2.ASSU.IR.2020.Q.AVG
+,SPF.Q.U2.ASSU.IR.2020.Q.AVG
+,Euro area (changing composition) - Assumptions - Interest rate - 2020 - Quarterly survey
+Collection:,Average of observations through period (A)
+Period\Unit:,[Percent per annum ]
+,,obs. status
+2019Q4,0.01,Forecast value (F)
+2019Q3,0.01,Forecast value (F)
+2019Q2,0.13,Forecast value (F)
+2019Q1,0.35,Forecast value (F)
+2018Q4,0.48,Forecast value (F)
+2018Q3,0.53,Forecast value (F)
+2018Q2,0.66,Forecast value (F)
+2018Q1,0.65,Forecast value (F)
