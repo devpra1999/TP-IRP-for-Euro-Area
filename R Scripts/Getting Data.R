@@ -35,13 +35,13 @@ plot(Y_S_10$Date,Y_S_10$Yield, type = "l",ylab = "Yield",
 
 #SHORT TERM BOND DATA------------------------------------------------------
 #Getting data for short-term rates
-#Y_st <- read.csv("~/Economics/TP-IRP/Data_Files/Short-term-rates.csv")
-#Y_st <- Y_st %>% filter(int_rt == "IRT_M3" & geo == "EA") %>% select(TIME_PERIOD,OBS_VALUE)
-#colnames(Y_st) <- c("Date","Rate")
-#Y_st$Date <- ym(Y_st$Date)
-Y_st <- read.csv("~/Economics/TP-IRP/Data_Files/ECB-rates.csv", skip = 6
+Y_st <- read.csv("~/Economics/TP-IRP/Data_Files/Short-term-rates.csv")
+Y_st <- Y_st %>% filter(int_rt == "IRT_M3" & geo == "EA") %>% select(TIME_PERIOD,OBS_VALUE)
+colnames(Y_st) <- c("Date","Rate")
+Y_st$Date <- ym(Y_st$Date)
+#Y_st <- read.csv("~/Economics/TP-IRP/Data_Files/ECB-rates.csv", skip = 6
                  , col.names = c("Date","Rate","Type"))
-Y_st$Date <- ymd(Y_st$Date)
+#Y_st$Date <- ymd(Y_st$Date)
 plot(Y_st$Date, Y_st$Rate, type = "l", ylab = "Rate", xlab = "Date",
      main = "Short Term Rates for the Euro Area")
 
