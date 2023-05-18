@@ -7,6 +7,7 @@ source("./R Scripts/Build_Database.R")
 #A list for the yields of all the different countries
 #The list elements are dataframes
 long_yield_list <- list(Y_G_10,Y_F_10,Y_S_10,Y_I_10)
+country_list <- c("Germany","France","Spain","Italy")
 
 #Run a loop to compute term premia for the different countries
 for (z in 1:length(long_yield_list)){
@@ -18,12 +19,9 @@ for (z in 1:length(long_yield_list)){
   source("./R Scripts/Using Updated Consensus Forecasts.R")
   
   #Make and save the plots for the different countries in separate files
-  if (z==1){png("./Plots/Yield_decomposition_Germany.png")}
-  if (z==2){png("./Plots/Yield_decomposition_France.png")}
-  if (z==3){png("./Plots/Yield_decomposition_Spain.png")}
-  if (z==4){png("./Plots/Yield_decomposition_Italy.png")}
+  png(paste("./Plots/Yield_decomposition_",country_list[z],".png",sep=""))
   plot(df$Date,df$Yield, type = "l", ylab = "Yield & Composition", xlab = "Date",
-       main = "Decomposition of yield", ylim = c(min(df$Yield, na.rm = TRUE)-2,max(df$Yield,na.rm = TRUE)))
+       main = paste("Decomposition of yield for",country_list[z],sep = " "), ylim = c(min(df$Yield, na.rm = TRUE)-2,max(df$Yield,na.rm = TRUE)))
   lines(df$Date,df$TP, lty = "dashed", col = "red",lwd = 2)
   lines(df$Date,(df$Yield - df$TP), lty = "dashed", col = "blue")
   lines(df$Date,rep(0,length(df$Date)), lty = "dotted")
