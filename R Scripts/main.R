@@ -1,11 +1,11 @@
-#Get all the data files ready
+#Get all the DATA FILES ready - long yields, short rates, consensus forecasts
 source("./R Scripts/Getting Data.R")
 
-#Fetch the function for building database
+#Fetch the function for building database - each country has a different database
 source("./R Scripts/Build_Database.R")
 
 #A list for the yields of all the different countries
-#The list elements are dataframes
+#The list elements are data frames
 long_yield_list <- list(Y_G_10,Y_F_10,Y_S_10,Y_I_10)
 country_list <- c("Germany","France","Spain","Italy")
 
@@ -14,11 +14,11 @@ for (z in 1:length(long_yield_list)){
   #Call the function to build the database for the current country
   df <- build_df(long_yield_list[z])
   
-  #Run the scripts for computing term premia using our model & consesnsus forecasts
+  #Run the scripts for COMPUTING TERM PREMIA using our model & consesnsus forecasts
   source("./R Scripts/Model for expected rates.R")
   source("./R Scripts/Using Updated Consensus Forecasts.R")
   
-  #Make and save the plots for the different countries in separate files
+  #Make and save the PLOTS for the different countries in separate files
   png(paste("./Plots/Yield_decomposition_",country_list[z],".png",sep=""))
   plot(df$Date,df$Yield, type = "l", ylab = "Yield & Composition", xlab = "Date",
        main = paste("Decomposition of yield for",country_list[z],sep = " "),
@@ -35,6 +35,8 @@ for (z in 1:length(long_yield_list)){
          lwd = c(1,2,1,2)
   )
   dev.off()
+  
+  #Make dataframe for storing term premia estimates
   if (z==1){
     TP_df <- as.data.frame(cbind(df$Date,df$TP))
   }
@@ -44,6 +46,9 @@ for (z in 1:length(long_yield_list)){
 }
 colnames(TP_df) <- c("Date","Germany","France","Spain","Italy")
 TP_df$Date <- as.Date(TP_df$Date)
+
+#Make a cross-country comparison plot of term premia estimates
+#Obtained using the predictive model
 png("./Plots/Term Premia estimates for all the countries.png")
 plot(TP_df$Date,TP_df$Germany, type = "l", col = "blue", lwd = 2, 
      main = "Term Premia Estimates", ylab = "Term Premia", xlab = "Date",
