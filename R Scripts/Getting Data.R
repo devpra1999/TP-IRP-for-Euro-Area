@@ -11,32 +11,32 @@ Y_G_10 <- read.csv("./Data_Files/Germany-long-bond.csv",
                    skip = 6,col.names = c("Date","Yield","Type"))
 Y_G_10$Date <- ym(Y_G_10$Date)
 Y_G_10 <- Y_G_10[order(Y_G_10$Date),]
-plot(Y_G_10$Date,Y_G_10$Yield, type = "l",ylab = "Yield",
-     xlab = "Date", main = "Yields for 10 year bond - Germany")
+#plot(Y_G_10$Date,Y_G_10$Yield, type = "l",ylab = "Yield",
+#     xlab = "Date", main = "Yields for 10 year bond - Germany")
 
 #Getting the data for French 10 year bonds
 Y_F_10 <- read.csv("./Data_Files/France-long-bond.csv",
                    skip = 6,col.names = c("Date","Yield","Type"))
 Y_F_10$Date <- ym(Y_F_10$Date)
 Y_G_10 <- Y_G_10[order(Y_G_10$Date),]
-plot(Y_F_10$Date,Y_F_10$Yield, type = "l",ylab = "Yield",
-     xlab = "Date", main = "Yields for 10 year bond - France")
+#plot(Y_F_10$Date,Y_F_10$Yield, type = "l",ylab = "Yield",
+#     xlab = "Date", main = "Yields for 10 year bond - France")
 
 #Getting the data for Italian 10 year bonds
 Y_I_10 <- read.csv("./Data_Files/Italy-long-bond.csv",
                    skip = 6,col.names = c("Date","Yield","Type"))
 Y_I_10$Date <- ym(Y_I_10$Date)
 Y_G_10 <- Y_G_10[order(Y_G_10$Date),]
-plot(Y_I_10$Date,Y_I_10$Yield, type = "l",ylab = "Yield",
-     xlab = "Date", main = "Yields for 10 year bond - Italy")
+#plot(Y_I_10$Date,Y_I_10$Yield, type = "l",ylab = "Yield",
+#     xlab = "Date", main = "Yields for 10 year bond - Italy")
 
 #Getting the data for Spanish 10 year bonds
 Y_S_10 <- read.csv("./Data_Files/Spain-long-bond.csv",
                    skip = 6,col.names = c("Date","Yield","Type"))
 Y_S_10$Date <- ym(Y_S_10$Date)
 Y_G_10 <- Y_G_10[order(Y_G_10$Date),]
-plot(Y_S_10$Date,Y_S_10$Yield, type = "l",ylab = "Yield",
-     xlab = "Date", main = "Yields for 10 year bond - Spain")
+#plot(Y_S_10$Date,Y_S_10$Yield, type = "l",ylab = "Yield",
+#     xlab = "Date", main = "Yields for 10 year bond - Spain")
 
 
 #SHORT TERM BOND DATA------------------------------------------------------
@@ -54,8 +54,8 @@ Y_st <- Y_st[order(Y_st$Date),]
 #Y_st$Date <- ymd(Y_st$Date)
 
 #Plot short term rates
-plot(Y_st$Date, Y_st$Rate, type = "l", ylab = "Rate", xlab = "Date",
-     main = "Short Term Rates for the Euro Area")
+#plot(Y_st$Date, Y_st$Rate, type = "l", ylab = "Rate", xlab = "Date",
+#     main = "Short Term Rates for the Euro Area")
 
 
 

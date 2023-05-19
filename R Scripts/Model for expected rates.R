@@ -15,25 +15,26 @@ for (i in 1:T){
   sum_Er <- sum_Er + (1-i/T)*rho*curr
   curr <- rho*curr
 }
+df$ESTR <- df$Rate + sum_Er
 df$TP <- df$Spread - sum_Er
 
 #Plotting the term premia
-plot(df$Date,df$TP, type = "l", ylab = "TP", xlab = "Date",
-     main = "Term Premia")
-lines(df$Date,rep(0,length(df$Date)), lty = "dotted")
+#plot(df$Date,df$TP, type = "l", ylab = "TP", xlab = "Date",
+#     main = "Term Premia")
+#lines(df$Date,rep(0,length(df$Date)), lty = "dotted")
 
 #Decomposing the long term yield
-plot(df$Date,df$Yield, type = "l", ylab = "Yield & Composition", xlab = "Date",
-     main = "Decomposition of yield", ylim = c(min(df$Yield,na.rm=TRUE)-2,max(df$Yield,na.rm=TRUE)))
-lines(df$Date,df$TP, lty = "dashed", col = "red", lwd = 2)
-lines(df$Date,(df$Yield - df$TP), lty = "dashed", col = "blue")
-lines(df$Date,rep(0,length(df$Date)), lty = "dotted")
-legend("topright",
-       legend = c("Bond Yield","Term Premia","Short-term"),
-       lty = c("solid","dashed","dashed"),
-       col = c("black","red","blue"),
-       lwd = c(1,2,1)
-)
+#plot(df$Date,df$Yield, type = "l", ylab = "Yield & Composition", xlab = "Date",
+#     main = "Decomposition of yield", ylim = c(min(df$Yield,na.rm=TRUE)-2,max(df$Yield,na.rm=TRUE)))
+#lines(df$Date,df$TP, lty = "dashed", col = "red", lwd = 2)
+#lines(df$Date,(df$Yield - df$TP), lty = "dashed", col = "blue")
+#lines(df$Date,rep(0,length(df$Date)), lty = "dotted")
+#legend("topright",
+#       legend = c("Bond Yield","Term Premia","Short-term"),
+#       lty = c("solid","dashed","dashed"),
+#       col = c("black","red","blue"),
+#       lwd = c(1,2,1)
+#)
 
 
 

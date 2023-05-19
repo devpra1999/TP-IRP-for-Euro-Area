@@ -5,8 +5,8 @@ build_df <- function(long_yield, short_yield = Y_st){
   df <- df %>% select(Date, Yield, Rate) %>% filter(Date >= "1999-01-01")
   #Compute the spreads (long bond yield - short term rate)
   df$Spread <- df$Yield - df$Rate
-  plot(df$Date,df$Spread, type = "l")
-  lines(df$Date,rep(0,length(df$Date)), lty = "dotted")
+  #plot(df$Date,df$Spread, type = "l")
+  #lines(df$Date,rep(0,length(df$Date)), lty = "dotted")
   
   #FOR EXPECTED RATES MODEL
   #Compute the first difference of short-term rates (dy_t+1)

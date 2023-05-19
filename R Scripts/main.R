@@ -38,13 +38,14 @@ for (z in 1:length(long_yield_list)){
   
   #Make dataframe for storing term premia estimates
   if (z==1){
-    TP_df <- as.data.frame(cbind(df$Date,df$TP))
+    TP_df <- as.data.frame(cbind(df$Date,df$ESTR,df$TP))
   }
   else{
     TP_df <- cbind(TP_df,df$TP)
   }
 }
-colnames(TP_df) <- c("Date","Germany","France","Spain","Italy")
+
+colnames(TP_df) <- c("Date","ESTR","Germany","France","Spain","Italy")
 TP_df$Date <- as.Date(TP_df$Date)
 
 #Make a cross-country comparison plot of term premia estimates
@@ -57,12 +58,12 @@ plot(TP_df$Date,TP_df$Germany, type = "l", col = "blue", lwd = 2,
 lines(TP_df$Date,TP_df$France, col = "brown", lwd = 2)
 lines(TP_df$Date,TP_df$Spain, col = "green", lwd = 2)
 lines(TP_df$Date,TP_df$Italy, col = "red", lwd = 2)
+lines(TP_df$Date,TP_df$ESTR, col = "black", lwd = 2, lty = "dashed")
+lines(TP_df$Date,rep(0,length(TP_df$Date)), lty = "dotted")
 legend("topright",
-       legend = c("Germany","France","Spain","Italy"),
-       col = c("blue","brown","green","red"),
-       lwd = c(2,2,2,2)
+       legend = c("Germany","France","Spain","Italy","ESTR"),
+       col = c("blue","brown","green","red","black"),
+       lwd = c(2,2,2,2,2),
+       lty = c("solid","solid","solid","solid","dashed")
 )
 dev.off()
-
-
-
