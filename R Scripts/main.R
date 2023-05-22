@@ -14,7 +14,7 @@ for (z in 1:length(long_yield_list)){
   #Call the function to build the database for the current country
   df <- build_df(long_yield_list[z])
   
-  #Run the scripts for COMPUTING TERM PREMIA using our model & consesnsus forecasts
+  #Run the scripts for COMPUTING TERM PREMIA using our model & consensus forecasts
   source("./R Scripts/Model for expected rates.R")
   source("./R Scripts/Using Updated Consensus Forecasts.R")
   
