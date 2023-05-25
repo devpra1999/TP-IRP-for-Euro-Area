@@ -24,7 +24,7 @@ build_df <- function(long_yield, short_yield = Y_st){
     select(Date, Yield, Rate, Spread, l1, l2, L1_forecast, L2_forecast, L3_forecast, L4_forecast) %>%
     complete(Date = seq.Date(min(Date), max(Date), by="month"))
   
-  #We need to use leads to put the forecasted target period to the time the forecast was made
+  #Using lead to put the forecast from the target period to the time the forecast was made
   df$L1_forecast <- lead(df$L1_forecast,3)
   df$L2_forecast <- lead(df$L2_forecast,6)
   df$L3_forecast <- lead(df$L3_forecast,9)

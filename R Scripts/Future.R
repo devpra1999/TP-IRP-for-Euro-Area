@@ -11,7 +11,7 @@ abline(v = tail(temp,1)$Date, lty = "dashed")
 abline(h = 0, lty = "dotted")
 
 
-#Create vectors for future date, interest rate movements and interest rates using model
+#Create vectors for future date, interest rate movements and interest rates -  using model
 fut_date <- seq(lr$Date, as.Date("2025-04-01"), by = "quarter")
 n <- length(fut_date)
 fut_move_mod <- rep(NA,n)
@@ -44,6 +44,7 @@ legend("topleft",
        pch = c(NA,NA,20)
 )
 dev.off()
+
 #Term premia estimates
 TP_mod <- lr$TP
 TP_consensus <- lr$TP_cf
