@@ -4,6 +4,8 @@ library(lubridate)
 library(dplyr)
 library(zoo)
 library(tidyverse)
+install.packages("R.utils")
+
 
 #LONG TERM BOND DATA----------------------------------------------------------
 
@@ -54,8 +56,10 @@ Y_S_10 <- Y_S_10[order(Y_S_10$Date),]
 
 #Market rates
 url <- "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/IRT_ST_M/?format=SDMX-CSV&compressed=true"
-dest_file <- "../Data_Files/Short-term-rates.csv"
+dest_file <- "../Data_Files/Short-term-rates.csv.gz"
 download.file(url, dest_file)
+library(R.utils)
+gunzip(dest_file, remove=FALSE)
 Y_st <- read.csv("../Data_Files/Short-term-rates.csv")
 Y_st <- Y_st %>% filter(int_rt == "IRT_M3" & geo == "EA") %>% select(TIME_PERIOD,OBS_VALUE)
 colnames(Y_st) <- c("Date","Rate")
