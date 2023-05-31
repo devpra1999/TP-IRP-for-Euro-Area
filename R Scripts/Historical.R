@@ -22,6 +22,9 @@ library(highcharter)
 #Get all the DATA FILES ready - long yields, short rates, consensus forecasts
 source("Getting Data.R")
 
+#Read all the data files
+source("Loading Data.R")
+
 #Fetch the function for building database - each country has a different database
 source("Build_Database.R")
 
@@ -53,16 +56,16 @@ for (z in 1:length(long_yield_list)){
     hc_title(text = paste("Decomposition of yield for", country_list[z])) %>%
     hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
     hc_yAxis(title = list(text = "Yield & Composition")) %>%
-    hc_legend(enabled = TRUE)
-}
-  #hc <- hc %>% hc_exporting(enabled = TRUE)
-  #htmlwidgets::saveWidget(widget = hc,
-  #                        file = paste("../Plots/Historical/",country_list[z],".html",sep=""),
-  #                        selfcontained = TRUE)
-  #webshot::webshot(url = paste("../Plots/Historical/",country_list[z],".html",sep=""), 
-  #                 file = paste("../Plots/Historical/Yield_Decomposition_",country_list[z],".png",sep=""),
-  #                 delay = 2)
+    hc_legend(enabled = TRUE) %>%
+    hc_exporting(enabled = TRUE)
   
+  htmlwidgets::saveWidget(widget = hc,
+                          file = paste("../Plots/Historical/",country_list[z],".html",sep=""),
+                          selfcontained = TRUE)
+  webshot::webshot(url = paste("../Plots/Historical/",country_list[z],".html",sep=""), 
+                   file = paste("../Plots/Historical/Yield_Decomposition_",country_list[z],".png",sep=""),
+                   delay = 2)
+}
 
 #Tables for the different countries---------------------------------------------
 #CHANGE COLUMN NAMES TO THE RESPECTIVE COUNTRY
