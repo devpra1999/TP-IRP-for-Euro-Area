@@ -26,7 +26,7 @@ for (i in 1:T){
 df$TP <- df$Spread - sum_Er
 
 #Compute the common expected short term rate component of the yield
-df$ESTR <- df$Rate + sum_Er
+df$sum_Er <- sum_Er
 
 
 #Plotting the term premia
