@@ -5,7 +5,7 @@ df$TP_cf <- NA
 df$sum_Er_cf <- (1 - 1/T)*(df$L1_forecast- df$Rate) + (1 - 2/T)*(df$L2_forecast- df$L1_forecast) +
   (1 - 3/T)*(df$L3_forecast- df$L2_forecast) + (1 - 4/T)*(df$L4_forecast- df$L3_forecast)
 
-df$TP_cf <- df$Spread - df$sum_Er
+df$TP_cf <- df$Spread - df$sum_Er_cf
 
 #Final dataframe - reordered for better visual analysis
 df <- df %>%

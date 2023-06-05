@@ -47,24 +47,24 @@ for (z in 1:length(long_yield_list)){
   df_list[[z]] <- df
   
   #Make and save the PLOTS for the different countries in separate files
-  hc <- highchart() %>%
-    hc_add_series(df, "line", hcaes(x = Date, y = Spread), name = "Term Spread") %>%
-    hc_add_series(df, "line", hcaes(x = Date, y = TP),
-                  name = "Term Premia", dashStyle = "dash", color = "red", lineWidth = 2) %>%
-    hc_add_series(df, "scatter", hcaes(x = Date, y = TP_cf),
-                  name = "Consensus_TP", marker = list(symbol = "circle", lineWidth = 0, radius = 2)) %>%
-    hc_title(text = paste("Decomposition of yield for", country_list[z])) %>%
-    hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
-    hc_yAxis(title = list(text = "Yield & Composition")) %>%
-    hc_legend(enabled = TRUE) %>%
-    hc_exporting(enabled = TRUE)
+  #hc <- highchart() %>%
+  #  hc_add_series(df, "line", hcaes(x = Date, y = Spread), name = "Term Spread") %>%
+  #  hc_add_series(df, "line", hcaes(x = Date, y = TP),
+  #                name = "Term Premia", dashStyle = "dash", color = "red", lineWidth = 2) %>%
+  #  hc_add_series(df, "scatter", hcaes(x = Date, y = TP_cf),
+  #                name = "Consensus_TP", marker = list(symbol = "circle", lineWidth = 0, radius = 2)) %>%
+  #  hc_title(text = paste("Decomposition of yield for", country_list[z])) %>%
+  #  hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
+  #  hc_yAxis(title = list(text = "Yield & Composition")) %>%
+  #  hc_legend(enabled = TRUE) %>%
+  #  hc_exporting(enabled = TRUE)
   
-  htmlwidgets::saveWidget(widget = hc,
-                          file = paste("../Plots/Historical/",country_list[z],".html",sep=""),
-                          selfcontained = TRUE)
-  webshot::webshot(url = paste("../Plots/Historical/",country_list[z],".html",sep=""), 
-                   file = paste("../Plots/Historical/Yield_Decomposition_",country_list[z],".png",sep=""),
-                   delay = 2)
+  #htmlwidgets::saveWidget(widget = hc,
+  #                        file = paste("../Plots/Historical/",country_list[z],".html",sep=""),
+  #                        selfcontained = TRUE)
+  #webshot::webshot(url = paste("../Plots/Historical/",country_list[z],".html",sep=""), 
+  #                 file = paste("../Plots/Historical/Yield_Decomposition_",country_list[z],".png",sep=""),
+  #                 delay = 2)
 }
 
 #Tables for the different countries---------------------------------------------
@@ -87,6 +87,10 @@ col_order <- c("Date","Rate","Yield_Germany","Spread_Germany","TP_Germany","TP_c
                "Yield_Italy","Spread_Italy","TP_Italy","TP_cf_Italy",
                "sum_Er","sum_Er_cf","l1","l2","L1_forecast","L2_forecast","L3_forecast","L4_forecast")
 master_df <- master_df[,col_order]
+master_df <- master_df %>% filter(!is.na(Yield_Germany),
+                                  !is.na(Yield_France),
+                                  !is.na(Yield_Spain),
+                                  !is.na(Yield_Italy))
 
 
 #Cross-country comparison plot of 10 YEAR YIELDS--------------------------------
