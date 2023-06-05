@@ -38,7 +38,7 @@ ui <- fluidPage(
       column(6,numericInput("F4",label = "Forecast for Q4", value = round(lr$Rate))),
       column(3,actionButton("go", "Submit"))
     ),
-    #highchartOutput("rateplot2"),
+    highchartOutput("rateplot2"),
     tableOutput("table"),
 )
 
