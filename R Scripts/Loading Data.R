@@ -1,12 +1,3 @@
-#We use the lubridate package for (partial) date conversions
-#dplyr for table manipulations
-library(lubridate)
-library(dplyr)
-library(zoo)
-library(tidyverse)
-
-
-
 #LONG TERM BOND DATA----------------------------------------------------------
 
 #Getting the data for German 10 year bonds
@@ -54,11 +45,6 @@ Y_st <- Y_st[order(Y_st$Date),]
 #                 , col.names = c("Date","Rate","Type"))
 #Y_st$Date <- ymd(Y_st$Date)
 
-#Plot short term rates
-#plot(Y_st$Date, Y_st$Rate, type = "l", ylab = "Rate", xlab = "Date",
-#     main = "Short Term Rates for the Euro Area")
-
-
 
 #CONSENSUS FORECASTS DATA--------------------------------------------------------
 
@@ -83,8 +69,4 @@ f_12 <- read.csv("../Data_Files/Consensus Forecasts Updated/12-months.csv", skip
 colnames(f_12)[1:3] = c("Date","L4_forecast","Type")
 f_12 <- f_12[order(f_12$Date),]
 f_12$Date = as.Date(as.yearqtr(f_12$Date, format = "%YQ%q")) + months(3)
-
-
-#PLOTS
-#plot(Y_G_10$Date,Y_G_10$Yield,type="l",ylab="Yield",xlab="Date",main="Yields for 10 year bond - Germany")
 

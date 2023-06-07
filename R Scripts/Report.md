@@ -1,0 +1,67 @@
+---
+title: 'Measuring Term Premia for the Euro Area'
+header_includes:
+- \usepackage{amsmath}
+- \usepackage{amssymb}
+date: "Dev Prakash Srivastava"
+output:
+  pdf_document:
+    keep_tex: yes
+---
+
+
+
+
+**INTRODUCTION**
+
+This project aims to compute estimates of term premia for the Euro Area - specifically for the countries Germany, France, Spain and Italy. We will first give empirical estimates for the term premia for the historical series beginning from 2000 to the present. For that we use two approaches - predictive model and consensus forecast (will be explained later). The aim is to estimate the term premia for the present long term Euro area bonds, and also to allow the user to enter the suitable parameters/forecasts to obtain the term premia.
+
+The following sections detail the methodology used for the computation of the estimates.
+
+
+**THEORETICAL FRAMEWORK**
+
+We first underline the theoretical framework used.
+
+Consider zero-coupon bonds and apply the no arbitrage condition to a one-period bond (the safe asset) and a T-period bond:
+
+\begin{eqnarray*}
+    E_{t}\left( r_{t,t+1}^{T} - r_{t,t+1}^{1}\right) = E_{t}\left(
+		r_{t,t+1}^{T}-y_{t,t+1}\right) = \phi _{t,t+1}^{T}
+\end{eqnarray*}
+
+\begin{eqnarray*}
+		E_{t}\left( r_{t,t+1}^{T}\right) = y_{t,t+1}+\phi _{t,t+1}^{T}
+\end{eqnarray*}		
+
+
+Solving forward the difference equation $p_{t,T}=p_{t+1,T}-r_{t,t+1}^{T},$ we have :
+
+\begin{eqnarray*}
+		y_{t,T} = \frac{1}{\left( T-t\right) }\underset{i=0}{\overset{T-1}{\sum }}
+		E_{t}\left( r_{t+i,t+i+1}^{T}\right)
+		=\frac{1}{\left( T-t\right) }\underset{i=0}{\overset{T-1}{\sum }}
+		E_{t}\left( y_{t+i,t+i+1}+\phi _{t+i,t+i+1}^{T}\right)
+\end{eqnarray*}
+
+So we have the following equation for the term spread
+
+\begin{eqnarray*}
+    y_{t,T}-y_{t,t+1}= \underset{i=1}{\overset{T-t-1}{\sum}}\left(1-\frac{i}{T-t}\right)E_{t}\Delta y_{t+i,t+i+1}+\frac{1}{T-t}\underset{i=1}{\overset{T-t-1}{\sum }}\phi _{t+i,t+i+1}^{T}
+\end{eqnarray*}
+
+
+**PROCEDURE**
+
+We can use the term spread equation given above to estimate the term premia. We use the common short-rate for the Euro Area, and the yields on the 10-year government bond yields for the term spread. But the future expected future path of short-term rates is not known and thus we need some approach to estimate $\Delta y_{t+i,t+i+1}$. Once we have it, the term premia can be easily calculated.
+
+To estimate the future path of short-term rates we use two approaches -  
+
+1. Predictive Model -
+\begin{eqnarray*}
+\Delta y_{t+1,t+2} = \rho\Delta y_{t,t+1} + \epsilon_{t+1}
+\end{eqnarray*}
+We can estimate $\rho$ using the historical data available. This parameter (assuming it be constant over time) can be used to get the future path of interest rates.While basic it can serve as an excellent baseline model.
+
+2. Consensus forecasts -  
+The ECB's Professional Forecasters Survey gives the average forecasts for the expected future short-term rates. These can be directly used and compared with our baseline model estimates.

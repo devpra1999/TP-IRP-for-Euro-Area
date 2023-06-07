@@ -1,10 +1,3 @@
-#We use the lubridate package for (partial) date conversions
-#dplyr for table manipulations
-library(lubridate)
-library(dplyr)
-library(zoo)
-library(tidyverse)
-
 #LONG TERM BOND DATA----------------------------------------------------------
 #Getting the data for German 10 year bonds
 url <- "https://sdw.ecb.europa.eu/quickviewexport.do;jsessionid=99AB5C95BA2BC70BAEB76C2AF91DA3AD?SERIES_KEY=229.IRS.M.DE.L.L40.CI.0000.EUR.N.Z&type=xls"

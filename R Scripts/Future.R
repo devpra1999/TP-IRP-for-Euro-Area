@@ -21,27 +21,6 @@ fut_rate_consensus <- rep(NA,n)
 fut_rate_consensus[1] <- lr$Rate
 fut_rate_consensus[2:5] <- as.numeric(as.vector(lr[23:26]))
 
-png("../Plots/Future/Interest Rate Evolution.png")
-#Plot historical rate data for the subsetted period
-plot(temp$Date, temp$Rate, type = "l", xlim = c(as.Date("2018-01-01"),as.Date("2025-04-01")),
-     ylim = c(-1,5), lwd = 2, ylab = "Interest Rate", xlab = "Date")
-abline(v = lr$Date, lty = "dashed")
-abline(h = 0, lty = "dotted")
-
-#Plotting expected short term rates according to model
-lines(fut_date,fut_rate_mod, lty = "dashed", lwd = 2, col = "blue")
-#Plotting expected short term rates according to consensus forecasts
-points(fut_date,fut_rate_consensus, pch = 20, lwd = 2, col = "red")
-
-legend("topleft",
-       legend = c("Historical","Model Estimate","Consensus Forecast"),
-       col = c("black","blue","red"),
-       lwd = c(2,2,2),
-       lty = c("solid","dashed",NA),
-       pch = c(NA,NA,20)
-)
-dev.off()
-
 #Term premia estimates
 TP_mod <- lr$TP
 TP_consensus <- lr$TP_cf
@@ -50,22 +29,19 @@ TP_consensus <- lr$TP_cf
 Countries <- c("Germany","France","Spain","Italy")
 
 Yield_10Y <- c(lr$Yield_Germany, lr$Yield_France, lr$Yield_Spain, lr$Yield_Italy)
-
 Model_ER <- fut_rate_mod[2:5]
-
-Model_EM <- c(lr$Yield_Germany-lr$TP_Germany, lr$Yield_France-lr$TP_France, lr$Yield_Spain-lr$TP_Spain, lr$Yield_Italy-lr$TP_Italy)
-
+Model_EM <- c(lr$Yield_Germany-lr$TP_Germany, lr$Yield_France-lr$TP_France,
+              lr$Yield_Spain-lr$TP_Spain, lr$Yield_Italy-lr$TP_Italy)
 Model_TP <- c(lr$TP_Germany, lr$TP_France, lr$TP_Spain, lr$TP_Italy)
-
 Consensus_ER <- fut_rate_consensus[2:5]
-
-Consensus_EM <- c(lr$Yield_Germany-lr$TP_cf_Germany,  lr$Yield_France-lr$TP_cf_France, lr$Yield_Spain-lr$TP_cf_Spain, lr$Yield_Italy-lr$TP_cf_Italy)
-             
+Consensus_EM <- c(lr$Yield_Germany-lr$TP_cf_Germany,  lr$Yield_France-lr$TP_cf_France,
+                  lr$Yield_Spain-lr$TP_cf_Spain, lr$Yield_Italy-lr$TP_cf_Italy)
 Consensus_TP <-  c(lr$TP_cf_Germany, lr$TP_cf_France, lr$TP_cf_Spain, lr$TP_cf_Italy)
 
 User_EM <- rep(NA,4)
 User_TP <- rep(NA,4)
 
-main_table <- data.frame(Countries, Yield_10Y, Model_EM, Model_TP, Consensus_EM, Consensus_TP, User_EM, User_TP)
+main_table <- data.frame(Countries, Yield_10Y, Model_EM, Model_TP, Consensus_EM,
+                         Consensus_TP,User_EM, User_TP)
 
 

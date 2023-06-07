@@ -1,5 +1,4 @@
-#Building Database
-
+#Function to buid a database for a single country
 build_df <- function(long_yield, short_yield = Y_st){
   #Merge 10 year bond yield and short term rate
   df <- merge(long_yield,short_yield, by = "Date")
@@ -8,7 +7,6 @@ build_df <- function(long_yield, short_yield = Y_st){
   #Compute the spreads (long bond yield - short term rate)
   df$Spread <- df$Yield - df$Rate
 
-  
   #FOR EXPECTED RATES MODEL
   #Compute the first difference of short-term rates (dy_t+1)
   #Time period taken = dt
@@ -18,7 +16,6 @@ build_df <- function(long_yield, short_yield = Y_st){
   
   
   #FOR CONSENSUS FORECASTS
-  #Integrate consensus forecasts into the main database
   df_list <- list(df,f_3,f_6,f_9,f_12)
   df <- df_list %>% reduce(full_join, by="Date") %>%
     select(Date, Yield, Rate, Spread, l1, l2, L1_forecast, L2_forecast, L3_forecast, L4_forecast) %>%
@@ -31,8 +28,5 @@ build_df <- function(long_yield, short_yield = Y_st){
   df$L4_forecast <- lead(df$L4_forecast,12)
   return(df)
 }
-
-#plot(df$Date,df$Spread, type = "l")
-#lines(df$Date,rep(0,length(df$Date)), lty = "dotted")
 
 
