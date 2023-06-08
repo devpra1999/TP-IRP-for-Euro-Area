@@ -9,13 +9,13 @@ for (j in listofpackages){
   if(sum(installed.packages()[, 1] == j) == 0) {
     install.packages(j)
   }
-  library(j, character.only = T)
+  library(j, character.only = T, quietly = TRUE, warn.conflicts = FALSE)
 }
 
 source("Historical.R")
 source("Future.R")
 
-library(knitr)
+library(knitr, quietly = T)
 
 rmdfiles <- c("Report/Report.Rmd")
 sapply(rmdfiles, knit, quiet = T)
