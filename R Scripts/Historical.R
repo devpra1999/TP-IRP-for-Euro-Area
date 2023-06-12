@@ -21,7 +21,7 @@ for (z in 1:length(long_yield_list)){
   
   #Run the scripts for COMPUTING TERM PREMIA using our model & consensus forecasts
   source("Model for expected rates.R")
-  source("Using Updated Consensus Forecasts.R")
+  #source("Using Updated Consensus Forecasts.R")
   
   #Save the table for future reference
   df_list[[z]] <- df
@@ -41,11 +41,14 @@ for (i in 1:length(country_list)){
 
 #MASTER DATASET-------------------------------------------------------------------
 master_df <- Reduce(function (...) { merge(..., by = , all = FALSE) },df_list)
-col_order <- c("Date","Rate","Yield_Germany","Spread_Germany","TP_Germany","TP_cf_Germany",
-               "Yield_France","Spread_France","TP_France","TP_cf_France",
-               "Yield_Spain","Spread_Spain","TP_Spain","TP_cf_Spain",
-               "Yield_Italy","Spread_Italy","TP_Italy","TP_cf_Italy",
-               "sum_Er","sum_Er_cf","l1","l2","L1_forecast","L2_forecast","L3_forecast","L4_forecast")
+col_order <- c("Date", "Rate", "Yield_Germany", "Spread_Germany", "TP_Germany", "TP_cf_Germany",
+               "Yield_France", "Spread_France", "TP_France", "TP_cf_France",
+               "Yield_Spain", "Spread_Spain", "TP_Spain", "TP_cf_Spain",
+               "Yield_Italy", "Spread_Italy", "TP_Italy", "TP_cf_Italy",
+               "sum_Er", "sum_Er_cf", "l1", "l2", "L1_forecast", "L2_forecast", "L3_forecast",
+               "L4_forecast", "L5_forecast", "L6_forecast", "L7_forecast", "L8_forecast",
+               "L9_forecast", "L10_forecast", "L11_forecast", "L12_forecast")
+
 master_df <- master_df[,col_order]
 master_df <- master_df %>% filter(!is.na(Yield_Germany),
                                   !is.na(Yield_France),

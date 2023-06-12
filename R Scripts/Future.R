@@ -3,7 +3,7 @@ temp <- master_df %>% filter(Date >= "2022-01-01")
 lr <- tail(temp,1) #Last Row
 
 #Create vectors for future date, interest rate movements and interest rates -  using model
-fut_date <- seq(lr$Date, as.Date("2025-04-01"), by = "quarter")
+fut_date <- seq(lr$Date, as.Date("2026-04-01"), by = "quarter")
 n <- length(fut_date)
 fut_move_mod <- rep(NA,n)
 fut_rate_mod <- rep(NA,n)
@@ -19,7 +19,8 @@ for (i in 1:n){
 #Data for consensus forecasts for interest rates
 fut_rate_consensus <- rep(NA,n)
 fut_rate_consensus[1] <- lr$Rate
-fut_rate_consensus[2:5] <- as.numeric(as.vector(lr[23:26]))
+i <- grep("L1_forecast", colnames(lr))
+fut_rate_consensus[2:13] <- as.numeric(as.vector(lr[1,i:(i+11)]))
 
 #Term premia estimates
 TP_mod <- lr$TP
@@ -33,7 +34,7 @@ Model_ER <- fut_rate_mod[2:5]
 Model_EM <- c(lr$Yield_Germany-lr$TP_Germany, lr$Yield_France-lr$TP_France,
               lr$Yield_Spain-lr$TP_Spain, lr$Yield_Italy-lr$TP_Italy)
 Model_TP <- c(lr$TP_Germany, lr$TP_France, lr$TP_Spain, lr$TP_Italy)
-Consensus_ER <- fut_rate_consensus[2:5]
+Consensus_ER <- fut_rate_consensus[2:13]
 Consensus_EM <- c(lr$Yield_Germany-lr$TP_cf_Germany,  lr$Yield_France-lr$TP_cf_France,
                   lr$Yield_Spain-lr$TP_cf_Spain, lr$Yield_Italy-lr$TP_cf_Italy)
 Consensus_TP <-  c(lr$TP_cf_Germany, lr$TP_cf_France, lr$TP_cf_Spain, lr$TP_cf_Italy)

@@ -1,24 +1,30 @@
 #clear the environment 
-rm(list=ls()) 
+#rm(list=ls()) 
 ## ------------------------------------------------------------------------
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+#setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 ## -------Load/install packages--------------------------------------------
-listofpackages = c("lubridate","zoo","ggplot2","dygraphs","plyr","dplyr",
-                   "tidyverse","highcharter","shiny")
-for (j in listofpackages){
-  if(sum(installed.packages()[, 1] == j) == 0) {
-    install.packages(j)
-  }
-  library(j, character.only = T, quietly = TRUE, warn.conflicts = FALSE)
-}
+#listofpackages = c("lubridate","zoo","ggplot2","dygraphs","plyr","dplyr",
+#                   "tidyverse","highcharter")
+#for (j in listofpackages){
+#  if(sum(installed.packages()[, 1] == j) == 0) {
+#    install.packages(j)
+#  }
+#  library(j, character.only = T, quietly = TRUE, warn.conflicts = FALSE)
+#}
+library(shiny)
+library(lubridate)
+library(zoo)
+library(ggplot2)
+library(dygraphs)
+library(plyr)
+library(dplyr)
+library(tidyverse)
+library(highcharter)
+library(markdown)
 
 source("Historical.R")
 source("Future.R")
-
-library(knitr, quietly = T)
-
-rmdfiles <- c("Report/Report.Rmd")
-sapply(rmdfiles, knit, quiet = T)
+source("Plots.R")
 
 #FUNCTION TO ADD USER FORECAST BASED TERM PREMIA TO THE TABLE
 add_user_for <- function(df,rate_forecast,T=40){
@@ -34,6 +40,8 @@ ui <- navbarPage("Term Premia in the Euro Area",
         tabPanel("Historical Data",
            textOutput("desc1"),
            highchartOutput("yieldplot"),
+           textOutput("desc2"),
+           p("Yield Decompositions",align = "center", style = "font-family: Lucida Grande, Lucida Sans Unicode; color: black; font-size: 18px"),
            fluidRow(
              column(6, highchartOutput("germany_tp")),
              column(6, highchartOutput("italy_tp"))
@@ -55,7 +63,9 @@ ui <- navbarPage("Term Premia in the Euro Area",
                width = 3
              ),
              mainPanel(
-               textOutput("desc2"),
+               textOutput("desc3"),
+               hr(),
+               textOutput("desc4"),
                hr(),
                highchartOutput("rateplot"),
                hr(),
@@ -80,78 +90,41 @@ server <- function(input, output) {
     })
     
     output$yieldplot <- renderHighchart({
-      highchart() %>%
-        hc_title(text = "10-Y Government Bond Yields") %>%
-        hc_xAxis(type = "datetime", dateTimeLabelFormats = list(month = "%b %Y")) %>%
-        hc_yAxis(title = list(text = "Yield")) %>%
-        hc_add_series(data = master_df, hcaes(x = Date, y = Yield_Germany), type = "line", color = "blue", name = "Germany") %>%
-        hc_add_series(data = master_df, hcaes(x = Date, y = Yield_France), type = "line", color = "brown", name = "France") %>%
-        hc_add_series(data = master_df, hcaes(x = Date, y = Yield_Spain), type = "line", color = "green", name = "Spain") %>%
-        hc_add_series(data = master_df, hcaes(x = Date, y = Yield_Italy), type = "line", color = "red", name = "Italy") %>%
-        hc_plotOptions(series = list(marker = list(enabled = FALSE))) %>%
-        hc_legend(layout = "horizontal", align = "center", verticalAlign = "top") %>%
-        hc_colors(c("blue", "brown", "green", "red")) %>%
-        hc_exporting(enabled = TRUE)
+      Yield_Plot
+    })
+    
+    output$desc2 <- renderText({
+      string <- "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.Aenean commodo
+      ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
+      montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
+      quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec,
+      vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
+      Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus
+      elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu,
+      consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis."
     })
     
     output$germany_tp <- renderHighchart({
-      highchart() %>%
-        hc_add_series(master_df, "line", hcaes(x = Date, y = Spread_Germany), name = "Term Spread") %>%
-        hc_add_series(master_df, "line", hcaes(x = Date, y = TP_Germany),
-                      name = "Term Premia", dashStyle = "dash", color = "red", lineWidth = 2) %>%
-        hc_add_series(master_df, "scatter", hcaes(x = Date, y = TP_cf_Germany),
-                      name = "Consensus_TP", marker = list(symbol = "circle", lineWidth = 0, radius = 2)) %>%
-        hc_title(text = " Germany") %>%
-        hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
-        hc_yAxis(title = list(text = "Yield & Composition"), min = -2, max = 7) %>%
-        hc_legend(enabled = TRUE) %>%
-        hc_exporting(enabled = TRUE)
+      Germany_Term_Premia
     })
     
     output$france_tp <- renderHighchart({
-      highchart() %>%
-        hc_add_series(master_df, "line", hcaes(x = Date, y = Spread_France), name = "Term Spread") %>%
-        hc_add_series(master_df, "line", hcaes(x = Date, y = TP_France),
-                      name = "Term Premia", dashStyle = "dash", color = "red", lineWidth = 2) %>%
-        hc_add_series(master_df, "scatter", hcaes(x = Date, y = TP_cf_France),
-                      name = "Consensus_TP", marker = list(symbol = "circle", lineWidth = 0, radius = 2)) %>%
-        hc_title(text = "France") %>%
-        hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
-        hc_yAxis(title = list(text = "Yield & Composition"), min = -2, max = 7) %>%
-        hc_legend(enabled = TRUE) %>%
-        hc_exporting(enabled = TRUE)
+      France_Term_Premia
     })
     
     output$italy_tp <- renderHighchart({
-      highchart() %>%
-        hc_add_series(master_df, "line", hcaes(x = Date, y = Spread_Italy), name = "Term Spread") %>%
-        hc_add_series(master_df, "line", hcaes(x = Date, y = TP_Italy),
-                      name = "Term Premia", dashStyle = "dash", color = "red", lineWidth = 2) %>%
-        hc_add_series(master_df, "scatter", hcaes(x = Date, y = TP_cf_Italy),
-                      name = "Consensus_TP", marker = list(symbol = "circle", lineWidth = 0, radius = 2)) %>%
-        hc_title(text = "Italy") %>%
-        hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
-        hc_yAxis(title = list(text = "Yield & Composition"), min = -2, max = 7) %>%
-        hc_legend(enabled = TRUE) %>%
-        hc_exporting(enabled = TRUE)
+      Italy_Term_Premia
     })
     
     output$spain_tp <- renderHighchart({
-      highchart() %>%
-        hc_add_series(master_df, "line", hcaes(x = Date, y = Spread_Spain), name = "Term Spread") %>%
-        hc_add_series(master_df, "line", hcaes(x = Date, y = TP_Spain),
-                      name = "Term Premia", dashStyle = "dash", color = "red", lineWidth = 2) %>%
-        hc_add_series(master_df, "scatter", hcaes(x = Date, y = TP_cf_Spain),
-                      name = "Consensus_TP", marker = list(symbol = "circle", lineWidth = 0, radius = 2)) %>%
-        hc_title(text = "Spain") %>%
-        hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
-        hc_yAxis(title = list(text = "Yield & Composition"), min = -2, max = 7) %>%
-        hc_legend(enabled = TRUE) %>%
-        hc_exporting(enabled = TRUE)
+      Spain_Term_Premia
     })
     
     
-    output$desc2 <- renderText({
+    output$desc3 <- renderText({
+      string <- "Please add the forecasts for EU short term rates for the next quarters."})
+      
+    output$desc4 <- renderText({
       string <- "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.Aenean commodo
       ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
       montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
@@ -175,9 +148,9 @@ server <- function(input, output) {
         hc_add_series(data = data.frame(x = fut_date, y = fut_rate_mod), hcaes(x = x, y = y),
                       type = "line", name = "Model estimate", color = "blue", lineWidth = 2, dashStyle = "Dash") %>%
         hc_add_series(data = data.frame(x = fut_date, y = fut_rate_consensus), hcaes(x = x, y = y),
-                      type = "scatter", name = "Consensus forecast", color = "red", lineWidth = 2, dashStyle = "Dash") %>%
+                      type = "line", name = "Consensus forecast", color = "red", lineWidth = 2, dashStyle = "Dash") %>%
         hc_add_series(data = data.frame(x = fut_date[1:5], y = append(lr$Rate, user_forecasts())), hcaes(x = x, y = y),
-                      type = "scatter", name = "User forecast", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
+                      type = "line", name = "User forecast", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
         hc_legend(
           layout = "horizontal",
           align = "center",

@@ -6,7 +6,7 @@ mod <- lm(df$l1 ~ df$l2 - 1)
 rho = mod$coefficients[1]
 
 #How many time periods -> T
-T = 40
+T = 10
 
 #An array to store the cumulative sum of expected short rate movements
 sum_Er <- rep(0,length(df$l1))
@@ -25,4 +25,9 @@ for (i in 1:T){
 df$TP <- df$Spread - sum_Er
 #Compute the common expected short term rate component of the yield
 df$sum_Er <- sum_Er
+
+df <- df %>%
+  select(Date, Yield, Rate, Spread, l1, l2, sum_Er, TP, L1_forecast, L2_forecast, L3_forecast, L4_forecast,
+         L5_forecast, L6_forecast, L7_forecast, L8_forecast, L9_forecast, L10_forecast,
+         L11_forecast, L12_forecast)
 
