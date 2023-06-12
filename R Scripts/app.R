@@ -29,8 +29,19 @@ source("Plots.R")
 #FUNCTION TO ADD USER FORECAST BASED TERM PREMIA TO THE TABLE
 add_user_for <- function(df,rate_forecast,T=40){
   df %>%
-    mutate(User_EM = (1 - 1/T)*(rate_forecast[1] - lr$Rate) + (1 - 2/T)*(rate_forecast[2] - rate_forecast[1]) +
-             (1 - 3/T)*(rate_forecast[3]- rate_forecast[2]) + (1 - 4/T)*(rate_forecast[4] - rate_forecast[3]),
+    mutate(User_EM = (1 - 1/T)*(rate_forecast[1] - lr$Rate) +
+             (1 - 2/T)*(rate_forecast[2] - rate_forecast[1]) +
+             (1 - 3/T)*(rate_forecast[3] - rate_forecast[2]) +
+             (1 - 4/T)*(rate_forecast[4] - rate_forecast[3]) +
+             (1 - 5/T)*(rate_forecast[5] - rate_forecast[4]) +
+             (1 - 6/T)*(rate_forecast[6] - rate_forecast[5]) +
+             (1 - 7/T)*(rate_forecast[7] - rate_forecast[6]) +
+             (1 - 8/T)*(rate_forecast[8] - rate_forecast[7]) +
+             (1 - 9/T)*(rate_forecast[9] - rate_forecast[8]) +
+             (1 - 10/T)*(rate_forecast[10] - rate_forecast[9]) +
+             (1 - 11/T)*(rate_forecast[11] - rate_forecast[10]) +
+             (1 - 12/T)*(rate_forecast[12] - rate_forecast[11]) +
+             lr$Rate,
            User_TP = Yield_10Y - User_EM)
 }
 
@@ -55,10 +66,18 @@ ui <- navbarPage("Term Premia in the Euro Area",
            sidebarLayout(
              sidebarPanel(
                h1("Your Forecasts"),
-               numericInput("F1",label = "Forecast for Q1", value = NA),
-               numericInput("F2",label = "Forecast for Q2", value = NA),
-               numericInput("F3",label = "Forecast for Q3", value = NA),
-               numericInput("F4",label = "Forecast for Q4", value = NA),
+               numericInput("F1", label = "Forecast for Q1", value = round(fut_rate_consensus[2], 1)),
+               numericInput("F2", label = "Forecast for Q2", value = round(fut_rate_consensus[3], 1)),
+               numericInput("F3", label = "Forecast for Q3", value = round(fut_rate_consensus[4], 1)),
+               numericInput("F4", label = "Forecast for Q4", value = round(fut_rate_consensus[5], 1)),
+               numericInput("F5", label = "Forecast for Q5", value = round(fut_rate_consensus[6], 1)),
+               numericInput("F6", label = "Forecast for Q6", value = round(fut_rate_consensus[7], 1)),
+               numericInput("F7", label = "Forecast for Q7", value = round(fut_rate_consensus[8], 1)),
+               numericInput("F8", label = "Forecast for Q8", value = round(fut_rate_consensus[9], 1)),
+               numericInput("F9", label = "Forecast for Q9", value = round(fut_rate_consensus[10], 1)),
+               numericInput("F10", label = "Forecast for Q10", value = round(fut_rate_consensus[11], 1)),
+               numericInput("F11", label = "Forecast for Q11", value = round(fut_rate_consensus[12], 1)),
+               numericInput("F12", label = "Forecast for Q12", value = round(fut_rate_consensus[13], 1)),
                actionButton("go", "Submit"),
                width = 3
              ),
@@ -122,7 +141,8 @@ server <- function(input, output) {
     
     
     output$desc3 <- renderText({
-      string <- "Please add the forecasts for EU short term rates for the next quarters."})
+      string <- "Please add the forecasts for EU short term rates for the next quarters.
+      The default value is the consensus forecast for the respective quarter"})
       
     output$desc4 <- renderText({
       string <- "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.Aenean commodo
@@ -134,7 +154,8 @@ server <- function(input, output) {
     
     #DEFINE REACTIVE FUNCTION FOR INPUTS-------------------------------------------------------
     user_forecasts <- eventReactive(input$go, {
-      user_forecasts <- c(input$F1,input$F2,input$F3,input$F4)
+      user_forecasts <- c(input$F1,input$F2,input$F3,input$F4,input$F5,input$F6,
+                          input$F7,input$F8,input$F9,input$F10,input$F11,input$F12)
     })
     
     
@@ -149,7 +170,7 @@ server <- function(input, output) {
                       type = "line", name = "Model estimate", color = "blue", lineWidth = 2, dashStyle = "Dash") %>%
         hc_add_series(data = data.frame(x = fut_date, y = fut_rate_consensus), hcaes(x = x, y = y),
                       type = "line", name = "Consensus forecast", color = "red", lineWidth = 2, dashStyle = "Dash") %>%
-        hc_add_series(data = data.frame(x = fut_date[1:5], y = append(lr$Rate, user_forecasts())), hcaes(x = x, y = y),
+        hc_add_series(data = data.frame(x = fut_date, y = append(lr$Rate, user_forecasts())), hcaes(x = x, y = y),
                       type = "line", name = "User forecast", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
         hc_legend(
           layout = "horizontal",

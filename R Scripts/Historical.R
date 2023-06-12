@@ -21,7 +21,7 @@ for (z in 1:length(long_yield_list)){
   
   #Run the scripts for COMPUTING TERM PREMIA using our model & consensus forecasts
   source("Model for expected rates.R")
-  #source("Using Updated Consensus Forecasts.R")
+  source("Using Updated Consensus Forecasts.R")
   
   #Save the table for future reference
   df_list[[z]] <- df
