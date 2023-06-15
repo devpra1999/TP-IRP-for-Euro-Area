@@ -7,10 +7,12 @@ The R scripts have the following function -
   Dependencies - Historical.R, Future.R, Plots.R
 
 2. Historical.R
-   This script creates a master database for the yields, spreads and term premia estimates for all the 4 countries - Germany, France, Italy and Spain. The master database also consists of the consensus forecasts for 3 years, and all the requisites for the term premia estimation. Finally, a separate database for the rates and their first differences is also generated which is used for an AR(1) model for estimating term premia.
+   This script creates a master database for the yields, spreads and term premia estimates for all the 4 countries - Germany, France, Italy and Spain.  
+   The master database also consists of the consensus forecasts for 3 years, and all the requisites for the term premia estimation.
+   Finally, a separate database for the rates and their first differences is also generated which is used for an AR(1) model for estimating term premia.  
    Dependencies - Getting_Data.R (commented by default), Loading_Data.R, Build_Database.R, Model for expected Rates.R, Using Updated Consensus Forecasts.R  
 
-3. Current Projections.R  
+4. Current Projections.R  
    This scripts creates a table for the yields and its two components - expected monetary policy component and term premia for all the countries at the current time. The components are calculated using - model rates, consensus forecasts, and user forecasts. In addition it also gives vectors for model and consensus forecasts for expected rates.  
 
 5. Getting_Data.R  
