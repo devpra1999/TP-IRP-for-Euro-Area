@@ -47,19 +47,19 @@ add_user_for <- function(df,rate_forecast,T=40){
 
 ui <- navbarPage("Term Premia in the Euro Area",
         tabPanel("Methodology",
-                 tags$iframe(style="height:600px; width:100%", src="https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf")),
+                 tags$iframe(style="height:800px; width:100%", src="Euro_Area_Term_Premia.pdf")),
         tabPanel("Historical Data",
            textOutput("desc1"),
            highchartOutput("yieldplot"),
            textOutput("desc2"),
-           p("Yield Decompositions",align = "center", style = "font-family: Lucida Grande, Lucida Sans Unicode; color: black; font-size: 18px"),
+           p("Yield Decomposition using Consensus Forecasts",align = "center", style = "font-family: Lucida Grande, Lucida Sans Unicode; color: black; font-size: 18px"),
            fluidRow(
-             column(6, highchartOutput("germany_tp")),
-             column(6, highchartOutput("italy_tp"))
+             column(6, highchartOutput("germany_tp_cf")),
+             column(6, highchartOutput("italy_tp_cf"))
             ),
            fluidRow(
-             column(6, highchartOutput("france_tp")),
-             column(6, highchartOutput("spain_tp"))
+             column(6, highchartOutput("france_tp_cf")),
+             column(6, highchartOutput("spain_tp_cf"))
            )
         ),
         tabPanel("User Forecasts",
@@ -98,57 +98,46 @@ ui <- navbarPage("Term Premia in the Euro Area",
 server <- function(input, output) {
     #EXPLANATION + HISTORICAL ---------------------------------------------------------------
     output$desc1 <- renderText({
-      string <- "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.Aenean commodo
-      ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
-      montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
-      quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec,
-      vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
-      Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus
-      elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu,
-      consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis."
+      string <- "The following figures report the 10-year yields for  Germany, France, Italy
+      and Spain alongwith <<the term premia built using the autoregressive model for the change
+      in monetary policy rates and>> the term premia built using consensus forecasts for future rates.
+      Since the consensus forecasts are available only quarterly (as opposed to the monthly),
+      term premia computed using the interpolated series of forecasts is also shown."
     })
     
     output$yieldplot <- renderHighchart({
       Yield_Plot
     })
     
-    output$desc2 <- renderText({
-      string <- "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.Aenean commodo
-      ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
-      montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
-      quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec,
-      vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.
-      Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus
-      elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu,
-      consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis."
-    })
-    
-    output$germany_tp <- renderHighchart({
+    output$germany_tp_cf <- renderHighchart({
       Germany_Term_Premia
     })
     
-    output$france_tp <- renderHighchart({
+    output$france_tp_cf <- renderHighchart({
       France_Term_Premia
     })
     
-    output$italy_tp <- renderHighchart({
+    output$italy_tp_cf <- renderHighchart({
       Italy_Term_Premia
     })
     
-    output$spain_tp <- renderHighchart({
+    output$spain_tp_cf <- renderHighchart({
       Spain_Term_Premia
     })
     
     
     output$desc3 <- renderText({
-      string <- "Please add the forecasts for EU short term rates for the next quarters.
-      The default value is the consensus forecast for the respective quarter"})
+      string <- "In this section the current value of the term premia for the four countries to
+      interest can be constructed. The two default series are built by using the Expected Monetary Policy
+      component estimated respectively by the Consensus Forecast and the naive autoregressive model
+      for the change in policy rates. Users have the option to add their forecasts for the three
+      months rates and see the term premia implied by them."})
       
     output$desc4 <- renderText({
-      string <- "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.Aenean commodo
-      ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
-      montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
-      quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec."
+      string <- "Please use the buttons to the left of the page to input your forecasts. The default
+      values are given by the consensus forecasts for the respective quarter. The graphs reports
+      the path for monetary policy rates while the Table provides the decomposition of current
+      10-year yields into Term Premia and Expected Monetary Policy."
     })
   
     
@@ -163,7 +152,7 @@ server <- function(input, output) {
     output$rateplot <- renderHighchart({
       highchart() %>%
         hc_xAxis(type = "datetime", dateTimeLabelFormats = list(month = "%b %Y")) %>%
-        hc_yAxis(title = list(text = "Interest Rate"), min = -1, max = 5) %>%
+        hc_yAxis(title = list(text = "Interest Rate"), min = min(-1,user_forecasts()), max = max(5,user_forecasts())) %>%
         hc_add_series(data = recent_data, hcaes(x = Date, y = Rate),
                       type = "line", name = "Historical", color = "black", lineWidth = 2) %>%
         hc_add_series(data = data.frame(x = fut_date, y = fut_rate_mod), hcaes(x = x, y = y),
