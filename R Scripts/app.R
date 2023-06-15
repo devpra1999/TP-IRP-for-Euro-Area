@@ -47,7 +47,7 @@ add_user_for <- function(df,rate_forecast,T=40){
 
 ui <- navbarPage("Term Premia in the Euro Area",
         tabPanel("Methodology",
-                 withMathJax(includeMarkdown("Report.md"))),
+                 tags$iframe(style="height:600px; width:100%", src="https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf")),
         tabPanel("Historical Data",
            textOutput("desc1"),
            highchartOutput("yieldplot"),
@@ -164,7 +164,7 @@ server <- function(input, output) {
       highchart() %>%
         hc_xAxis(type = "datetime", dateTimeLabelFormats = list(month = "%b %Y")) %>%
         hc_yAxis(title = list(text = "Interest Rate"), min = -1, max = 5) %>%
-        hc_add_series(data = temp, hcaes(x = Date, y = Rate),
+        hc_add_series(data = recent_data, hcaes(x = Date, y = Rate),
                       type = "line", name = "Historical", color = "black", lineWidth = 2) %>%
         hc_add_series(data = data.frame(x = fut_date, y = fut_rate_mod), hcaes(x = x, y = y),
                       type = "line", name = "Model estimate", color = "blue", lineWidth = 2, dashStyle = "Dash") %>%

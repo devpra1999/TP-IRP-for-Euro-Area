@@ -11,14 +11,13 @@ Yield_Plot <- highchart() %>%
   hc_colors(c("blue", "brown", "green", "red")) %>%
   hc_exporting(enabled = TRUE)
 
-
 Germany_Term_Premia <- highchart() %>%
   hc_add_series(master_df, "line", hcaes(x = Date, y = Yield_Germany), name = "Yield") %>%
-  hc_add_series(master_df, "line", hcaes(x = Date, y = TP_Germany),
-                name = "Term Premia", dashStyle = "dash", color = "red", lineWidth = 2) %>%
   hc_add_series(master_df, "scatter", hcaes(x = Date, y = TP_cf_Germany),
                 name = "Consensus_TP", marker = list(symbol = "circle", lineWidth = 0, radius = 2)) %>%
-  hc_title(text = " Germany") %>%
+  hc_add_series(master_df, "line", hcaes(x = Date, y = na.spline(TP_cf_Germany)),
+                name = "Consensus_TP_interpolated", dashStyle = "dash", color = "red") %>%
+  hc_title(text = "Germany") %>%
   hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
   hc_yAxis(title = list(text = "Yield & Composition"), min = -2, max = 7) %>%
   hc_legend(enabled = TRUE) %>%
@@ -26,10 +25,10 @@ Germany_Term_Premia <- highchart() %>%
 
 France_Term_Premia <- highchart() %>%
   hc_add_series(master_df, "line", hcaes(x = Date, y = Yield_France), name = "Yield") %>%
-  hc_add_series(master_df, "line", hcaes(x = Date, y = TP_France),
-                name = "Term Premia", dashStyle = "dash", color = "red", lineWidth = 2) %>%
   hc_add_series(master_df, "scatter", hcaes(x = Date, y = TP_cf_France),
                 name = "Consensus_TP", marker = list(symbol = "circle", lineWidth = 0, radius = 2)) %>%
+  hc_add_series(master_df, "line", hcaes(x = Date, y = na.spline(TP_cf_France)),
+                name = "Consensus_TP_interpolated", dashStyle = "dash", color = "red") %>%
   hc_title(text = "France") %>%
   hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
   hc_yAxis(title = list(text = "Yield & Composition"), min = -2, max = 7) %>%
@@ -38,22 +37,22 @@ France_Term_Premia <- highchart() %>%
 
 Spain_Term_Premia <- highchart() %>%
   hc_add_series(master_df, "line", hcaes(x = Date, y = Yield_Spain), name = "Yield") %>%
-  hc_add_series(master_df, "line", hcaes(x = Date, y = TP_Spain),
-                name = "Term Premia", dashStyle = "dash", color = "red", lineWidth = 2) %>%
-  hc_add_series(master_df, "line", hcaes(x = Date, y = TP_cf_Spain),
+  hc_add_series(master_df, "scatter", hcaes(x = Date, y = TP_cf_Spain),
                 name = "Consensus_TP", marker = list(symbol = "circle", lineWidth = 0, radius = 2)) %>%
+  hc_add_series(master_df, "line", hcaes(x = Date, y = na.spline(TP_cf_Spain)),
+                name = "Consensus_TP_interpolated", dashStyle = "dash", color = "red") %>%
   hc_title(text = "Spain") %>%
   hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
   hc_yAxis(title = list(text = "Yield & Composition"), min = -2, max = 7) %>%
   hc_legend(enabled = TRUE) %>%
   hc_exporting(enabled = TRUE)
-  
+
 Italy_Term_Premia <- highchart() %>%
   hc_add_series(master_df, "line", hcaes(x = Date, y = Yield_Italy), name = "Yield") %>%
-  hc_add_series(master_df, "line", hcaes(x = Date, y = TP_Italy),
-                name = "Term Premia", dashStyle = "dash", color = "red", lineWidth = 2) %>%
   hc_add_series(master_df, "scatter", hcaes(x = Date, y = TP_cf_Italy),
                 name = "Consensus_TP", marker = list(symbol = "circle", lineWidth = 0, radius = 2)) %>%
+  hc_add_series(master_df, "line", hcaes(x = Date, y = na.spline(TP_cf_Italy)),
+                name = "Consensus_TP_interpolated", dashStyle = "dash", color = "red") %>%
   hc_title(text = "Italy") %>%
   hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
   hc_yAxis(title = list(text = "Yield & Composition"), min = -2, max = 7) %>%

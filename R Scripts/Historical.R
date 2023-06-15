@@ -17,8 +17,9 @@ df_list <- vector(mode = "list", length = length(country_list))
 #Run a loop to compute term premia for the different countries
 for (z in 1:length(long_yield_list)){
   #Call the function to build the database for the current country
-  df <- build_df(long_yield_list[z],Y_st)
-  
+  L <- build_df(long_yield_list[z],Y_st)
+  df <- L$main_data
+  Rate_df <- L$rate_data
   #Run the scripts for COMPUTING TERM PREMIA using our model & consensus forecasts
   source("Model for expected rates.R")
   source("Using Updated Consensus Forecasts.R")
@@ -45,14 +46,16 @@ col_order <- c("Date", "Rate", "Yield_Germany", "Spread_Germany", "TP_Germany", 
                "Yield_France", "Spread_France", "TP_France", "TP_cf_France",
                "Yield_Spain", "Spread_Spain", "TP_Spain", "TP_cf_Spain",
                "Yield_Italy", "Spread_Italy", "TP_Italy", "TP_cf_Italy",
-               "sum_Er", "sum_Er_cf", "l1", "l2", "L1_forecast", "L2_forecast", "L3_forecast",
-               "L4_forecast", "L5_forecast", "L6_forecast", "L7_forecast", "L8_forecast",
-               "L9_forecast", "L10_forecast", "L11_forecast", "L12_forecast")
+               "sum_Er", "sum_Er_cf", "Q1_forecast", "Q2_forecast", "Q3_forecast",
+               "Q4_forecast", "Q5_forecast", "Q6_forecast", "Q7_forecast", "Q8_forecast",
+               "Q9_forecast", "Q10_forecast", "Q11_forecast", "Q12_forecast")
 
 master_df <- master_df[,col_order]
 master_df <- master_df %>% filter(!is.na(Yield_Germany),
                                   !is.na(Yield_France),
                                   !is.na(Yield_Spain),
                                   !is.na(Yield_Italy))
+
+rm(list=ls()[! ls() %in% c("master_df","Rate_df", "mod")])
 
 
