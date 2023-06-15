@@ -6,7 +6,7 @@ The R scripts have the following function -
   This is an R Shiny script - with the ui and server required for generating the website. It loads the required libraries as well.
   Dependencies - Historical.R, Future.R, Plots.R
 
-2. Historical.R
+2. Historical.R  
    This script creates a master database for the yields, spreads and term premia estimates for all the 4 countries - Germany, France, Italy and Spain.  
    The master database also consists of the consensus forecasts for 3 years, and all the requisites for the term premia estimation.
    Finally, a separate database for the rates and their first differences is also generated which is used for an AR(1) model for estimating term premia.  
