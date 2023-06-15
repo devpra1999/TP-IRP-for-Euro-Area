@@ -2,33 +2,38 @@
 
 ## R Scripts
 The R scripts have the following function -
-1. main.R  
-  The main script to be used for running the entire analysis and saving the suitable plots.  
+1. app.R  
+  This is an R Shiny script - with the ui and server required for generating the website. It loads the required libraries as well.
+  Dependencies - Historical.R, Future.R, Plots.R
 
-2. Getting Data.R  
-  To read the data files for 10 year bond yields, short term rates and consensus forecasts into tables.   
-  The codes can be run in any system, given the repo is cloned and set as the working directory.
+2. Historical.R
+   This script creates a master database for the yields, spreads and term premia estimates for all the 4 countries - Germany, France, Italy and Spain. The master database also consists of the consensus forecasts for 3 years, and all the requisites for the term premia estimation. Finally, a separate database for the rates and their first differences is also generated which is used for an AR(1) model for estimating term premia.
+   Dependencies - Getting_Data.R (commented by default), Loading_Data.R, Build_Database.R, Model for expected Rates.R, Using Updated Consensus Forecasts.R  
+
+3. Current Projections.R  
+   This scripts creates a table for the yields and its two components - expected monetary policy component and term premia for all the countries at the current time. The components are calculated using - model rates, consensus forecasts, and user forecasts. In addition it also gives vectors for model and consensus forecasts for expected rates.  
+
+5. Getting_Data.R  
+  To download the data files for 10 year bond yields, short term rates and consensus forecasts. Commented by default. It should be uncommented for the first use, and whenever updated data files are required  
+
+6. Loading_Data.R  
+   To read the downloaded files' data into tables.
+   
+7. Build_Database.R  
+  It generates a function for building a clean database for each country which can be used for analysis and modelling.  
+  Returns a list with two data frames - dataframe for country and a common rate dataframe for our model.  
   
-2. Build_Database.R  
-  It builds a clean database for analysis and modelling.  
-  Adds the required variables which will be used in the models.
-  
-3. Model for expected rates.R  
+8. Model for expected rates.R  
   Currently builds a simple predictive model for expected short term rates.  
   Step 1 - Estimate rho for: dy_t = rho*dy_t-1 + e_t.  
   Step 2 - Forecast dy_t+i+1 using the estimated rho.  
   Use these values to calculate the term premia.  
   
-4. Using Updated Consensus Forecasts.R  
+9. Using Updated Consensus Forecasts.R  
   Adds the consensus forecasts to the main database. 
-  Calculate the term premia using the consensus forecasts - implemented vectorization. 
+  Calculate the term premia using the consensus forecasts.  
 
-## Plots
-Contains plots for
-  1. Term Premia comparison between countries.  
-  2. Yield decomposition into short term component and term premia (both from model and consensus forecasts). 
 
-The consensus forecast plots integrate all the information and can be looked to get the complete overview.
 
 ## Data Files
 Long Term Bond Yield Data has been sourced from -
