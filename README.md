@@ -8,7 +8,7 @@ The R scripts have the following function -
 
 2. Historical.R  
    This script creates a master database for the yields, spreads and term premia estimates for all the 4 countries - Germany, France, Italy and Spain.  
-   The master database also consists of the consensus forecasts for 3 years, and all the requisites for the term premia estimation.
+   The master database also consists of the consensus forecasts for 3 years, and all the requisites for the term premia estimation.  
    Finally, a separate database for the rates and their first differences is also generated which is used for an AR(1) model for estimating term premia.  
    Dependencies - Getting_Data.R (commented by default), Loading_Data.R, Build_Database.R, Model for expected Rates.R, Using Updated Consensus Forecasts.R  
 
