@@ -134,10 +134,10 @@ server <- function(input, output) {
       months rates and see the term premia implied by them."})
       
     output$desc4 <- renderText({
-      string <- "Please use the buttons to the left of the page to input your forecasts. The default
-      values are given by the consensus forecasts for the respective quarter. The graphs reports
-      the path for monetary policy rates while the Table provides the decomposition of current
-      10-year yields into Term Premia and Expected Monetary Policy."
+      string <- "Please use the boxes to the left of the page to input your forecasts. Click submit to
+      get the term premia estimate based on your forecast. The default values in the boxes are given by
+      the consensus forecasts for the respective quarter. The graphs reports the path for monetary policy
+      rates while the Table provides the decomposition of current 10-year yields into Term Premia and Expected Monetary Policy."
     })
   
     
