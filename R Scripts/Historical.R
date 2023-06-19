@@ -42,13 +42,13 @@ for (i in 1:length(country_list)){
 
 #MASTER DATASET-------------------------------------------------------------------
 master_df <- Reduce(function (...) { merge(..., by = , all = FALSE) },df_list)
-col_order <- c("Date", "Rate", "Yield_Germany", "Spread_Germany", "TP_Germany", "TP_cf_Germany",
-               "Yield_France", "Spread_France", "TP_France", "TP_cf_France",
-               "Yield_Spain", "Spread_Spain", "TP_Spain", "TP_cf_Spain",
-               "Yield_Italy", "Spread_Italy", "TP_Italy", "TP_cf_Italy",
-               "sum_Er", "sum_Er_cf", "Q1_forecast", "Q2_forecast", "Q3_forecast",
-               "Q4_forecast", "Q5_forecast", "Q6_forecast", "Q7_forecast", "Q8_forecast",
-               "Q9_forecast", "Q10_forecast", "Q11_forecast", "Q12_forecast")
+col_order <- c("Date", "Rate", "sum_Er", "sum_Er_cf","Yield_Germany", "Spread_Germany",
+               "TP_Germany", "TP_cf_Germany", "Yield_France", "Spread_France", "TP_France",
+               "TP_cf_France", "Yield_Spain", "Spread_Spain", "TP_Spain", "TP_cf_Spain",
+               "Yield_Italy", "Spread_Italy", "TP_Italy", "TP_cf_Italy", "Q1_forecast",
+               "Q2_forecast", "Q3_forecast", "Q4_forecast", "Q5_forecast", "Q6_forecast",
+               "Q7_forecast", "Q8_forecast", "Q9_forecast", "Q10_forecast", "Q11_forecast",
+               "Q12_forecast")
 
 master_df <- master_df[,col_order]
 master_df <- master_df %>% filter(!is.na(Yield_Germany),
