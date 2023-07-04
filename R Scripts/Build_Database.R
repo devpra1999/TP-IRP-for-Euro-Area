@@ -28,18 +28,18 @@ build_df <- function(long_yield, rate = Y_st){
   
   
   #We need to use leads to put the forecasted target period to the time the forecast was made
-  df$Q1_forecast <- lead(df$Q1_forecast, 3)
-  df$Q2_forecast <- lead(df$Q2_forecast, 6)
-  df$Q3_forecast <- lead(df$Q3_forecast, 9)
-  df$Q4_forecast <- lead(df$Q4_forecast, 12)
-  df$Q5_forecast <- lead(df$Q5_forecast, 15)
-  df$Q6_forecast <- lead(df$Q6_forecast, 18)
-  df$Q7_forecast <- lead(df$Q7_forecast, 21)
-  df$Q8_forecast <- lead(df$Q8_forecast, 24)
-  df$Q9_forecast <- lead(df$Q9_forecast, 27)
-  df$Q10_forecast <- lead(df$Q10_forecast, 30)
-  df$Q11_forecast <- lead(df$Q11_forecast, 33)
-  df$Q12_forecast <- lead(df$Q12_forecast, 36)
+  df$Q1_forecast <- dplyr::lead(df$Q1_forecast, 3)
+  df$Q2_forecast <- dplyr::lead(df$Q2_forecast, 6)
+  df$Q3_forecast <- dplyr::lead(df$Q3_forecast, 9)
+  df$Q4_forecast <- dplyr::lead(df$Q4_forecast, 12)
+  df$Q5_forecast <- dplyr::lead(df$Q5_forecast, 15)
+  df$Q6_forecast <- dplyr::lead(df$Q6_forecast, 18)
+  df$Q7_forecast <- dplyr::lead(df$Q7_forecast, 21)
+  df$Q8_forecast <- dplyr::lead(df$Q8_forecast, 24)
+  df$Q9_forecast <- dplyr::lead(df$Q9_forecast, 27)
+  df$Q10_forecast <- dplyr::lead(df$Q10_forecast, 30)
+  df$Q11_forecast <- dplyr::lead(df$Q11_forecast, 33)
+  df$Q12_forecast <- dplyr::lead(df$Q12_forecast, 36)
   
   return(list("main_data" = df,"rate_data" = Rate_df))
 }

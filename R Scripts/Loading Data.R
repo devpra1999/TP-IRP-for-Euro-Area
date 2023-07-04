@@ -112,11 +112,107 @@ f_36$Date <- as.Date(as.yearqtr(f_36$Date, format = "%YQ%q")) + months(12)
 
 
 #MACROECONOMIC DATA------------------------------------------------------------------------
+#GDP (Growth)
 gdp_dat <- read.csv("gdp_data.csv")
 gdp_dat <- gdp_dat %>% select(geo,TIME_PERIOD,OBS_VALUE)
 colnames(gdp_dat) <- c("Country","Date","GDP")
 gdp_dat$Date <- as.Date(as.yearqtr(gdp_dat$Date, format = "%Y-Q%q")) + months(3)
 gdp_dat <- gdp_dat[order(gdp_dat$Date),]
+
+#Inflation
+Germany_inf <- read.csv("Germany-inflation.csv", skip = 6, header = FALSE)
+colnames(Germany_inf)[1:2] <- c("Date","Inflation")
+Germany_inf <- Germany_inf %>%
+  select(Date,Inflation) %>%
+  mutate(Date = ym(Date), Inflation = as.numeric(Inflation)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+#Germany_inf$Date <- ym(Germany_inf$Date)
+#Germany_inf <- Germany_inf[order(Germany_inf$Date),]
+
+France_inf <- read.csv("France-inflation.csv", skip = 6, header = FALSE)
+colnames(France_inf)[1:2] <- c("Date","Inflation")
+France_inf <- France_inf %>%
+  select(Date,Inflation) %>%
+  mutate(Date = ym(Date), Inflation = as.numeric(Inflation)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+
+Italy_inf <- read.csv("Italy-inflation.csv", skip = 6, header = FALSE)
+colnames(Italy_inf)[1:2] <- c("Date","Inflation")
+Italy_inf <- Italy_inf %>%
+  select(Date,Inflation) %>%
+  mutate(Date = ym(Date), Inflation = as.numeric(Inflation)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+
+Spain_inf <- read.csv("Spain-inflation.csv", skip = 6, header = FALSE)
+colnames(Spain_inf)[1:2] <- c("Date","Inflation")
+Spain_inf <- Spain_inf %>%
+  select(Date,Inflation) %>%
+  mutate(Date = ym(Date), Inflation = as.numeric(Inflation)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+
+#Data processing and cleaning for macroeconomic predictions
+
+#Growth rate
+Germany_GDP <- gdp_dat %>% filter(Country == "DE") %>% select(Date,GDP)
+Germany_GDP$Growth_q <- (Germany_GDP$GDP/dplyr::lag(Germany_GDP$GDP,1) - 1)*100
+Germany_GDP$Growth_a <- (Germany_GDP$GDP/dplyr::lag(Germany_GDP$GDP,4) - 1)*100
+Germany_comp <- master_df %>%
+  select(Date,Spread_Germany,TP_cf_Germany,sum_Er_cf,Rate) %>%
+  mutate(Monetary_Policy = sum_Er_cf + Rate) %>%
+  select(Date,Spread_Germany,TP_cf_Germany,Monetary_Policy)
+colnames(Germany_comp) <- c("Date","Spread","Term_Premia","Monetary_Policy")
+Germany_table <- merge(Germany_GDP,Germany_comp, by = "Date")
+Germany_table <- merge(Germany_table,Germany_inf, by = "Date")
+
+France_GDP <- gdp_dat %>% filter(Country == "FR") %>% select(Date, GDP)
+France_GDP$Growth_q <- (France_GDP$GDP/dplyr::lag(France_GDP$GDP, 1) - 1) * 100
+France_GDP$Growth_a <- (France_GDP$GDP/dplyr::lag(France_GDP$GDP, 4) - 1) * 100
+France_comp <- master_df %>%
+  select(Date, Spread_France, TP_cf_France, sum_Er_cf, Rate) %>%
+  mutate(Monetary_Policy = sum_Er_cf + Rate) %>%
+  select(Date, Spread_France, TP_cf_France, Monetary_Policy)
+colnames(France_comp) <- c("Date", "Spread", "Term_Premia", "Monetary_Policy")
+France_table <- merge(France_GDP, France_comp, by = "Date")
+France_table <- merge(France_table, France_inf, by = "Date")
+
+
+Italy_GDP <- gdp_dat %>% filter(Country == "IT") %>% select(Date, GDP)
+Italy_GDP$Growth_q <- (Italy_GDP$GDP / dplyr::lag(Italy_GDP$GDP, 1) - 1) * 100
+Italy_GDP$Growth_a <- (Italy_GDP$GDP / dplyr::lag(Italy_GDP$GDP, 4) - 1) * 100
+Italy_comp <- master_df %>% select(Date, Spread_Italy, TP_cf_Italy, sum_Er_cf,Rate) %>%
+  mutate(Monetary_Policy = sum_Er_cf + Rate) %>%
+  select(Date,Spread_Italy,TP_cf_Italy,Monetary_Policy)
+colnames(Italy_comp) <- c("Date", "Spread", "Term_Premia", "Monetary_Policy")
+Italy_table <- merge(Italy_GDP, Italy_comp, by = "Date")
+Italy_table <- merge(Italy_table,Italy_inf, by = "Date")
+
+
+Spain_GDP <- gdp_dat %>% filter(Country == "ES") %>% select(Date, GDP)
+Spain_GDP$Growth_q <- (Spain_GDP$GDP/dplyr::lag(Spain_GDP$GDP, 1) - 1) * 100
+Spain_GDP$Growth_a <- (Spain_GDP$GDP/dplyr::lag(Spain_GDP$GDP, 4) - 1) * 100
+Spain_comp <- master_df %>%
+  select(Date, Spread_Spain, TP_cf_Spain, sum_Er_cf, Rate) %>%
+  mutate(Monetary_Policy = sum_Er_cf + Rate) %>%
+  select(Date, Spread_Spain, TP_cf_Spain, Monetary_Policy)
+colnames(Spain_comp) <- c("Date", "Spread", "Term_Premia", "Monetary_Policy")
+Spain_table <- merge(Spain_GDP, Spain_comp, by = "Date")
+Spain_table <- merge(Spain_table, Spain_inf, by = "Date")
+
+#Adding country names
+Germany_table$Country <- "Germany"
+Italy_table$Country <- "Italy"
+France_table$Country <- "France"
+Spain_table$Country <- "Spain"
+
+# Combine the tables into a single dataframe
+macro_table <- bind_rows(Germany_table, Italy_table, France_table, Spain_table)
+macro_table <- macro_table %>% arrange(Country,Date)
+macro_table <- macro_table[, c(ncol(macro_table), 1:(ncol(macro_table)-1))]
+
 
 
 

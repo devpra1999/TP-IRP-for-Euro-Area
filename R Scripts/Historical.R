@@ -56,6 +56,6 @@ master_df <- master_df %>% filter(!is.na(Yield_Germany),
                                   !is.na(Yield_Spain),
                                   !is.na(Yield_Italy))
 
-rm(list=ls()[! ls() %in% c("master_df","Rate_df", "mod")])
+rm(list=ls()[! ls() %in% c("master_df","Rate_df", "mod", "macro_table")])
 
 
