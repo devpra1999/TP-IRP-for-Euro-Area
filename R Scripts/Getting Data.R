@@ -84,3 +84,26 @@ download.file(url, dest_file,quite = TRUE)
 url <- "https://sdw.ecb.europa.eu/quickviewexport.do;jsessionid=88E02E1EEB11AC119CEAF714FB14438D?SERIES_KEY=138.SPF.A.U2.ASSU.IR.P36M.Q.AVG&type=xls"
 dest_file <- "36-months.csv"
 download.file(url, dest_file,quite = TRUE)
+
+
+#Macroeconomic Variables
+
+url <- "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/NAMQ_10_GDP/Q.CP_MEUR.SCA.B1GQ.DE+ES+FR+IT/?format=SDMX-CSV&startPeriod=1999-Q4&endPeriod=2023-Q1"
+dest_file <- "gdp_data.csv"
+download.file(url,dest_file,quite = TRUE)
+
+url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=122.ICP.M.DE.N.XEF000.4.ANR&type=xls"
+dest_file <- "Germany-inflation.csv"
+download.file(url, dest_file,quite = TRUE)
+
+url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=122.ICP.M.FR.N.XEF000.4.ANR&type=xls"
+dest_file <- "France-inflation.csv"
+download.file(url, dest_file,quite = TRUE)
+
+url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=122.ICP.M.IT.N.XEF000.4.ANR&type=xls"
+dest_file <- "Italy-inflation.csv"
+download.file(url, dest_file,quite = TRUE)
+
+url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=122.ICP.M.ES.N.XEF000.4.ANR&type=xls"
+dest_file <- "Spain-inflation.csv"
+download.file(url, dest_file,quite = TRUE)

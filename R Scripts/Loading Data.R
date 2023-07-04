@@ -111,4 +111,13 @@ f_36$Date <- as.Date(as.yearqtr(f_36$Date, format = "%YQ%q")) + months(12)
 
 
 
+#MACROECONOMIC DATA------------------------------------------------------------------------
+gdp_dat <- read.csv("gdp_data.csv")
+gdp_dat <- gdp_dat %>% select(geo,TIME_PERIOD,OBS_VALUE)
+colnames(gdp_dat) <- c("Country","Date","GDP")
+gdp_dat$Date <- as.Date(as.yearqtr(gdp_dat$Date, format = "%Y-Q%q")) + months(3)
+gdp_dat <- gdp_dat[order(gdp_dat$Date),]
+
+
+
 

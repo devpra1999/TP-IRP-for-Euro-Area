@@ -49,7 +49,7 @@ ui <- navbarPage("Term Premia in the Euro Area",
         tabPanel("Methodology",
                  tags$iframe(style="height:800px; width:100%", src="Euro_Area_Term_Premia.pdf")),
         tabPanel("Historical Data",
-           textOutput("desc1"),
+           htmlOutput("desc1"),
            highchartOutput("yieldplot"),
            textOutput("desc2"),
            p("Yield Decomposition using Consensus Forecasts",align = "center", style = "font-family: Lucida Grande, Lucida Sans Unicode; color: black; font-size: 18px"),
@@ -62,7 +62,7 @@ ui <- navbarPage("Term Premia in the Euro Area",
              column(6, highchartOutput("spain_tp_cf"))
            )
         ),
-        tabPanel("User Forecasts",
+        tabPanel("Current Projections",
            sidebarLayout(
              sidebarPanel(
                h1("Your Forecasts"),
@@ -97,12 +97,26 @@ ui <- navbarPage("Term Premia in the Euro Area",
 
 server <- function(input, output) {
     #EXPLANATION + HISTORICAL ---------------------------------------------------------------
-    output$desc1 <- renderText({
-      string <- "The following figures report the 10-year yields for  Germany, France, Italy
-      and Spain alongwith <<the term premia built using the autoregressive model for the change
-      in monetary policy rates and>> the term premia built using consensus forecasts for future rates.
-      Since the consensus forecasts are available only quarterly (as opposed to the monthly),
-      term premia computed using the interpolated series of forecasts is also shown."
+    output$desc1 <- renderUI({
+      HTML("The following figures report the 10-year yields and yield decompositions
+      for Germany, France, Italy and Spain. The first plot compares the yields of 10 year bonds
+      for the four countries from 2010 to the present. The second plot shows the yield decompositions
+      separately for all of them. <br>
+      <br>
+      The yield is decomposed into two parts - <br>
+      1. Monetary Policy component - It is the average expected monetary policy rate (short rate)
+      over the residual life of the long-term bond. <br>
+      2. Term Premia - It can be understood as premia on buying a long term (10 year) bond over
+      buying roll-over short-term bonds over the period of the long-term bond. More detials are
+      available in the Methodology section. <br>
+      <br>
+      The next section shows the current projections for the interest rate computed term premia.
+      You can add your interest rate forecasts and get the resultant term premia estimates for the countries<br>
+      <br>
+      Note - The monetary policy rates are obtained using consensus forecasts for the short term rates from the
+      ECB Survey of Professional Forecasters (SPF). Since the consensus forecasts are available only quarterly (as opposed to the monthly data used for yields),
+      term premia estimates are computed only quarterly (the complete monthly series is interpolated)."
+      )
     })
     
     output$yieldplot <- renderHighchart({
