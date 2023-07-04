@@ -3,7 +3,7 @@
 
 #Estimation of coefficient for the lag (rho)
 dt = 3
-mod <- lm(Rate_df$FD_Rate ~ lag(Rate_df$FD_Rate,dt) - 1)
+mod <- lm(Rate_df$FD_Rate ~ dplyr::lag(Rate_df$FD_Rate,dt) - 1)
 rho = mod$coefficients[1]
 
 #How many time periods -> T
@@ -14,7 +14,7 @@ sum_Er <- rep(0,length(df$Rate))
 
 #A variable to store the current rate movement
 #Will be used to estimate the future rate movement using our rho parameter
-curr <- df$Rate - lag(df$Rate,dt)
+curr <- df$Rate - dplyr::lag(df$Rate,dt)
 
 #Loop to find the total weighted expected sum of movements
 for (i in 1:T){

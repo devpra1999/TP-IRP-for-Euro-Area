@@ -12,7 +12,7 @@ build_df <- function(long_yield, rate = Y_st){
   #Compute the first difference of short-term rates (dy_t+1)
   #Time period taken = dt
   dt = 3
-  Rate_df$FD_Rate <- Rate_df$Rate - lag(Rate_df$Rate,dt)
+  Rate_df$FD_Rate <- Rate_df$Rate - dplyr::lag(Rate_df$Rate,dt)
   #df$l2 <- lag(df$Rate,dt) - lag(df$Rate,2*dt)
   
   
