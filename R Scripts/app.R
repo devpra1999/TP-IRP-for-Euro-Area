@@ -64,35 +64,67 @@ ui <- navbarPage("Term Premia in the Euro Area",
            )
         ),
         tabPanel("Current Projections",
-           sidebarLayout(
-             sidebarPanel(
-               h1("Your Forecasts"),
-               numericInput("F1", label = "Forecast for 1 quarter ahead", value = round(fut_rate_consensus[2], 1)),
-               numericInput("F2", label = "Forecast for 2 quarters ahead", value = round(fut_rate_consensus[3], 1)),
-               numericInput("F3", label = "Forecast for 3 quarters ahead", value = round(fut_rate_consensus[4], 1)),
-               numericInput("F4", label = "Forecast for 4 quarters ahead", value = round(fut_rate_consensus[5], 1)),
-               numericInput("F5", label = "Forecast for 5 quarters ahead", value = round(fut_rate_consensus[6], 1)),
-               numericInput("F6", label = "Forecast for 6 quarters ahead", value = round(fut_rate_consensus[7], 1)),
-               numericInput("F7", label = "Forecast for 7 quarters ahead", value = round(fut_rate_consensus[8], 1)),
-               numericInput("F8", label = "Forecast for 8 quarters ahead", value = round(fut_rate_consensus[9], 1)),
-               numericInput("F9", label = "Forecast for 9 quarters ahead", value = round(fut_rate_consensus[10], 1)),
-               numericInput("F10", label = "Forecast for 10 quarters ahead", value = round(fut_rate_consensus[11], 1)),
-               numericInput("F11", label = "Forecast for 11 quarters ahead", value = round(fut_rate_consensus[12], 1)),
-               numericInput("F12", label = "Forecast for 12 quarters ahead", value = round(fut_rate_consensus[13], 1)),
-               actionButton("go", "Submit"),
-               width = 3
-             ),
-             mainPanel(
-               textOutput("desc3"),
-               hr(),
-               textOutput("desc4"),
-               hr(),
-               highchartOutput("rateplot"),
-               hr(),
-               tableOutput("table"),
-               width = 7
-             )
-           )
+                 textOutput("desc3"),
+                 hr(),
+                 textOutput("desc4"),
+                 h3("Your Forecasts for Short-Term Rates"),
+                 fixedRow(
+                   column(4, numericInput("F1", label = "1 quarter ahead", value = round(fut_rate_consensus[2], 1))),
+                   column(4, numericInput("F2", label = "2 quarters ahead", value = round(fut_rate_consensus[3], 1))),
+                   column(4, numericInput("F3", label = "3 quarters ahead", value = round(fut_rate_consensus[4], 1)))
+                 ),
+                 fixedRow(
+                   column(4, numericInput("F4", label = "4 quarters ahead", value = round(fut_rate_consensus[5], 1))),
+                   column(4, numericInput("F5", label = "5 quarters ahead", value = round(fut_rate_consensus[6], 1))),
+                   column(4, numericInput("F6", label = "6 quarters ahead", value = round(fut_rate_consensus[7], 1)))
+                 ),
+                 fixedRow(
+                   column(4, numericInput("F7", label = "7 quarters ahead", value = round(fut_rate_consensus[8], 1))),
+                   column(4, numericInput("F8", label = "8 quarters ahead", value = round(fut_rate_consensus[9], 1))),
+                   column(4, numericInput("F9", label = "9 quarters ahead", value = round(fut_rate_consensus[10], 1)))
+                 ),
+                 fixedRow(
+                   column(4, numericInput("F10", label = "10 quarters ahead", value = round(fut_rate_consensus[11], 1))),
+                   column(4, numericInput("F11", label = "11 quarters ahead", value = round(fut_rate_consensus[12], 1))),
+                   column(4, numericInput("F12", label = "12 quarters ahead", value = round(fut_rate_consensus[13], 1)))
+                 ),
+                 actionButton("go", "Submit"),
+                 hr(),
+                 h3("Path for short-term rates"),
+                 highchartOutput("rateplot"),
+                 h3("Yield Decompostions"),
+                 fluidRow(
+                   column(12, align="center", tableOutput('table'))
+                 )
+#           sidebarLayout(
+#             sidebarPanel(
+#               h1("Your Forecasts"),
+#               numericInput("F1", label = "Forecast for 1 quarter ahead", value = round(fut_rate_consensus[2], 1)),
+#               numericInput("F2", label = "Forecast for 2 quarters ahead", value = round(fut_rate_consensus[3], 1)),
+#               numericInput("F3", label = "Forecast for 3 quarters ahead", value = round(fut_rate_consensus[4], 1)),
+#               numericInput("F4", label = "Forecast for 4 quarters ahead", value = round(fut_rate_consensus[5], 1)),
+#               numericInput("F5", label = "Forecast for 5 quarters ahead", value = round(fut_rate_consensus[6], 1)),
+#               numericInput("F6", label = "Forecast for 6 quarters ahead", value = round(fut_rate_consensus[7], 1)),
+#               numericInput("F7", label = "Forecast for 7 quarters ahead", value = round(fut_rate_consensus[8], 1)),
+#               numericInput("F8", label = "Forecast for 8 quarters ahead", value = round(fut_rate_consensus[9], 1)),
+#               numericInput("F9", label = "Forecast for 9 quarters ahead", value = round(fut_rate_consensus[10], 1)),
+#               numericInput("F10", label = "Forecast for 10 quarters ahead", value = round(fut_rate_consensus[11], 1)),
+#               numericInput("F11", label = "Forecast for 11 quarters ahead", value = round(fut_rate_consensus[12], 1)),
+#               numericInput("F12", label = "Forecast for 12 quarters ahead", value = round(fut_rate_consensus[13], 1)),
+#               actionButton("go", "Submit"),
+#               width = 3
+#             ),
+#             mainPanel(
+#               textOutput("desc3"),
+#               hr(),
+#               textOutput("desc4"),
+#               hr(),
+#               highchartOutput("rateplot"),
+#               hr(),
+#               tableOutput("table"),
+#               width = 7
+#             )
+#           )
         )
 )
 
@@ -142,17 +174,17 @@ server <- function(input, output) {
     
     
     output$desc3 <- renderText({
-      string <- "In this section the current value of the term premia for the four countries to
-      interest can be constructed. The two default series are built by using the Expected Monetary Policy
+      string <- "In this section we present the estimates for the current value of the term premia for the four countries of
+      interest. The two default series for term premia are built by using the Expected Monetary Policy
       component estimated respectively by the Consensus Forecast and the naive autoregressive model
-      for the change in policy rates. Users have the option to add their forecasts for the three
-      months rates and see the term premia implied by them."})
+      for the change in policy rates. In addition, you have the option to add your forecasts for the three
+      months rates and see the term premia implied by them. The graph reports the path for monetary policy
+      rates while the Table provides the decomposition of current 10-year yields into Term Premia and Expected Monetary Policy."})
       
     output$desc4 <- renderText({
-      string <- "Please use the boxes to the left of the page to input your forecasts. Click submit to
-      get the term premia estimate based on your forecast. The default values in the boxes are given by
-      the consensus forecasts for the respective quarter. The graphs reports the path for monetary policy
-      rates while the Table provides the decomposition of current 10-year yields into Term Premia and Expected Monetary Policy."
+      string <- "Please use the boxes below to input your forecasts for the short-term (3-month) rates in the
+      Euro Area for the specified quarter. Click submit to get the term premia estimate based on your forecast.
+      The default values in the boxes are the consensus forecasts for the respective quarter."
     })
   
     
@@ -188,7 +220,7 @@ server <- function(input, output) {
     
     output$table <- renderTable({
       add_user_for(main_table,user_forecasts())
-    })
+    }, bordered = TRUE, align = "c")
 }
 
 

@@ -112,12 +112,45 @@ f_36$Date <- as.Date(as.yearqtr(f_36$Date, format = "%YQ%q")) + months(12)
 
 
 #MACROECONOMIC DATA------------------------------------------------------------------------
-#GDP (Growth)
+#GDP
 gdp_dat <- read.csv("gdp_data.csv")
 gdp_dat <- gdp_dat %>% select(geo,TIME_PERIOD,OBS_VALUE)
 colnames(gdp_dat) <- c("Country","Date","GDP")
 gdp_dat$Date <- as.Date(as.yearqtr(gdp_dat$Date, format = "%Y-Q%q")) + months(3)
 gdp_dat <- gdp_dat[order(gdp_dat$Date),]
+
+Germany_ga <- read.csv("Germany-real-growth-yy.csv", skip = 6, header = FALSE)
+colnames(Germany_ga)[1:2] <- c("Date","Growth_a")
+Germany_ga <- Germany_ga %>%
+  select(Date,Growth_a) %>%
+  mutate(Date = as.Date(as.yearqtr(Date, format = "%YQ%q")) + months(3), Growth_a = as.numeric(Growth_a)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+
+France_ga <- read.csv("France-real-growth-yy.csv", skip = 6, header = FALSE)
+colnames(France_ga)[1:2] <- c("Date", "Growth_a")
+France_ga <- France_ga %>%
+  select(Date, Growth_a) %>%
+  mutate(Date = as.Date(as.yearqtr(Date, format = "%YQ%q")) + months(3), Growth_a = as.numeric(Growth_a)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+
+Italy_ga <- read.csv("Italy-real-growth-yy.csv", skip = 6, header = FALSE)
+colnames(Italy_ga)[1:2] <- c("Date", "Growth_a")
+Italy_ga <- Italy_ga %>%
+  select(Date, Growth_a) %>%
+  mutate(Date = as.Date(as.yearqtr(Date, format = "%YQ%q")) + months(3), Growth_a = as.numeric(Growth_a)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+
+Spain_ga <- read.csv("Spain-real-growth-yy.csv", skip = 6, header = FALSE)
+colnames(Spain_ga)[1:2] <- c("Date", "Growth_a")
+Spain_ga <- Spain_ga %>%
+  select(Date, Growth_a) %>%
+  mutate(Date = as.Date(as.yearqtr(Date, format = "%YQ%q")) + months(3), Growth_a = as.numeric(Growth_a)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+
 
 #Inflation
 Germany_inf <- read.csv("Germany-inflation.csv", skip = 6, header = FALSE)
@@ -154,6 +187,13 @@ Spain_inf <- Spain_inf %>%
   filter(Date >= "2010-04-01") %>%
   arrange(Date)
 
+Global_CP <- read.csv("Commodity_Prices.csv")
+colnames(Global_CP)[1:2] <- c("Date","CP_Index")
+Global_CP <- Global_CP %>%
+  select(Date,CP_Index) %>%
+  mutate(Date = ymd(Date), CP_Index = as.numeric(CP_Index)/100) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
 
 
 
