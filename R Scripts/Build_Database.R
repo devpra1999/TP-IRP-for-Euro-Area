@@ -7,7 +7,7 @@ build_df <- function(long_yield, rate = Y_st){
   
   #Compute the spreads (long bond yield - short term rate)
   df$Spread <- df$Yield - df$Rate
-
+  
   #FOR EXPECTED RATES MODEL
   #Compute the first difference of short-term rates (dy_t+1)
   #Time period taken = dt

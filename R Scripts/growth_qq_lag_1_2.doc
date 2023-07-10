@@ -3,27 +3,30 @@
 <tr><td></td><td colspan="4" style="border-bottom: 1px solid black"></td></tr>
 <tr><td style="text-align:left"></td><td colspan="4">Growth_q</td></tr>
 <tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td><td>(4)</td></tr>
-<tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">lag(Spread, 1)</td><td>-0.264</td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left"></td><td>(0.188)</td><td></td><td></td><td></td></tr>
+<tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">lag(Growth_q, 1)</td><td>-0.287<sup>***</sup></td><td>-0.296<sup>***</sup></td><td>-0.286<sup>***</sup></td><td>-0.286<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.068)</td><td>(0.068)</td><td>(0.069)</td><td>(0.069)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">lag(Monetary_Policy, 1)</td><td></td><td>0.281</td><td></td><td></td></tr>
-<tr><td style="text-align:left"></td><td></td><td>(0.235)</td><td></td><td></td></tr>
+<tr><td style="text-align:left">lag(Spread, 1)</td><td>-0.222</td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left"></td><td>(0.199)</td><td></td><td></td><td></td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">lag(Term_Premia, 1)</td><td></td><td>-0.508<sup>**</sup></td><td></td><td></td></tr>
-<tr><td style="text-align:left"></td><td></td><td>(0.204)</td><td></td><td></td></tr>
+<tr><td style="text-align:left">lag(Monetary_Policy, 1)</td><td></td><td>0.169</td><td></td><td></td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.273)</td><td></td><td></td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">lag(Spread, 2)</td><td></td><td></td><td>-0.183</td><td></td></tr>
-<tr><td style="text-align:left"></td><td></td><td></td><td>(0.192)</td><td></td></tr>
+<tr><td style="text-align:left">lag(Term_Premia, 1)</td><td></td><td>-0.428<sup>*</sup></td><td></td><td></td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.224)</td><td></td><td></td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">lag(Monetary_Policy, 2)</td><td></td><td></td><td></td><td>0.022</td></tr>
-<tr><td style="text-align:left"></td><td></td><td></td><td></td><td>(0.265)</td></tr>
+<tr><td style="text-align:left">lag(Spread, 2)</td><td></td><td></td><td>-0.163</td><td></td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td>(0.201)</td><td></td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">lag(Term_Premia, 2)</td><td></td><td></td><td></td><td>-0.234</td></tr>
-<tr><td style="text-align:left"></td><td></td><td></td><td></td><td>(0.217)</td></tr>
+<tr><td style="text-align:left">lag(Monetary_Policy, 2)</td><td></td><td></td><td></td><td>-0.124</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td>(0.309)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td></tr>
-<tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>208</td><td>208</td><td>204</td><td>204</td></tr>
-<tr><td style="text-align:left">R<sup>2</sup></td><td>0.010</td><td>0.031</td><td>0.005</td><td>0.006</td></tr>
-<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>-0.010</td><td>0.007</td><td>-0.016</td><td>-0.019</td></tr>
-<tr><td style="text-align:left">F Statistic</td><td>1.969 (df = 1; 203)</td><td>3.200<sup>**</sup> (df = 2; 202)</td><td>0.901 (df = 1; 199)</td><td>0.639 (df = 2; 198)</td></tr>
+<tr><td style="text-align:left">lag(Term_Premia, 2)</td><td></td><td></td><td></td><td>-0.115</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td>(0.238)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td><td></td></tr>
+<tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>204</td><td>204</td><td>200</td><td>200</td></tr>
+<tr><td style="text-align:left">R<sup>2</sup></td><td>0.085</td><td>0.096</td><td>0.083</td><td>0.083</td></tr>
+<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>0.062</td><td>0.069</td><td>0.060</td><td>0.055</td></tr>
+<tr><td style="text-align:left">F Statistic</td><td>9.237<sup>***</sup> (df = 2; 198)</td><td>7.003<sup>***</sup> (df = 3; 197)</td><td>8.801<sup>***</sup> (df = 2; 194)</td><td>5.859<sup>***</sup> (df = 3; 193)</td></tr>
 <tr><td colspan="5" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td colspan="4" style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
 </table>

@@ -108,6 +108,22 @@ url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=320.MNA.Q.Y.ES.W
 dest_file <- "Spain-real-growth-yy.csv"
 download.file(url, dest_file,quite = TRUE)
 
+url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=320.MNA.Q.Y.DE.W2.S1.S1.B.B1GQ._Z._Z._Z.XDC.LR.G1&type=xls"
+dest_file <- "Germany-real-growth-qq.csv"
+download.file(url, dest_file,quite = TRUE)
+
+url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=320.MNA.Q.Y.FR.W2.S1.S1.B.B1GQ._Z._Z._Z.XDC.LR.G1&type=xls"
+dest_file <- "France-real-growth-qq.csv"
+download.file(url, dest_file,quite = TRUE)
+
+url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=320.MNA.Q.Y.IT.W2.S1.S1.B.B1GQ._Z._Z._Z.XDC.LR.G1&type=xls"
+dest_file <- "Italy-real-growth-qq.csv"
+download.file(url, dest_file,quite = TRUE)
+
+url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=320.MNA.Q.Y.ES.W2.S1.S1.B.B1GQ._Z._Z._Z.XDC.LR.G1&type=xls"
+dest_file <- "Spain-real-growth-qq.csv"
+download.file(url, dest_file,quite = TRUE)
+
 url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=122.ICP.M.DE.N.XEF000.4.ANR&type=xls"
 dest_file <- "Germany-inflation.csv"
 download.file(url, dest_file,quite = TRUE)

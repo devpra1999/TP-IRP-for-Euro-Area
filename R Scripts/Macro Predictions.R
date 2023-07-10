@@ -22,7 +22,8 @@ Germany_comp <- master_df %>%
   mutate(Monetary_Policy = sum_Er_cf + Rate) %>%
   select(Date,Spread_Germany,TP_cf_Germany,Monetary_Policy)
 colnames(Germany_comp) <- c("Date","Spread","Term_Premia","Monetary_Policy")
-Germany_table <- merge(Germany_ga,Germany_comp, by = "Date")
+Germany_table <- merge(Germany_ga,Germany_gq, by = "Date")
+Germany_table <- merge(Germany_table,Germany_comp, by = "Date")
 Germany_table <- merge(Germany_table,Germany_inf, by = "Date")
 Germany_table <- merge(Germany_table,Global_CP, by = "Date")
 
@@ -34,7 +35,8 @@ France_comp <- master_df %>%
   mutate(Monetary_Policy = sum_Er_cf + Rate) %>%
   select(Date, Spread_France, TP_cf_France, Monetary_Policy)
 colnames(France_comp) <- c("Date", "Spread", "Term_Premia", "Monetary_Policy")
-France_table <- merge(France_ga, France_comp, by = "Date")
+France_table <- merge(France_ga, France_gq, by = "Date")
+France_table <- merge(France_table, France_comp, by = "Date")
 France_table <- merge(France_table, France_inf, by = "Date")
 France_table <- merge(France_table,Global_CP, by = "Date")
 
@@ -46,7 +48,8 @@ Italy_comp <- master_df %>% select(Date, Spread_Italy, TP_cf_Italy, sum_Er_cf,Ra
   mutate(Monetary_Policy = sum_Er_cf + Rate) %>%
   select(Date,Spread_Italy,TP_cf_Italy,Monetary_Policy)
 colnames(Italy_comp) <- c("Date", "Spread", "Term_Premia", "Monetary_Policy")
-Italy_table <- merge(Italy_ga, Italy_comp, by = "Date")
+Italy_table <- merge(Italy_ga, Italy_gq, by = "Date")
+Italy_table <- merge(Italy_table, Italy_comp, by = "Date")
 Italy_table <- merge(Italy_table,Italy_inf, by = "Date")
 Italy_table <- merge(Italy_table,Global_CP, by = "Date")
 
@@ -58,7 +61,8 @@ Spain_comp <- master_df %>%
   mutate(Monetary_Policy = sum_Er_cf + Rate) %>%
   select(Date, Spread_Spain, TP_cf_Spain, Monetary_Policy)
 colnames(Spain_comp) <- c("Date", "Spread", "Term_Premia", "Monetary_Policy")
-Spain_table <- merge(Spain_ga, Spain_comp, by = "Date")
+Spain_table <- merge(Spain_ga, Spain_gq, by = "Date")
+Spain_table <- merge(Spain_table, Spain_comp, by = "Date")
 Spain_table <- merge(Spain_table, Spain_inf, by = "Date")
 Spain_table <- merge(Spain_table,Global_CP, by = "Date")
 
@@ -75,21 +79,21 @@ macro_table <- macro_table[, c(ncol(macro_table), 1:(ncol(macro_table)-1))]
 #Using term premia and monetary policy to predict macroeconomic variables
 
 #Growth regressions
-fe_gr_q <- plm(Growth_q ~ Spread, data = macro_table, model = "within", effect = "individual")
-fe_gr_q_sep <- plm(Growth_q ~ Monetary_Policy + Term_Premia, data = macro_table, model = "within", effect = "individual")
+fe_gr_q <- plm(Growth_q ~ lag(Growth_q,1) + Spread, data = macro_table, model = "within", effect = "individual")
+fe_gr_q_sep <- plm(Growth_q ~ lag(Growth_q,1) + Monetary_Policy + Term_Premia, data = macro_table, model = "within", effect = "individual")
 
 stargazer(fe_gr_q, fe_gr_q_sep, type = "html", out = "growth_qq.doc")
 
-fe_gr_q_1 <- plm(Growth_q ~ lag(Spread, 1), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_sep_1 <- plm(Growth_q ~ lag(Monetary_Policy, 1) + lag(Term_Premia, 1), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_2 <- plm(Growth_q ~ lag(Spread, 2), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_sep_2 <- plm(Growth_q ~ lag(Monetary_Policy, 2) + lag(Term_Premia, 2), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_3 <- plm(Growth_q ~ lag(Spread, 3), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_sep_3 <- plm(Growth_q ~ lag(Monetary_Policy, 3) + lag(Term_Premia, 3), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_4 <- plm(Growth_q ~ lag(Spread, 4), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_sep_4 <- plm(Growth_q ~ lag(Monetary_Policy, 4) + lag(Term_Premia, 4), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_all <- plm(Growth_q ~ lag(Spread, 1) + lag(Spread, 2) + lag(Spread, 3) + lag(Spread, 4), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_sep_all <- plm(Growth_q ~ lag(Monetary_Policy, 1) + lag(Term_Premia, 1) + lag(Monetary_Policy, 2) + lag(Term_Premia, 2) + lag(Monetary_Policy, 3) + lag(Term_Premia, 3) + lag(Monetary_Policy, 4) + lag(Term_Premia, 4), data = macro_table, model = "within", effect = "individual")
+fe_gr_q_1 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Spread, 1), data = macro_table, model = "within", effect = "individual")
+fe_gr_q_sep_1 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Monetary_Policy, 1) + lag(Term_Premia, 1), data = macro_table, model = "within", effect = "individual")
+fe_gr_q_2 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Spread, 2), data = macro_table, model = "within", effect = "individual")
+fe_gr_q_sep_2 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Monetary_Policy, 2) + lag(Term_Premia, 2), data = macro_table, model = "within", effect = "individual")
+fe_gr_q_3 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Spread, 3), data = macro_table, model = "within", effect = "individual")
+fe_gr_q_sep_3 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Monetary_Policy, 3) + lag(Term_Premia, 3), data = macro_table, model = "within", effect = "individual")
+fe_gr_q_4 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Spread, 4), data = macro_table, model = "within", effect = "individual")
+fe_gr_q_sep_4 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Monetary_Policy, 4) + lag(Term_Premia, 4), data = macro_table, model = "within", effect = "individual")
+fe_gr_q_all <- plm(Growth_q ~ lag(Growth_q,1) + lag(Spread, 1) + lag(Spread, 2) + lag(Spread, 3) + lag(Spread, 4), data = macro_table, model = "within", effect = "individual")
+fe_gr_q_sep_all <- plm(Growth_q ~ lag(Growth_q,1) + lag(Monetary_Policy, 1) + lag(Term_Premia, 1) + lag(Monetary_Policy, 2) + lag(Term_Premia, 2) + lag(Monetary_Policy, 3) + lag(Term_Premia, 3) + lag(Monetary_Policy, 4) + lag(Term_Premia, 4), data = macro_table, model = "within", effect = "individual")
 
 stargazer(fe_gr_q_1, fe_gr_q_sep_1, fe_gr_q_2, fe_gr_q_sep_2, type = "html", out = "growth_qq_lag_1_2.doc")
 stargazer(fe_gr_q_3, fe_gr_q_sep_3, fe_gr_q_4, fe_gr_q_sep_4, type = "html", out = "growth_qq_lag_3_4.doc")

@@ -151,6 +151,38 @@ Spain_ga <- Spain_ga %>%
   filter(Date >= "2010-04-01") %>%
   arrange(Date)
 
+Germany_gq <- read.csv("Germany-real-growth-qq.csv", skip = 6, header = FALSE)
+colnames(Germany_gq)[1:2] <- c("Date","Growth_q")
+Germany_gq <- Germany_gq %>%
+  select(Date,Growth_q) %>%
+  mutate(Date = as.Date(as.yearqtr(Date, format = "%YQ%q")) + months(3), Growth_q = as.numeric(Growth_q)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+
+France_gq <- read.csv("France-real-growth-qq.csv", skip = 6, header = FALSE)
+colnames(France_gq)[1:2] <- c("Date", "Growth_q")
+France_gq <- France_gq %>%
+  select(Date, Growth_q) %>%
+  mutate(Date = as.Date(as.yearqtr(Date, format = "%YQ%q")) + months(3), Growth_q = as.numeric(Growth_q)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+
+Italy_gq <- read.csv("Italy-real-growth-qq.csv", skip = 6, header = FALSE)
+colnames(Italy_gq)[1:2] <- c("Date", "Growth_q")
+Italy_gq <- Italy_gq %>%
+  select(Date, Growth_q) %>%
+  mutate(Date = as.Date(as.yearqtr(Date, format = "%YQ%q")) + months(3), Growth_q = as.numeric(Growth_q)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+
+Spain_gq <- read.csv("Spain-real-growth-qq.csv", skip = 6, header = FALSE)
+colnames(Spain_gq)[1:2] <- c("Date", "Growth_q")
+Spain_gq <- Spain_gq %>%
+  select(Date, Growth_q) %>%
+  mutate(Date = as.Date(as.yearqtr(Date, format = "%YQ%q")) + months(3), Growth_q = as.numeric(Growth_q)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+
 
 #Inflation
 Germany_inf <- read.csv("Germany-inflation.csv", skip = 6, header = FALSE)
