@@ -8,6 +8,13 @@ build_df <- function(long_yield, rate = Y_st){
   #Compute the spreads (long bond yield - short term rate)
   df$Spread <- df$Yield - df$Rate
   
+  #Compute 3-month returns for 10-Y bond
+  df$HPR <- NA
+  for (t in 1:length(df)-3){
+    df$HPR[t] <- df$Yield[t]/df$Yield[t+3] + df$Yield[t]/400 +
+      ((1+df$Yield[t+3]/400)^-39 * (1-df$Yield[t]/df$Yield[t+3]))
+  }
+  
   #FOR EXPECTED RATES MODEL
   #Compute the first difference of short-term rates (dy_t+1)
   #Time period taken = dt
@@ -21,7 +28,7 @@ build_df <- function(long_yield, rate = Y_st){
   
   df <- df_list %>%
     reduce(full_join, by = "Date") %>%
-    select(Date, Yield, Rate, Spread, Q1_forecast, Q2_forecast, Q3_forecast, Q4_forecast,
+    select(Date, Yield, Rate, Spread, HPR, Q1_forecast, Q2_forecast, Q3_forecast, Q4_forecast,
            Q5_forecast, Q6_forecast, Q7_forecast, Q8_forecast, Q9_forecast, Q10_forecast,
            Q11_forecast, Q12_forecast) %>%
     complete(Date = seq.Date(min(Date), max(Date), by = "month"))

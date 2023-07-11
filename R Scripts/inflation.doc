@@ -3,24 +3,24 @@
 <tr><td></td><td colspan="2" style="border-bottom: 1px solid black"></td></tr>
 <tr><td style="text-align:left"></td><td colspan="2">Inflation</td></tr>
 <tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td></tr>
-<tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">lag(Inflation, 1)</td><td>0.817<sup>***</sup></td><td>0.772<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.050)</td><td>(0.055)</td></tr>
+<tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">lag(Inflation, 1)</td><td>0.781<sup>***</sup></td><td>0.761<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.053)</td><td>(0.054)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td></tr>
-<tr><td style="text-align:left">Spread</td><td>-0.104<sup>**</sup></td><td></td></tr>
-<tr><td style="text-align:left"></td><td>(0.046)</td><td></td></tr>
+<tr><td style="text-align:left">lag(Spread, 1)</td><td>-0.143<sup>***</sup></td><td></td></tr>
+<tr><td style="text-align:left"></td><td>(0.045)</td><td></td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td></tr>
-<tr><td style="text-align:left">Monetary_Policy</td><td></td><td>0.099</td></tr>
-<tr><td style="text-align:left"></td><td></td><td>(0.066)</td></tr>
+<tr><td style="text-align:left">lag(Monetary_Policy, 1)</td><td></td><td>-0.011</td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.064)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td></tr>
-<tr><td style="text-align:left">Term_Premia</td><td></td><td>-0.135<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td></td><td>(0.044)</td></tr>
+<tr><td style="text-align:left">lag(Term_Premia, 1)</td><td></td><td>-0.160<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.045)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td></tr>
-<tr><td style="text-align:left">CP_Index</td><td>0.753<sup>***</sup></td><td>0.642<sup>***</sup></td></tr>
-<tr><td style="text-align:left"></td><td>(0.140)</td><td>(0.143)</td></tr>
+<tr><td style="text-align:left">lag(CP_Index, 1)</td><td>0.866<sup>***</sup></td><td>0.850<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.148)</td><td>(0.152)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td></tr>
 <tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>204</td><td>204</td></tr>
-<tr><td style="text-align:left">R<sup>2</sup></td><td>0.698</td><td>0.705</td></tr>
-<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>0.689</td><td>0.695</td></tr>
-<tr><td style="text-align:left">F Statistic</td><td>151.675<sup>***</sup> (df = 3; 197)</td><td>117.194<sup>***</sup> (df = 4; 196)</td></tr>
+<tr><td style="text-align:left">R<sup>2</sup></td><td>0.705</td><td>0.711</td></tr>
+<tr><td style="text-align:left">Adjusted R<sup>2</sup></td><td>0.696</td><td>0.700</td></tr>
+<tr><td style="text-align:left">F Statistic</td><td>157.052<sup>***</sup> (df = 3; 197)</td><td>120.312<sup>***</sup> (df = 4; 196)</td></tr>
 <tr><td colspan="3" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td colspan="2" style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
 </table>
