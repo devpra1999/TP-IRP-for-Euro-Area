@@ -114,11 +114,13 @@ stargazer(fe_inf, fe_inf_sep, fe_inf_q, fe_inf_q_sep, type = "html", out = "infl
 
 inf_TP_pred <- macro_table
 inf_TP_pred$Predicted_Inflation_TP <- predict(fe_inf_sep,newdata=inf_TP_pred)
+inf_TP_pred$Predicted_Inflation_TP <- dplyr::lag(inf_TP_pred$Predicted_Inflation_TP,4)
 inf_TP_pred <- select(inf_TP_pred,Country,Date,Inflation,Predicted_Inflation_TP) %>% 
   pivot_longer(cols=c("Inflation","Predicted_Inflation_TP"))
 
 inf_Spread_pred <- macro_table
 inf_Spread_pred$Predicted_Inflation_Spread <- predict(fe_inf,newdata=inf_Spread_pred)
+inf_Spread_pred$Predicted_Inflation_Spread <- dplyr::lag(inf_Spread_pred$Predicted_Inflation_Spread,4)
 inf_Spread_pred <- select(inf_Spread_pred,Country,Date,Inflation,Predicted_Inflation_Spread) %>% 
   pivot_longer(cols=c("Inflation","Predicted_Inflation_Spread"))
 
@@ -129,19 +131,21 @@ ggplot(data=inf_pred) +
   geom_point() + 
   facet_wrap(~Country,nrow=4)
 
-inf_TP_pred <- macro_table
-inf_TP_pred$Predicted_Inflation_TP <- predict(fe_inf_sep,newdata=inf_TP_pred)
-inf_TP_pred <- select(inf_TP_pred,Country,Date,Inflation,Predicted_Inflation_TP) %>% 
-  pivot_longer(cols=c("Inflation","Predicted_Inflation_TP"))
+inf_q_TP_pred <- macro_table
+inf_q_TP_pred$Predicted_Inflation_QQ_TP <- predict(fe_inf_q_sep,newdata=inf_q_TP_pred)
+inf_q_TP_pred$Predicted_Inflation_QQ_TP <- dplyr::lag(inf_q_TP_pred$Predicted_Inflation_QQ_TP,4)
+inf_q_TP_pred <- select(inf_q_TP_pred,Country,Date,Inflation_QQ,Predicted_Inflation_QQ_TP) %>% 
+  pivot_longer(cols=c("Inflation_QQ","Predicted_Inflation_QQ_TP"))
 
-inf_Spread_pred <- macro_table
-inf_Spread_pred$Predicted_Inflation_Spread <- predict(fe_inf,newdata=inf_Spread_pred)
-inf_Spread_pred <- select(inf_Spread_pred,Country,Date,Inflation,Predicted_Inflation_Spread) %>% 
-  pivot_longer(cols=c("Inflation","Predicted_Inflation_Spread"))
+inf_q_Spread_pred <- macro_table
+inf_q_Spread_pred$Predicted_Inflation_QQ_Spread <- predict(fe_inf_q,newdata=inf_q_Spread_pred)
+inf_q_Spread_pred$Predicted_Inflation_QQ_Spread <- dplyr::lag(inf_q_Spread_pred$Predicted_Inflation_QQ_Spread,1)
+inf_q_Spread_pred <- select(inf_q_Spread_pred,Country,Date,Inflation_QQ,Predicted_Inflation_QQ_Spread) %>% 
+  pivot_longer(cols=c("Inflation_QQ","Predicted_Inflation_QQ_Spread"))
 
-inf_pred <- merge(inf_Spread_pred, inf_TP_pred, by = c("Country", "Date", "name", "value"), all = TRUE)
+inf_q_pred <- merge(inf_q_Spread_pred, inf_q_TP_pred, by = c("Country", "Date", "name", "value"), all = TRUE)
 
-ggplot(data=inf_pred) + 
+ggplot(data=inf_q_pred) + 
   aes(x=Date,y=value,color=name) + 
   geom_point() + 
   facet_wrap(~Country,nrow=4)
