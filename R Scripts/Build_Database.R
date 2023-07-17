@@ -10,9 +10,9 @@ build_df <- function(long_yield, rate = Y_st){
   
   #Compute 3-month returns for 10-Y bond
   df$HPR <- NA
-  for (t in 1:length(df)-3){
+  for (t in 1:(length(df)-3)){
     df$HPR[t] <- df$Yield[t]/df$Yield[t+3] + df$Yield[t]/400 +
-      ((1+df$Yield[t+3]/400)^-39 * (1-df$Yield[t]/df$Yield[t+3]))
+      ((1+df$Yield[t+3]/1200)^-39 * (1-df$Yield[t]/df$Yield[t+3]))
   }
   
   #FOR EXPECTED RATES MODEL

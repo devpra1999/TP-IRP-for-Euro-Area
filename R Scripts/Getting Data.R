@@ -124,22 +124,46 @@ url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=320.MNA.Q.Y.ES.W
 dest_file <- "Spain-real-growth-qq.csv"
 download.file(url, dest_file,quite = TRUE)
 
-url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=122.ICP.M.DE.N.XEF000.4.ANR&type=xls"
+url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=122.ICP.M.DE.N.000000.4.ANR&type=xls"
 dest_file <- "Germany-inflation.csv"
 download.file(url, dest_file,quite = TRUE)
 
-url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=122.ICP.M.FR.N.XEF000.4.ANR&type=xls"
+url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=122.ICP.M.FR.N.000000.4.ANR&type=xls"
 dest_file <- "France-inflation.csv"
 download.file(url, dest_file,quite = TRUE)
 
-url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=122.ICP.M.IT.N.XEF000.4.ANR&type=xls"
+url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=122.ICP.M.IT.N.000000.4.ANR&type=xls"
 dest_file <- "Italy-inflation.csv"
 download.file(url, dest_file,quite = TRUE)
 
-url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=122.ICP.M.ES.N.XEF000.4.ANR&type=xls"
+url <- "https://sdw.ecb.europa.eu/quickviewexport.do?SERIES_KEY=122.ICP.M.ES.N.000000.4.ANR&type=xls"
 dest_file <- "Spain-inflation.csv"
 download.file(url, dest_file,quite = TRUE)
 
 url <- "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=off&txtcolor=%23444444&ts=12&tts=12&width=1318&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=PALLFNFINDEXQ&scale=left&cosd=2003-01-01&coed=2023-01-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Quarterly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2023-07-09&revision_date=2023-07-09&nd=2003-01-01"
 dest_file <- "Commodity_Prices.csv"
+download.file(url, dest_file,quite = TRUE)
+
+url <- "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=off&txtcolor=%23444444&ts=12&tts=12&width=1318&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=CPALTT01DEQ657N&scale=left&cosd=2000-01-01&coed=2023-01-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Quarterly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2023-07-16&revision_date=2023-07-16&nd=2000-01-01"
+dest_file <- "Germany-Inflation-qq.csv"
+download.file(url, dest_file,quite = TRUE)
+
+url <- "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=off&txtcolor=%23444444&ts=12&tts=12&width=1318&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=CPALTT01FRQ657N&scale=left&cosd=2000-01-01&coed=2023-01-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Quarterly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2023-07-16&revision_date=2023-07-16&nd=1960-01-01"
+dest_file <- "France-Inflation-qq.csv"
+download.file(url, dest_file,quite = TRUE)
+
+url <- "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=off&txtcolor=%23444444&ts=12&tts=12&width=1318&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=CPALTT01ITQ657N&scale=left&cosd=2000-01-01&coed=2023-01-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Quarterly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2023-07-16&revision_date=2023-07-16&nd=2000-01-01"
+dest_file <- "Italy-Inflation-qq.csv"
+download.file(url, dest_file,quite = TRUE)
+
+url <- "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=off&txtcolor=%23444444&ts=12&tts=12&width=1318&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=CPALTT01ESQ657N&scale=left&cosd=2000-01-01&coed=2023-01-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Quarterly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2023-07-16&revision_date=2023-07-16&nd=2000-01-01"
+dest_file <- "Spain-Inflation-qq.csv"
+download.file(url, dest_file,quite = TRUE)
+
+url <- "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=off&txtcolor=%23444444&ts=12&tts=12&width=1318&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=PALLFNFINDEXQ&scale=left&cosd=2003-01-01&coed=2023-01-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Quarterly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=pch&vintage_date=2023-07-16&revision_date=2023-07-16&nd=2003-01-01"
+dest_file <- "GCP-QQ.csv"
+download.file(url, dest_file,quite = TRUE)
+
+url <- "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=off&txtcolor=%23444444&ts=12&tts=12&width=1318&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=PALLFNFINDEXQ&scale=left&cosd=2003-01-01&coed=2023-01-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Quarterly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=pc1&vintage_date=2023-07-16&revision_date=2023-07-16&nd=2003-01-01"
+dest_file <- "GCP-YY.csv"
 download.file(url, dest_file,quite = TRUE)

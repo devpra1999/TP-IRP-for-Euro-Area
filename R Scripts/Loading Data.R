@@ -219,13 +219,66 @@ Spain_inf <- Spain_inf %>%
   filter(Date >= "2010-04-01") %>%
   arrange(Date)
 
+Germany_inf_q <- read.csv("Germany-inflation-qq.csv", skip = 6, header = FALSE)
+colnames(Germany_inf_q)[1:2] <- c("Date","Inflation_QQ")
+Germany_inf_q <- Germany_inf_q %>%
+  select(Date,Inflation_QQ) %>%
+  mutate(Date = ymd(Date), Inflation_QQ = as.numeric(Inflation_QQ)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+#Germany_inf$Date <- ym(Germany_inf$Date)
+#Germany_inf <- Germany_inf[order(Germany_inf$Date),]
+
+France_inf_q <- read.csv("France-inflation-qq.csv", skip = 6, header = FALSE)
+colnames(France_inf_q)[1:2] <- c("Date","Inflation_QQ")
+France_inf_q <- France_inf_q %>%
+  select(Date,Inflation_QQ) %>%
+  mutate(Date = ymd(Date), Inflation_QQ = as.numeric(Inflation_QQ)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+
+Italy_inf_q <- read.csv("Italy-inflation-qq.csv", skip = 6, header = FALSE)
+colnames(Italy_inf_q)[1:2] <- c("Date","Inflation_QQ")
+Italy_inf_q <- Italy_inf_q %>%
+  select(Date,Inflation_QQ) %>%
+  mutate(Date = ymd(Date), Inflation_QQ = as.numeric(Inflation_QQ)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+
+Spain_inf_q <- read.csv("Spain-inflation-qq.csv", skip = 6, header = FALSE)
+colnames(Spain_inf_q)[1:2] <- c("Date","Inflation_QQ")
+Spain_inf_q <- Spain_inf_q %>%
+  select(Date,Inflation_QQ) %>%
+  mutate(Date = ymd(Date), Inflation_QQ = as.numeric(Inflation_QQ)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+
 Global_CP <- read.csv("Commodity_Prices.csv")
 colnames(Global_CP)[1:2] <- c("Date","CP_Index")
 Global_CP <- Global_CP %>%
   select(Date,CP_Index) %>%
-  mutate(Date = ymd(Date), CP_Index = as.numeric(CP_Index)/100) %>%
+  mutate(Date = ymd(Date), CP_Index = as.numeric(CP_Index)) %>%
   filter(Date >= "2010-04-01") %>%
   arrange(Date)
+
+Global_CP_QQ <- read.csv("GCP-QQ.csv")
+colnames(Global_CP_QQ)[1:2] <- c("Date","GCP_QQ")
+Global_CP_QQ <- Global_CP_QQ %>%
+  select(Date,GCP_QQ) %>%
+  mutate(Date = ymd(Date), GCP_QQ = as.numeric(GCP_QQ)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+Global_CP <- merge(Global_CP, Global_CP_QQ, by = "Date")
+
+Global_CP_YY <- read.csv("GCP-YY.csv")
+colnames(Global_CP_YY)[1:2] <- c("Date","GCP_YY")
+Global_CP_YY <- Global_CP_YY %>%
+  select(Date,GCP_YY) %>%
+  mutate(Date = ymd(Date), GCP_YY = as.numeric(GCP_YY)) %>%
+  filter(Date >= "2010-04-01") %>%
+  arrange(Date)
+Global_CP <- merge(Global_CP, Global_CP_YY, by = "Date")
+
 
 
 

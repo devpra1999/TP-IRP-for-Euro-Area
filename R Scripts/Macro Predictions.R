@@ -26,6 +26,7 @@ colnames(Germany_comp) <- c("Date","Spread","Term_Premia","Monetary_Policy")
 Germany_table <- merge(Germany_ga,Germany_gq, by = "Date")
 Germany_table <- merge(Germany_table,Germany_comp, by = "Date")
 Germany_table <- merge(Germany_table,Germany_inf, by = "Date")
+Germany_table <- merge(Germany_table,Germany_inf_q, by = "Date")
 Germany_table <- merge(Germany_table,Global_CP, by = "Date")
 
 #France_GDP <- gdp_dat %>% filter(Country == "FR") %>% select(Date, GDP)
@@ -39,6 +40,7 @@ colnames(France_comp) <- c("Date", "Spread", "Term_Premia", "Monetary_Policy")
 France_table <- merge(France_ga, France_gq, by = "Date")
 France_table <- merge(France_table, France_comp, by = "Date")
 France_table <- merge(France_table, France_inf, by = "Date")
+France_table <- merge(France_table, France_inf_q, by = "Date")
 France_table <- merge(France_table,Global_CP, by = "Date")
 
 
@@ -53,6 +55,7 @@ colnames(Italy_comp) <- c("Date", "Spread", "Term_Premia", "Monetary_Policy")
 Italy_table <- merge(Italy_ga, Italy_gq, by = "Date")
 Italy_table <- merge(Italy_table, Italy_comp, by = "Date")
 Italy_table <- merge(Italy_table,Italy_inf, by = "Date")
+Italy_table <- merge(Italy_table,Italy_inf_q, by = "Date")
 Italy_table <- merge(Italy_table,Global_CP, by = "Date")
 
 #Spain_GDP <- gdp_dat %>% filter(Country == "ES") %>% select(Date, GDP)
@@ -66,6 +69,7 @@ colnames(Spain_comp) <- c("Date", "Spread", "Term_Premia", "Monetary_Policy")
 Spain_table <- merge(Spain_ga, Spain_gq, by = "Date")
 Spain_table <- merge(Spain_table, Spain_comp, by = "Date")
 Spain_table <- merge(Spain_table, Spain_inf, by = "Date")
+Spain_table <- merge(Spain_table, Spain_inf_q, by = "Date")
 Spain_table <- merge(Spain_table,Global_CP, by = "Date")
 
 #Adding country names
@@ -80,91 +84,71 @@ macro_table <- macro_table %>% arrange(Country,Date)
 macro_table <- macro_table[, c(ncol(macro_table), 1:(ncol(macro_table)-1))]
 #Using term premia and monetary policy to predict macroeconomic variables
 
-#Growth regressions
-fe_gr_q <- plm(Growth_q ~ lag(Growth_q,1) + Spread, data = macro_table, model = "within", effect = "individual")
-fe_gr_q_sep <- plm(Growth_q ~ lag(Growth_q,1) + Monetary_Policy + Term_Premia, data = macro_table, model = "within", effect = "individual")
 
-fe_gr_q_1 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Spread, 1), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_sep_1 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Monetary_Policy, 1) + lag(Term_Premia, 1), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_2 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Spread, 2), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_sep_2 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Monetary_Policy, 2) + lag(Term_Premia, 2), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_3 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Spread, 3), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_sep_3 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Monetary_Policy, 3) + lag(Term_Premia, 3), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_4 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Spread, 4), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_sep_4 <- plm(Growth_q ~ lag(Growth_q,1) + lag(Monetary_Policy, 4) + lag(Term_Premia, 4), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_all <- plm(Growth_q ~ lag(Growth_q,1) + lag(Spread, 1) + lag(Spread, 2) + lag(Spread, 3) + lag(Spread, 4), data = macro_table, model = "within", effect = "individual")
-fe_gr_q_sep_all <- plm(Growth_q ~ lag(Growth_q,1) + lag(Monetary_Policy, 1) + lag(Term_Premia, 1) + lag(Monetary_Policy, 2) + lag(Term_Premia, 2) + lag(Monetary_Policy, 3) + lag(Term_Premia, 3) + lag(Monetary_Policy, 4) + lag(Term_Premia, 4), data = macro_table, model = "within", effect = "individual")
+#Growth - Quarter-on-Quarter
+fe_gr_q <- plm(Growth_q ~ lag(Growth_q,1) + lag(Spread, 1), data = macro_table, model = "within", effect = "individual")
+fe_gr_q_sep <- plm(Growth_q ~ lag(Growth_q,1) + lag(Monetary_Policy, 1) + lag(Term_Premia, 1), data = macro_table, model = "within", effect = "individual")
 
-stargazer(fe_gr_q_1, fe_gr_q_sep_1, type = "html", out = "growth_qq.doc")
-#stargazer(fe_gr_q_1, fe_gr_q_sep_1, fe_gr_q_2, fe_gr_q_sep_2, type = "html", out = "growth_qq_lag_1_2.doc")
-#stargazer(fe_gr_q_3, fe_gr_q_sep_3, fe_gr_q_4, fe_gr_q_sep_4, type = "html", out = "growth_qq_lag_3_4.doc")
-#stargazer(fe_gr_q_all, fe_gr_q_sep_all, type = "html", out = "growth_qq_lag_all.doc")
+#Growth - Year-on-Year
+fe_gr_a <- plm(Growth_a ~ lag(Growth_a,4) + lag(Spread, 4),
+               data = macro_table, model = "within", effect = "individual")
+fe_gr_a_sep <- plm(Growth_a ~ lag(Growth_a,4) + lag(Monetary_Policy, 8) + lag(Term_Premia, 4),
+                   data = macro_table, model = "within", effect = "individual")
 
-fe_gr_a <- plm(Growth_a ~ lag(Growth_a,1) + Spread, data = macro_table, model = "within", effect = "individual")
-fe_gr_a_sep <- plm(Growth_a ~ lag(Growth_a,1) + Monetary_Policy + Term_Premia, data = macro_table, model = "within", effect = "individual")
+#Growth - Results
+stargazer(fe_gr_q, fe_gr_q_sep, fe_gr_a, fe_gr_a_sep, type = "html", out = "growth.doc")
 
 
-fe_gr_a_1 <- plm(Growth_a ~ lag(Growth_a,1) + lag(Spread, 1), data = macro_table, model = "within", effect = "individual")
-fe_gr_a_sep_1 <- plm(Growth_a ~ lag(Growth_a,1) + lag(Monetary_Policy, 1) + lag(Term_Premia, 1), data = macro_table, model = "within", effect = "individual")
-fe_gr_a_2 <- plm(Growth_a ~ lag(Growth_a,1) + lag(Spread, 2), data = macro_table, model = "within", effect = "individual")
-fe_gr_a_sep_2 <- plm(Growth_a ~ lag(Growth_a,1) + lag(Monetary_Policy, 2) + lag(Term_Premia, 2), data = macro_table, model = "within", effect = "individual")
-fe_gr_a_3 <- plm(Growth_a ~ lag(Growth_a,1) + lag(Spread, 3), data = macro_table, model = "within", effect = "individual")
-fe_gr_a_sep_3 <- plm(Growth_a ~ lag(Growth_a,1) + lag(Monetary_Policy, 3) + lag(Term_Premia, 3), data = macro_table, model = "within", effect = "individual")
-fe_gr_a_4 <- plm(Growth_a ~ lag(Growth_a,1) + lag(Spread, 4), data = macro_table, model = "within", effect = "individual")
-fe_gr_a_sep_4 <- plm(Growth_a ~ lag(Growth_a,1) + lag(Monetary_Policy, 4) + lag(Term_Premia, 4), data = macro_table, model = "within", effect = "individual")
-fe_gr_a_all <- plm(Growth_a ~ lag(Growth_a,1) + lag(Spread, 1) + lag(Spread, 2) + lag(Spread, 3) + lag(Spread, 4), data = macro_table, model = "within", effect = "individual")
-fe_gr_a_sep_all <- plm(Growth_a ~ lag(Growth_a,1) + lag(Monetary_Policy, 1) + lag(Term_Premia, 1) + lag(Monetary_Policy, 2) + lag(Term_Premia, 2) + lag(Monetary_Policy, 3) + lag(Term_Premia, 3) + lag(Monetary_Policy, 4) + lag(Term_Premia, 4), data = macro_table, model = "within", effect = "individual")
+#Inflation - Year-on-Year
+fe_inf <- plm(Inflation ~ lag(Inflation,4) + lag(Spread, 4) + lag(GCP_YY, 4),
+                data = macro_table, model = "within", effect = "individual")
+fe_inf_sep <- plm(Inflation ~ lag(Inflation,4) + lag(Monetary_Policy,4) + lag(Term_Premia,4) + lag(GCP_YY,4),
+                    data = macro_table, model = "within", effect = "individual")
 
-stargazer(fe_gr_a_1, fe_gr_a_sep_1, type = "html", out = "growth_a.doc")
-#stargazer(fe_gr_a_1, fe_gr_a_sep_1, fe_gr_a_2, fe_gr_a_sep_2, type = "html", out = "growth_a_lag_1_2.doc")
-#stargazer(fe_gr_a_3, fe_gr_a_sep_3, fe_gr_a_4, fe_gr_a_sep_4, type = "html", out = "growth_a_lag_3_4.doc")
-#stargazer(fe_gr_a_all, fe_gr_a_sep_all, type = "html", out = "growth_a_lag_all.doc")
-
-
-#Inflation
-fe_inf <- plm(Inflation ~ lag(Inflation,1) + Spread + CP_Index, data = macro_table, model = "within", effect = "individual")
-fe_inf_sep <- plm(Inflation ~ lag(Inflation,1) + Monetary_Policy + Term_Premia  + CP_Index, data = macro_table, model = "within", effect = "individual")
-
-fe_inf_1 <- plm(Inflation ~ lag(Inflation,1) + lag(Spread, 1) + lag(CP_Index, 1), data = macro_table,
-              model = "within", effect = "individual")
-fe_inf_sep_1 <- plm(Inflation ~ lag(Inflation,1) + lag(Monetary_Policy,1) + lag(Term_Premia,1) + lag(CP_Index,1), data = macro_table,
-                  model = "within", effect = "individual")
-fe_inf_2 <- plm(Inflation ~ lag(Inflation,1) + lag(Spread, 2) + lag(CP_Index, 1), data = macro_table,
-                model = "within", effect = "individual")
-fe_inf_sep_2 <- plm(Inflation ~ lag(Inflation,1) + lag(Monetary_Policy,2) + lag(Term_Premia,2) + lag(CP_Index, 1), data = macro_table,
-                    model = "within", effect = "individual")
-fe_inf_3 <- plm(Inflation ~ lag(Inflation,1) + lag(Spread, 3) + lag(CP_Index, 1), data = macro_table,
-                model = "within", effect = "individual")
-fe_inf_sep_3 <- plm(Inflation ~ lag(Inflation,1) + lag(Monetary_Policy,3) + lag(Term_Premia,3) + lag(CP_Index, 1), data = macro_table,
-                    model = "within", effect = "individual")
-fe_inf_4 <- plm(Inflation ~ lag(Inflation,1) + lag(Spread, 4) + lag(CP_Index, 1), data = macro_table,
-                model = "within", effect = "individual")
-fe_inf_sep_4 <- plm(Inflation ~ lag(Inflation,1) + lag(Monetary_Policy,4) + lag(Term_Premia,4) + lag(CP_Index, 1), data = macro_table,
-                    model = "within", effect = "individual")
-fe_inf_all <- plm(Inflation ~ lag(Inflation,1) + lag(Spread, 1) + lag(Spread, 2) + lag(Spread, 3) + lag(Spread, 4)+ lag(CP_Index, 1),
+fe_inf_q <- plm(Inflation_QQ ~ lag(Inflation_QQ,1) + lag(Spread, 1) + lag(GCP_QQ, 1),
               data = macro_table, model = "within", effect = "individual")
-fe_inf_sep_all <- plm(Inflation ~ lag(Inflation,1) + lag(Monetary_Policy,1)+lag(Term_Premia,1) + lag(Monetary_Policy,2)+lag(Term_Premia,2) + lag(Monetary_Policy,3)+lag(Term_Premia,3) + lag(Monetary_Policy,4)+lag(Term_Premia,4) + lag(CP_Index, 1),
+fe_inf_q_sep <- plm(Inflation_QQ ~ lag(Inflation_QQ,1) + lag(Monetary_Policy,1) + lag(Term_Premia,1) + lag(GCP_QQ,1),
                   data = macro_table, model = "within", effect = "individual")
 
-stargazer(fe_inf_1, fe_inf_sep_1, type = "html", out = "inflation.doc")
-#stargazer(fe_inf_1, fe_inf_sep_1, fe_inf_2, fe_inf_sep_2, type = "html", out = "inflation_lag_1_2.doc")
-#stargazer(fe_inf_3, fe_inf_sep_3, fe_inf_4, fe_inf_sep_4, type = "html", out = "inflation_lag_3_4.doc")
-#stargazer(fe_inf_all, fe_inf_sep_all, type = "html", out = "inflation_lag_all.doc")
+stargazer(fe_inf, fe_inf_sep, fe_inf_q, fe_inf_q_sep, type = "html", out = "inflation.doc")
+
+inf_TP_pred <- macro_table
+inf_TP_pred$Predicted_Inflation_TP <- predict(fe_inf_sep,newdata=inf_TP_pred)
+inf_TP_pred <- select(inf_TP_pred,Country,Date,Inflation,Predicted_Inflation_TP) %>% 
+  pivot_longer(cols=c("Inflation","Predicted_Inflation_TP"))
+
+inf_Spread_pred <- macro_table
+inf_Spread_pred$Predicted_Inflation_Spread <- predict(fe_inf,newdata=inf_Spread_pred)
+inf_Spread_pred <- select(inf_Spread_pred,Country,Date,Inflation,Predicted_Inflation_Spread) %>% 
+  pivot_longer(cols=c("Inflation","Predicted_Inflation_Spread"))
+
+inf_pred <- merge(inf_Spread_pred, inf_TP_pred, by = c("Country", "Date", "name", "value"), all = TRUE)
+
+ggplot(data=inf_pred) + 
+  aes(x=Date,y=value,color=name) + 
+  geom_point() + 
+  facet_wrap(~Country,nrow=4)
+
+inf_TP_pred <- macro_table
+inf_TP_pred$Predicted_Inflation_TP <- predict(fe_inf_sep,newdata=inf_TP_pred)
+inf_TP_pred <- select(inf_TP_pred,Country,Date,Inflation,Predicted_Inflation_TP) %>% 
+  pivot_longer(cols=c("Inflation","Predicted_Inflation_TP"))
+
+inf_Spread_pred <- macro_table
+inf_Spread_pred$Predicted_Inflation_Spread <- predict(fe_inf,newdata=inf_Spread_pred)
+inf_Spread_pred <- select(inf_Spread_pred,Country,Date,Inflation,Predicted_Inflation_Spread) %>% 
+  pivot_longer(cols=c("Inflation","Predicted_Inflation_Spread"))
+
+inf_pred <- merge(inf_Spread_pred, inf_TP_pred, by = c("Country", "Date", "name", "value"), all = TRUE)
+
+ggplot(data=inf_pred) + 
+  aes(x=Date,y=value,color=name) + 
+  geom_point() + 
+  facet_wrap(~Country,nrow=4)
 
 
 
-#---------  EXTRA.  ----------------------------------
+#Term Premia Pedictor
+tp_reg <- plm(Term_Premia ~ lag(Monetary_Policy,4),
+              data = macro_table, model = "within", effect = "individual")
 
-#for (n in 1:6){
-#  GDP_mod <- lm(Growth_a ~ lag(Spread,n), data = Italy_table)
-#  GDP_mod_sep <- lm(Growth_a ~ lag(Monetary_Policy,n) + lag(Term_Premia,n), data = Italy_table)
-#  print(summary(GDP_mod))
-#  print(summary(GDP_mod_sep))
-#}
-
-#inf_mod <- lm(Inflation ~ lag(Spread, n), data = France_table)
-#inf_mod_sep <- lm(Inflation ~ lag(Monetary_Policy, n) + lag(Term_Premia, n), data = France_table)
-#print(summary(inf_mod))
-#print(summary(inf_mod_sep))
-#print(summary(inf_mod)$r.squared)
-#print(summary(inf_mod_sep)$r.squared)
