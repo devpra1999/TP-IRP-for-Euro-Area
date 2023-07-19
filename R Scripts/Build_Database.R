@@ -2,18 +2,20 @@
 build_df <- function(long_yield, rate = Y_st){
   #Merge 10 year bond yield and short term rate
   df <- merge(long_yield,rate, by = "Date")
-  df <- df %>% select(Date, Yield, Rate) %>% filter(Date >= "1999-01-01")
-  Rate_df <- rate %>% select(Date,Rate) %>% filter(Date >= "1999-01-1")
+  df <- df %>% select(Date, Yield, Rate) %>% filter(Date >= "2000-01-01")
+  Rate_df <- rate %>% select(Date,Rate) %>% filter(Date >= "2000-01-01")
   
   #Compute the spreads (long bond yield - short term rate)
   df$Spread <- df$Yield - df$Rate
   
+  #FOR EXCESS RETURNS
   #Compute 3-month returns for 10-Y bond
-  df$HPR <- NA
-  for (t in 1:(length(df)-3)){
-    df$HPR[t] <- df$Yield[t]/df$Yield[t+3] + df$Yield[t]/400 +
-      ((1+df$Yield[t+3]/1200)^-39 * (1-df$Yield[t]/df$Yield[t+3]))
-  }
+  ly_10_m <- df$Yield/(100*12)
+  dur <- (1-(1+mean(df$Yield)/100)^(-10))/(1-(1+mean(df$Yield)/100)^(-1))
+  lret_b_10_m <- (dur*ly_10_m-(dur-1/12)*dplyr::lead(ly_10_m))
+  df$Excess_Return <- lret_b_10_m*100*12 - df$Rate
+  
+  df$HPR <- (10*df$Yield - 9.75*dplyr::lead(df$Yield))*4 - df$Rate
   
   #FOR EXPECTED RATES MODEL
   #Compute the first difference of short-term rates (dy_t+1)
@@ -28,7 +30,7 @@ build_df <- function(long_yield, rate = Y_st){
   
   df <- df_list %>%
     reduce(full_join, by = "Date") %>%
-    select(Date, Yield, Rate, Spread, HPR, Q1_forecast, Q2_forecast, Q3_forecast, Q4_forecast,
+    select(Date, Yield, Rate, Spread, Excess_Return, HPR, Q1_forecast, Q2_forecast, Q3_forecast, Q4_forecast,
            Q5_forecast, Q6_forecast, Q7_forecast, Q8_forecast, Q9_forecast, Q10_forecast,
            Q11_forecast, Q12_forecast) %>%
     complete(Date = seq.Date(min(Date), max(Date), by = "month"))

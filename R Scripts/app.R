@@ -24,8 +24,8 @@ library(markdown)
 library(plm)
 
 source("Historical.R")
-source("Future.R")
 source("Plots.R")
+source("Future.R")
 
 #FUNCTION TO ADD USER FORECAST BASED TERM PREMIA TO THE TABLE
 add_user_for <- function(df,rate_forecast,T=40){
@@ -148,7 +148,7 @@ server <- function(input, output) {
       <br>
       Note - The monetary policy rates are obtained using consensus forecasts for the short term rates from the
       ECB Survey of Professional Forecasters (SPF). Since the consensus forecasts are available only quarterly (as opposed to the monthly data used for yields),
-      term premia estimates are computed only quarterly (the complete monthly series is interpolated)."
+      term premia estimates are computed only quarterly."
       )
     })
     
@@ -215,6 +215,7 @@ server <- function(input, output) {
           itemWidth = 200,
           itemStyle = list(textOverflow = "ellipsis")
         ) %>%
+        hc_boost(enabled = TRUE) %>%
         hc_exporting(enabled = TRUE)
     })
     

@@ -19,6 +19,7 @@ for (z in 1:length(long_yield_list)){
   #Call the function to build the database for the current country
   L <- build_df(long_yield_list[z],Y_st)
   df <- L$main_data
+  
   Rate_df <- L$rate_data
   
   #Run the scripts for COMPUTING TERM PREMIA using our model & consensus forecasts
@@ -36,7 +37,8 @@ for (i in 1:length(country_list)){
                                           Spread = paste("Spread",country_list[i],sep="_"),
                                           TP = paste("TP",country_list[i],sep="_"),
                                           TP_cf = paste("TP_cf",country_list[i],sep="_"),
-                                          HPR = paste("HPR",country_list[i],sep="_")))
+                                          HPR = paste("HPR",country_list[i],sep="_"),
+                                          Excess_Return = paste("Excess_Return",country_list[i],sep="_")))
   
   temp <- paste("df",country_list[i],sep = "_")
   assign(temp,df_list[[i]])
@@ -47,8 +49,9 @@ master_df <- Reduce(function (...) { merge(..., by = , all = FALSE) },df_list)
 col_order <- c("Date", "Rate", "sum_Er", "sum_Er_cf","Yield_Germany", "Spread_Germany", "HPR_Germany",
                "TP_Germany", "TP_cf_Germany", "Yield_France", "Spread_France", "HPR_France", "TP_France",
                "TP_cf_France", "Yield_Spain", "Spread_Spain", "HPR_Spain", "TP_Spain", "TP_cf_Spain",
-               "Yield_Italy", "Spread_Italy", "HPR_Italy", "TP_Italy", "TP_cf_Italy", "Q1_forecast",
-               "Q2_forecast", "Q3_forecast", "Q4_forecast", "Q5_forecast", "Q6_forecast",
+               "Yield_Italy", "Spread_Italy", "HPR_Italy", "TP_Italy", "TP_cf_Italy",
+               "Excess_Return_Germany", "Excess_Return_France", "Excess_Return_Italy", "Excess_Return_Spain", 
+               "Q1_forecast", "Q2_forecast", "Q3_forecast", "Q4_forecast", "Q5_forecast", "Q6_forecast",
                "Q7_forecast", "Q8_forecast", "Q9_forecast", "Q10_forecast", "Q11_forecast",
                "Q12_forecast")
 

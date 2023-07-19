@@ -28,7 +28,7 @@ df$TP_cf <- df$Spread - df$sum_Er_cf
 
 # Final dataframe - columns reordered
 df <- df %>%
-  select(Date, Yield, Rate, Spread, HPR, TP, TP_cf, sum_Er, sum_Er_cf, Q1_forecast,
+  select(Date, Yield, Rate, Spread, Excess_Return, HPR, TP, TP_cf, sum_Er, sum_Er_cf, Q1_forecast,
          Q2_forecast, Q3_forecast, Q4_forecast, Q5_forecast, Q6_forecast, Q7_forecast,
          Q8_forecast, Q9_forecast, Q10_forecast, Q11_forecast, Q12_forecast)
 

@@ -1,4 +1,5 @@
 #Create subset for the period 2022-last date which we will plot
+master_df <- na.trim(master_df,sides = "right")
 lr <- tail(master_df,1) #Last Row
 recent_data <- master_df %>% filter(Date >= (lr$Date - months(12)))
 
@@ -42,4 +43,4 @@ User_TP <- rep(NA,4)
 main_table <- data.frame(Countries, Yield_10Y, Model_EM, Model_TP, Consensus_EM,
                          Consensus_TP,User_EM, User_TP)
 
-rm(list=ls()[! ls() %in% c("master_df","Rate_df", "mod", "main_table", "recent_data", "lr", "fut_date","fut_rate_mod","fut_rate_consensus")])
+#rm(list=ls()[! ls() %in% c("master_df","Rate_df", "mod", "main_table", "recent_data", "lr", "fut_date","fut_rate_mod","fut_rate_consensus")])
