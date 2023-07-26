@@ -6,21 +6,19 @@ library(dplyr)
 library(MASS)
 library(highcharter)
 
-n_maturities = 120
-K=5
-
 #Zero Coupon Yields
+n_maturities = 120
 source("NSS.R")
-L <- nss_yields("Data_Files/gnss.xlsx",120)
+L <- nss_yields("Data_Files/gnss.xlsx",n_maturities)
 rawYields <- L$rawYields/100
 plot_dates <- L$plot_dates
 Yields <- as.matrix(rawYields)
 Yields <- zoo(Yields,plot_dates)
-colnames(Yields) <- paste("n",seq(1,120),sep = "_")
+colnames(Yields) <- paste("n",seq(1,n_maturities),sep = "_")
 
 # Use excess returns at these maturities to estimate the model.
 rx_maturities = c(6,18,24,36,48,60,84,120) 
-ttm = c(1:120)*(1/12)
+ttm = c(1:n_maturities)*(1/12)
 logPrices = t(t(-rawYields)*ttm)
 rf =  -1*logPrices[(1:nrow(logPrices)-1),1]
 rx =  logPrices[2:nrow(logPrices), 1:(ncol(logPrices)-1)] - logPrices[1:(nrow(logPrices)-1), 2:(ncol(logPrices))] -rf
@@ -64,27 +62,27 @@ lambda0 <- ginv(t(beta)) %*% (a + 0.5*((BStar %*% c(Sigma)) + sigmasq_ret))
 lambda1 <- ginv(t(beta)) %*% t(c)
 
 #Recursions for bond pricing
-A <- rep(0,120)
-B <- matrix(0,K,120)
+A <- rep(0,n_maturities)
+B <- matrix(0,K,n_maturities)
 mod3 <- lm(rf ~ X_t1)
 delta0 <- coef(mod3)[1]
 delta1 <- coef(mod3)[-1]
 A[1] = -delta0 + 0.5*(sigmasq_ret)
 B[, 1] = - delta1
-for (i in 2:120){
+for (i in 2:n_maturities){
   A[i]  = A[i-1] + t(B[, i-1]) %*% (mu-lambda0) + 0.5 * (t(B[, i-1]) %*% Sigma %*% B[, i-1] + sigmasq_ret) - delta0
   B[,i] = t(B[, i-1]) %*% (phi - lambda1) - delta1
 }
 
 
 #Recursions for Risk Free Yields
-A_rf <- rep(0,120)
-B_rf <- matrix(0,K,120)
+A_rf <- rep(0,n_maturities)
+B_rf <- matrix(0,K,n_maturities)
 A_rf[1] = -delta0 + 0.5*(sigmasq_ret)
 B_rf[, 1] = - delta1
-lambda0 = matrix(0,5,1)
-lambda1 = matrix(0,5,5)
-for (i in 2:120){
+lambda0 = matrix(0,K,1)
+lambda1 = matrix(0,K,K)
+for (i in 2:n_maturities){
   A_rf[i]  = A_rf[i-1] + t(B_rf[, i-1]) %*% (mu-lambda0) + 0.5 * (t(B_rf[, i-1]) %*% Sigma %*% B_rf[, i-1] + sigmasq_ret) - delta0
   B_rf[,i] = t(B_rf[, i-1]) %*% (phi - lambda1) - delta1
 }
@@ -103,14 +101,19 @@ termpremia = fittedYields - RiskFreeYields
 #PLOT
 s1 <- as.data.frame(cbind(plot_dates,fittedYields[,120]*100))
 names(s1) <- c("x","y")
+s1$x <- as.Date(s1$x)
 s2 <- as.data.frame(cbind(as.Date(plot_dates),RiskFreeYields[,120]*100))
 names(s2) <- c("x","y")
+s2$x <- as.Date(s2$x)
 s3 <- as.data.frame(cbind(as.Date(L$plot_dates),termpremia[,120]*100))
 names(s3) <- c("x","y")
+s3$x <- as.Date(s3$x)
 s4 <- as.data.frame(cbind(as.Date(L$plot_dates),rep(0,length(L$plot_dates))))
 names(s4) <- c("x","y")
+s4$x <- as.Date(s4$x)
 s5 <- as.data.frame(cbind(plot_dates,rawYields[,120]*100))
 names(s5) <- c("x","y")
+s5$x <- as.Date(s5$x)
 
 Germany_Term_Premia_ACM <- highchart() %>%
   hc_add_series(s1, "line", hcaes(x, y), name = "Model Implied Yield", color = "black") %>%
@@ -121,7 +124,7 @@ Germany_Term_Premia_ACM <- highchart() %>%
   hc_add_series(s5, "line", hcaes(x, y), name = "Yield", color = "grey",
                 dashStyle = "dash") %>%
   hc_title(text = "ACM based 10Y Term Premia - Germany") %>%
-  #hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
+  hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
   hc_yAxis(title = list(text = "Yield & Term Premia"), min = -2, max = 6) %>%
   hc_legend(enabled = TRUE) %>%
   hc_boost(enabled = TRUE) %>%
