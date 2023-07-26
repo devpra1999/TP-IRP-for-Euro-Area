@@ -279,9 +279,114 @@ Global_CP_YY <- Global_CP_YY %>%
   arrange(Date)
 Global_CP <- merge(Global_CP, Global_CP_YY, by = "Date")
 
+#NSS parameters
+Germany_NSS <- read.csv("Data_Files/Germany-NSS-params.csv",skip = 5)
+Germany_NSS <- Germany_NSS %>% select_if(~ !any(is.na(.))) 
+colnames(Germany_NSS) <- c("Date","Beta0","Beta1","Beta2","Beta3","Tau1","Tau2")
+Germany_NSS <- Germany_NSS %>% mutate(Date = ym(Date)) %>% filter(Date >= "2000-01-01") %>% filter(Date <= "2020-01-01")
+
+#Compute Yields
+L <- nss_yields("Data_Files/gnss.xlsx",120)
+rawYields <- L$rawYields
+
+#LogPrice
+ttm <- seq(1,120)/12
+logPrices <-  t(t(-rawYields)*ttm)
+colnames(logPrices) <- paste("n",seq(1,120),sep = "_")
+
+#Risk-free rate
+rf <- -logPrices[1:(nrow(logPrices)-1),1]
+
+#Excess Returns
+rx <- logPrices[2:nrow(logPrices),1:119] - logPrices[1:(nrow(logPrices)-1),2:ncol(logPrices)] - rf
+
+#PCA
+#K <- 5
+#X <- t(prcomp(rawYields, center = TRUE, scale = TRUE, rank. = K)$x)
+library("pracma")
+scaledYields <- scale(rawYields, scale = TRUE)
+scaledYieldCov <- cov(scaledYields)
+eigen_result <- eigen(scaledYieldCov)
+eigenvalues <- eigen_result$values
+eigenvectors <- eigen_result$vectors
+yieldPCs <- scale(scaledYields %*% eigenvectors)
+
+K <- 5
+X <- yieldPCs[, 1:K]
+
+#Step 1 - estimate VAR(1) for the time series of pricing factors
+X_t1 <- X[2:nrow(X), ]  
+X_t <- X[1:(nrow(X) - 1),]
+mod1 <- lm(X_t1 ~ X_t)
+coefficients <- coef(mod1)
+mu <- coefficients[1,]
+phi <- t(coefficients[-1,])
+
+#v <- X_t1 - X_t %*% phi #residuals
+v <- residuals(mod1)
+Sigma <- t(v) %*% v / nrow(X_t) #covariance matrix
+
+#Step 2 - regress log excess returns
+rx_maturities <- c(6, 18, 24, 36, 48, 60, 84, 120)
+selected_rx <- rx[,rx_maturities-1]
+VX <- cbind(v,X_t)
+mod2 <- lm(rx ~ VX)
+coefficients <- coef(mod2)
+
+a <- coefficients[1,]
+beta <- coefficients[2:(K+1), ]
+c <- coefficients[(K+2):nrow(coefficients),]
+
+E <- mod2$residuals
+sigmasq_ret = sum(E^2)/(nrow(E)*ncol(E))
+
+#Step 3 - Run cross-sectional regressions
+quad_form <- function(b){
+  c(outer(b,b))
+}
+BStar <- t(apply(t(beta),1,quad_form))
+lambda0 <- ginv(t(beta)) %*% (a + 0.5*((BStar %*% c(Sigma)) + sigmasq_ret))
+lambda1 <- ginv(t(beta)) %*% t(c)
 
 
+#Regress risk free on X
 
+mod3 <- lm(rf ~ X_t)
+delta0 <- coef(mod3)[1]
+delta1 <- coef(mod3)[-1]
 
+#Recursions
+A <- matrix(0,1,120)
+B <- matrix(0,K,120)
+A[1, 1] = - delta0
+B[, 1] = - delta1
+#lambda0 = matrix(0,5,1)
+#lambda1 = matrix(0,5,5)
+for (i in 1:119){
+  A[1, i+1] = A[1, i] + t(B[, i]) %*% (mu - lambda0) + 0.5 * (t(B[, i]) %*% Sigma %*% B[, i] + sigmasq_ret) - delta0
+  B[, i+1] = t(B[, i]) %*% (phi - lambda1) - delta1
+}
 
+fittedLogPrices = t(as.vector(t(A)) + t(B) %*% t(X))
+fittedYields = - t(t(fittedLogPrices) / ttm)
 
+#Risk Neutral Yields
+A_rf <- matrix(0,1,120)
+B_rf <- matrix(0,K,120)
+A_rf[1, 1] = - delta0
+B_rf[, 1] = - delta1
+for (i in 1:119){
+  A_rf[1, i+1] = A_rf[1, i] + (t(B_rf[, i]) %*% mu) + 0.5*(t(B_rf[, i])%*% Sigma%*%B_rf[, i] + sigmasq_ret) - delta0
+  B_rf[, i+1] = t(B_rf[, i]) %*% phi - delta1
+}
+
+fittedLogPrices_rf = t(as.vector(t(A_rf)) + (t(B_rf)%*%t(X)))
+fittedYields_rf = -t(t(fittedLogPrices_rf)/ttm)
+
+Risk_Neutral_Yield_10Y <- fittedYields_rf[,120]
+TP_10Y <- fittedYields[,48] - fittedYields_rf[,120]
+
+plot(L$plot_dates,fittedYields[,120],type="l")
+lines(L$plot_dates, rawYields[,120], col = "red")
+plot(L$plot_dates,Risk_Neutral_Yield_10Y,col="blue",type="l")
+lines(L$plot_dates,TP_10Y,col="red")
