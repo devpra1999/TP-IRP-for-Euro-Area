@@ -37,7 +37,7 @@ X_t <-  X[1:(nrow(X)-1),]
 mod1 <- lm(X_t1 ~ X_t)
 mu <- coef(mod1)[1,]
 phi <- t(coef(mod1)[-1,])
-v <- X_t1 - X_t%*%t(phi)
+v <- mod1$residuals
 Sigma <-  t(v)%*%v/nrow(v)
 
 #Step 2 - regress log excess returns
@@ -71,7 +71,7 @@ delta1 <- coef(mod3)[-1]
 A[1] = -delta0 + 0.5*(sigmasq_ret)
 B[, 1] = - delta1
 for (i in 2:120){
-  A[i]  = A[i-1] + t(B[, i-1]) %*% (-lambda0) + 0.5 * (t(B[, i-1]) %*% Sigma %*% B[, i-1] + sigmasq_ret) - delta0
+  A[i]  = A[i-1] + t(B[, i-1]) %*% (mu-lambda0) + 0.5 * (t(B[, i-1]) %*% Sigma %*% B[, i-1] + sigmasq_ret) - delta0
   B[,i] = t(B[, i-1]) %*% (phi - lambda1) - delta1
 }
 
@@ -84,7 +84,7 @@ B_rf[, 1] = - delta1
 lambda0 = matrix(0,5,1)
 lambda1 = matrix(0,5,5)
 for (i in 2:120){
-  A_rf[i]  = A_rf[i-1] + t(B_rf[, i-1]) %*% (-lambda0) + 0.5 * (t(B_rf[, i-1]) %*% Sigma %*% B_rf[, i-1] + sigmasq_ret) - delta0
+  A_rf[i]  = A_rf[i-1] + t(B_rf[, i-1]) %*% (mu-lambda0) + 0.5 * (t(B_rf[, i-1]) %*% Sigma %*% B_rf[, i-1] + sigmasq_ret) - delta0
   B_rf[,i] = t(B_rf[, i-1]) %*% (phi - lambda1) - delta1
 }
 
@@ -100,26 +100,31 @@ RiskFreeYields = - t(t(RiskFreeLogPrices) / ttm)
 termpremia = fittedYields - RiskFreeYields
 
 #PLOT
-s1 <- as.data.frame(cbind(as.Date(L$plot_dates),fittedYields[,120]*100))
+s1 <- as.data.frame(cbind(plot_dates,fittedYields[,120]*100))
 names(s1) <- c("x","y")
-s2 <- as.data.frame(cbind(as.Date(L$plot_dates),RiskFreeYields[,120]*100))
+s2 <- as.data.frame(cbind(as.Date(plot_dates),RiskFreeYields[,120]*100))
 names(s2) <- c("x","y")
 s3 <- as.data.frame(cbind(as.Date(L$plot_dates),termpremia[,120]*100))
 names(s3) <- c("x","y")
 s4 <- as.data.frame(cbind(as.Date(L$plot_dates),rep(0,length(L$plot_dates))))
 names(s4) <- c("x","y")
+s5 <- as.data.frame(cbind(plot_dates,rawYields[,120]*100))
+names(s5) <- c("x","y")
 
 Germany_Term_Premia_ACM <- highchart() %>%
-  hc_add_series(s1, "line", hcaes(x, y), name = "Yield", color = "black") %>%
+  hc_add_series(s1, "line", hcaes(x, y), name = "Model Implied Yield", color = "black") %>%
   hc_add_series(s2, "line", hcaes(x, y), name = "Risk Neutral Yield", color = "red") %>%
   hc_add_series(s3, "line", hcaes(x, y), name = "Term Premia", color = "blue") %>%
   hc_add_series(s4, "line", hcaes(x, y), name = "", dashStyle = "dot", color = "black",
                 showInLegend = FALSE) %>%
+  hc_add_series(s5, "line", hcaes(x, y), name = "Yield", color = "grey",
+                dashStyle = "dash") %>%
   hc_title(text = "ACM based 10Y Term Premia - Germany") %>%
-  hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
+  #hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
   hc_yAxis(title = list(text = "Yield & Term Premia"), min = -2, max = 6) %>%
   hc_legend(enabled = TRUE) %>%
   hc_boost(enabled = TRUE) %>%
   hc_exporting(enabled = TRUE)
 
 Germany_Term_Premia_ACM
+
