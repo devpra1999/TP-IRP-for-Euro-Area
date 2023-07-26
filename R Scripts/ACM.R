@@ -64,7 +64,7 @@ lambda1 <- ginv(t(beta)) %*% t(c)
 #Recursions for bond pricing
 A <- rep(0,n_maturities)
 B <- matrix(0,K,n_maturities)
-mod3 <- lm(rf ~ X_t1)
+mod3 <- lm(rf ~ X_t)
 delta0 <- coef(mod3)[1]
 delta1 <- coef(mod3)[-1]
 A[1] = -delta0 + 0.5*(sigmasq_ret)
