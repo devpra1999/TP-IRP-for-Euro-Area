@@ -4,30 +4,31 @@ library(matlib)
 library(pracma)
 library(zoo)
 library(lubridate)
-file = read.csv("Data_Files/gnss.csv", header=TRUE)
-attach(file)
+library(dplyr)
+
 n_maturities = 120
-
-yield = matrix(rep(0,nrow(file)*120),nrow(file),120)
-
-for(n in 1:n_maturities)
-{ 
-  k =n/12
-  yield[,n]= BETA0 +BETA1*(1-exp(-k/TAU1))/(k/TAU1)+ BETA2*((1 -exp(-k/TAU1))/(k/TAU1) - exp(-k/TAU1))+ BETA3*((1-exp(-k/TAU2))/(k/TAU2)-exp(-k/TAU2))
-  
-}
-yield = yield/100
-yield_raw=as.data.frame(yield)
-#View(yield_raw)
-yield_raw[,121]= (file$ï..Date)
-
-#######
-
-#Use 5 factors 
 K=5
 
-isMax <- function(x) seq_along(x) == which.max(as.Date(x))
-yield_m =subset(yield_raw, as.logical(ave(yield_raw$V121, substr(yield_raw$V121, 4, 10), FUN = isMax)))
+#file = read.csv("Data_Files/gnss.csv", header=TRUE)
+#attach(file)
+#yield = matrix(rep(0,nrow(file)*120),nrow(file),120)
+#for(n in 1:n_maturities){ 
+#  k =n/12
+#  yield[,n]= BETA0 +BETA1*(1-exp(-k/TAU1))/(k/TAU1)+ BETA2*((1 -exp(-k/TAU1))/(k/TAU1) - exp(-k/TAU1))+ BETA3*((1-exp(-k/TAU2))/(k/TAU2)-exp(-k/TAU2))
+#}
+#yield = yield/100
+#yield_raw=as.data.frame(yield)
+#View(yield_raw)
+#yield_raw[,121]= (file$ï..Date)
+
+
+#isMax <- function(x) seq_along(x) == which.max(as.Date(x))
+#yield_m =subset(yield_raw, as.logical(ave(yield_raw[,121], substr(yield_raw[,121], 4, 10), FUN = isMax)))
+
+L <- nss_yields("Data_Files/gnss.xlsx",120)
+yield_m <- L$rawYields/100
+yield_m[,121] <- L$plot_dates
+
 
 # Use excess returns at these maturities to estimate the model.
 rx_maturities = c(6,18,24,36,48,60,84,120) 
@@ -125,11 +126,39 @@ for(i in 1: 120)
 for(i in 1: 120)
   RiskfreeYields[,i] =  t((RiskfreeLogPrices[,i]/ttm[i])*(-1))
 
-termpremium = fittedYields - RiskfreeYields
+termpremia = fittedYields - RiskfreeYields
 win.graph()
-plot(dmy(yield_m$V121),(termpremium[,120]), type='l' , col="red",ylab="10 years Term Premium", xlab="dates") 
+plot(L$plot_dates,termpremia[,120]*100, type='l' , col="red",ylab="10 years Term Premium", xlab="dates") 
 
 
 win.graph()
-plot(dmy(yield_m$V121),(fittedYields[,120]), type='l' , col="red",ylab="10 years Yield")
-lines(dmy(yield_m$V121),(yield_m[,120]), type='l' , col="blue")
+plot(L$plot_dates,termpremia[,120]*100, type='l' , col="red",ylab="10 years Term Premium", xlab="dates",ylim = c(-2,6)) 
+lines(L$plot_dates,RiskfreeYields[,120]*100, type='l' , col="blue")
+lines(L$plot_dates,yield_m[,120]*100, type='l' , col="black")
+legend("topright",c("10Y Yield","E. Monetary Policy","Term Premia"),col = c("black","blue","red"),lwd = c(1,1,1))
+
+s1 <- cbind(as.Date(L$plot_dates),fittedYields[,120]*100)
+names(s1) <- c("x","y")
+s2 <- cbind(as.Date(L$plot_dates),RiskfreeYields[,120]*100)
+names(s2) <- c("x","y")
+s3 <- cbind(as.Date(L$plot_dates),termpremia[,120]*100)
+names(s3) <- c("x","y")
+s4 <- cbind(as.Date(L$plot_dates),rep(0,length(L$plot_dates)))
+names(s4) <- c("x","y")
+Germany_Term_Premia_ACM <- highchart() %>%
+  hc_add_series(s1, "line", hcaes(x, y), name = "Yield", color = "black") %>%
+  hc_add_series(s2, "line", hcaes(x, y),
+                name = "Consensus Term Premia", color = "blue",connectNulls = TRUE, dashStyle = "dash",
+                marker = list(symbol = "circle", lineWidth = 0, radius = 2)) %>%
+  hc_add_series(s3, "line", hcaes(x, y),
+                name = "Monetary Policy Component", dashStyle = "dash", color = "red",
+                marker = list(symbol = "circle", lineWidth = 0, radius = 2), connectNulls = TRUE) %>%
+  hc_add_series(s4, "line", hcaes(x, y),
+                name = "", dashStyle = "dot", color = "black",
+                showInLegend = FALSE) %>%
+  hc_title(text = "Germany") %>%
+  hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
+  hc_yAxis(title = list(text = "Yield & Term Premia"), min = -2, max = 7) %>%
+  hc_legend(enabled = TRUE) %>%
+  hc_boost(enabled = TRUE) %>%
+  hc_exporting(enabled = TRUE)
