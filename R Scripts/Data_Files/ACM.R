@@ -4,6 +4,7 @@ library(zoo)
 library(lubridate)
 library(dplyr)
 library(MASS)
+library(highcharter)
 
 n_maturities = 120
 K=5
