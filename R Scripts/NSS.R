@@ -10,12 +10,10 @@ nss_yields <- function(filename, n_maturities) {
   rownames(data) <- NULL
   
   # Convert to EOM observations
-  data <- data %>% mutate(Date= ymd(Date), # convert statistic_date to date format
-                month = month(Date),  #create month and year columns
-                year= year(Date)) %>%
-    group_by(month,year) %>% # group by month and year
-    arrange(Date) %>% # make sure the df is sorted by date
-    filter(row_number()==1) 
+  data <- data %>% mutate(Date= ymd(Date), month = month(Date), year= year(Date)) %>%
+                  group_by(month,year) %>%
+                  arrange(Date) %>%
+                  filter(row_number()==1) 
   
   # Nelson, Svensson, Siegel yield curve parameterization
   nss_yield <- function(n) {
@@ -37,7 +35,7 @@ nss_yields <- function(filename, n_maturities) {
     rawYields[, mat] <- nss_yield((mat + 1) / 12)
   }
   
-  plot_dates <- as.POSIXct(data$Date)
+  plot_dates <- as.Date(data$Date)
   
   return(list(rawYields = rawYields, plot_dates = plot_dates))
 }
