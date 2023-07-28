@@ -1,7 +1,7 @@
 #Create subset for the period 2022-last date which we will plot
-master_df <- na.trim(master_df,sides = "right")
-lr <- tail(master_df,1) #Last Row
-recent_data <- master_df %>% filter(Date >= (lr$Date - months(12)))
+recent_data <- na.trim(master_df,sides = "right")
+lr <- tail(recent_data,1) #Last Row
+recent_data <- recent_data %>% filter(Date >= (lr$Date - months(12)))
 
 #Create vectors for future date, interest rate movements and interest rates -  using model
 fut_date <- seq(lr$Date, as.Date(lr$Date + months(36)), by = "quarter")

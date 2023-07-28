@@ -3,25 +3,29 @@ library(pracma)
 library(zoo)
 library(lubridate)
 library(dplyr)
-library(MASS)
+#library(MASS)
 library(highcharter)
+library(matrixcalc)
+library(matlib)
+library(dplyr)
 
 #Zero Coupon Yields
-n_maturities = 120
+N = 120
 source("NSS.R")
-L <- nss_yields("Data_Files/gnss.xlsx",n_maturities)
+L <- nss_yields("Data_Files/gnss.xlsx",N)
 rawYields <- L$rawYields/100
 plot_dates <- L$plot_dates
 Yields <- as.matrix(rawYields)
 Yields <- zoo(Yields,plot_dates)
-colnames(Yields) <- paste("n",seq(1,n_maturities),sep = "_")
+colnames(Yields) <- paste("n",seq(1,N),sep = "_")
+T = nrow(Yields)
 
 # Use excess returns at these maturities to estimate the model.
 rx_maturities = c(6,18,24,36,48,60,84,120) 
-ttm = c(1:n_maturities)*(1/12)
+ttm = c(1:N)*(1/12)
 logPrices = t(t(-rawYields)*ttm)
-rf =  -1*logPrices[(1:nrow(logPrices)-1),1]
-rx =  logPrices[2:nrow(logPrices), 1:(ncol(logPrices)-1)] - logPrices[1:(nrow(logPrices)-1), 2:(ncol(logPrices))] -rf
+rf =  -1*logPrices[1:T,1]
+rx =  logPrices[2:T, 1:(N-1)] - logPrices[1:(T-1), 2:N] - rf[-T]
 
 # K Principal Components
 K=5
@@ -31,8 +35,8 @@ yieldPCs = demeanedyield %*% (k$rotation)
 
 #Step 1 - estimate VAR(1) for the time series of pricing factors
 X <- zoo(yieldPCs[,1:K],plot_dates)
-X_t1 <-  X[(2:nrow(X)),] 
-X_t <-  X[1:(nrow(X)-1),]
+X_t1 <-  X[2:T,] 
+X_t <-  X[1:(T-1),]
 mod1 <- lm(X_t1 ~ X_t)
 mu <- coef(mod1)[1,]
 phi <- t(coef(mod1)[-1,])
@@ -58,31 +62,31 @@ quad_form <- function(b){
   c(outer(b,b))
 }
 BStar <- t(apply(t(beta),1,quad_form))
-lambda0 <- ginv(t(beta)) %*% (a + 0.5*((BStar %*% c(Sigma)) + sigmasq_ret))
-lambda1 <- ginv(t(beta)) %*% t(c)
+lambda0 <- Ginv(t(beta)) %*% (a + 0.5*((BStar %*% c(Sigma)) + sigmasq_ret))
+lambda1 <- Ginv(t(beta)) %*% t(c)
 
 #Recursions for bond pricing
-A <- rep(0,n_maturities)
-B <- matrix(0,K,n_maturities)
-mod3 <- lm(rf ~ X_t1)
+A <- rep(0,N)
+B <- matrix(0,K,N)
+mod3 <- lm(rf ~ X)
 delta0 <- coef(mod3)[1]
 delta1 <- coef(mod3)[-1]
 A[1] = -delta0 + 0.5*(sigmasq_ret)
 B[, 1] = - delta1
-for (i in 2:n_maturities){
+for (i in 2:N){
   A[i]  = A[i-1] + t(B[, i-1]) %*% (mu-lambda0) + 0.5 * (t(B[, i-1]) %*% Sigma %*% B[, i-1] + sigmasq_ret) - delta0
   B[,i] = t(B[, i-1]) %*% (phi - lambda1) - delta1
 }
 
 
 #Recursions for Risk Free Yields
-A_rf <- rep(0,n_maturities)
-B_rf <- matrix(0,K,n_maturities)
+A_rf <- rep(0,N)
+B_rf <- matrix(0,K,N)
 A_rf[1] = -delta0 + 0.5*(sigmasq_ret)
 B_rf[, 1] = - delta1
 lambda0 = matrix(0,K,1)
 lambda1 = matrix(0,K,K)
-for (i in 2:n_maturities){
+for (i in 2:N){
   A_rf[i]  = A_rf[i-1] + t(B_rf[, i-1]) %*% (mu-lambda0) + 0.5 * (t(B_rf[, i-1]) %*% Sigma %*% B_rf[, i-1] + sigmasq_ret) - delta0
   B_rf[,i] = t(B_rf[, i-1]) %*% (phi - lambda1) - delta1
 }
@@ -98,7 +102,29 @@ RiskFreeYields = - t(t(RiskFreeLogPrices) / ttm)
 #TERM PREMIA
 termpremia = fittedYields - RiskFreeYields
 
-#PLOT
+#Computing model expected short rates
+#We make a Txn matrix with each row containing 1 to "n" months ahead model implied rates
+n <- 120 #Time till which forecasts are made
+ESTR <- matrix(0,T,n)
+for (i in 1:n){
+  ESTR[,i] <- (delta0 + t(delta1 %*% matrix.power(phi,i) %*% t(X)))/ttm[1]
+  correction <- 0
+  for (j in 1:(i-1)){
+    correction <- correction + delta1 %*% matrix.power(phi,j) %*% mu
+  }
+  ESTR[,i] <- ESTR[,i] + matrix(correction,1,T)
+}
+
+#Monetary Policy Component from ACM model as per our methodology 
+MP_ACM <- ESTR[,1] + (1-1/n) * (ESTR[,1] - fittedYields[,1])
+for (i in 2:n){
+  MP_ACM <- MP_ACM + (1-i/n)*(ESTR[,i] - ESTR[,i-1])
+}
+
+#The monetary policy component so derived has peaks at two places due to the
+#peaks in the 1 month yields in NSS (and subsequently ACM fitted 1 month yields) 
+
+#PLOT - Historical
 s1 <- as.data.frame(cbind(plot_dates,fittedYields[,120]*100))
 names(s1) <- c("x","y")
 s1$x <- as.Date(s1$x)
@@ -111,7 +137,7 @@ s3$x <- as.Date(s3$x)
 s4 <- as.data.frame(cbind(as.Date(L$plot_dates),rep(0,length(L$plot_dates))))
 names(s4) <- c("x","y")
 s4$x <- as.Date(s4$x)
-s5 <- as.data.frame(cbind(plot_dates,rawYields[,120]*100))
+s5 <- as.data.frame(cbind(plot_dates,MP_ACM*100))
 names(s5) <- c("x","y")
 s5$x <- as.Date(s5$x)
 
@@ -121,7 +147,7 @@ Germany_Term_Premia_ACM <- highchart() %>%
   hc_add_series(s3, "line", hcaes(x, y), name = "Term Premia", color = "blue") %>%
   hc_add_series(s4, "line", hcaes(x, y), name = "", dashStyle = "dot", color = "black",
                 showInLegend = FALSE) %>%
-  hc_add_series(s5, "line", hcaes(x, y), name = "Yield", color = "grey",
+  hc_add_series(s5, "line", hcaes(x, y), name = "Monetary Policy", color = "grey",
                 dashStyle = "dash") %>%
   hc_title(text = "ACM based 10Y Term Premia - Germany") %>%
   hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
@@ -132,3 +158,17 @@ Germany_Term_Premia_ACM <- highchart() %>%
 
 Germany_Term_Premia_ACM
 
+
+#Plotting Interest Rate Projections
+#Start date - 1 month ahead of the last observation
+start <- plot_dates[T] + month(1)
+
+#End date - "Y" years ahead
+Y <- 10
+curr <- as.POSIXlt(plot_dates[T])
+end <- curr
+end$year <- end$year + Y
+plot_dates_proj <- seq(as.Date(start),as.Date(end), length.out = Y*12)
+plot(plot_dates_proj,ESTR[T,1:(Y*12)]*100,type = "l",
+     ylab = "Expected Rate",xlab = "Date", ylim = c(1.5,4),
+     main = "ACM Interest Rate Projection (10Y)")
