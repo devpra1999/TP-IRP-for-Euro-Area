@@ -8,11 +8,12 @@ library(highcharter)
 library(matrixcalc)
 library(matlib)
 library(dplyr)
+library(readxl)
 
 #Zero Coupon Yields
 N = 120
 source("NSS.R")
-L <- nss_yields("Data_Files/gnss.xlsx",N)
+L <- nss_yields("Data_Files/gnss.csv",N)
 rawYields <- L$rawYields/100
 plot_dates <- L$plot_dates
 Yields <- as.matrix(rawYields)
@@ -108,6 +109,7 @@ n <- 120 #Time till which forecasts are made
 ESTR <- matrix(0,T,n)
 for (i in 1:n){
   ESTR[,i] <- (delta0 + t(delta1 %*% matrix.power(phi,i) %*% t(X)))/ttm[1]
+  #Correction term - adding it does not make a difference - accounts for mu
   correction <- 0
   for (j in 1:(i-1)){
     correction <- correction + delta1 %*% matrix.power(phi,j) %*% mu
@@ -121,54 +123,14 @@ for (i in 2:n){
   MP_ACM <- MP_ACM + (1-i/n)*(ESTR[,i] - ESTR[,i-1])
 }
 
-#The monetary policy component so derived has peaks at two places due to the
-#peaks in the 1 month yields in NSS (and subsequently ACM fitted 1 month yields) 
-
-#PLOT - Historical
-s1 <- as.data.frame(cbind(plot_dates,fittedYields[,120]*100))
-names(s1) <- c("x","y")
-s1$x <- as.Date(s1$x)
-s2 <- as.data.frame(cbind(as.Date(plot_dates),RiskFreeYields[,120]*100))
-names(s2) <- c("x","y")
-s2$x <- as.Date(s2$x)
-s3 <- as.data.frame(cbind(as.Date(L$plot_dates),termpremia[,120]*100))
-names(s3) <- c("x","y")
-s3$x <- as.Date(s3$x)
-s4 <- as.data.frame(cbind(as.Date(L$plot_dates),rep(0,length(L$plot_dates))))
-names(s4) <- c("x","y")
-s4$x <- as.Date(s4$x)
-s5 <- as.data.frame(cbind(plot_dates,MP_ACM*100))
-names(s5) <- c("x","y")
-s5$x <- as.Date(s5$x)
-
-Germany_Term_Premia_ACM <- highchart() %>%
-  hc_add_series(s1, "line", hcaes(x, y), name = "Model Implied Yield", color = "black") %>%
-  hc_add_series(s2, "line", hcaes(x, y), name = "Risk Neutral Yield", color = "red") %>%
-  hc_add_series(s3, "line", hcaes(x, y), name = "Term Premia", color = "blue") %>%
-  hc_add_series(s4, "line", hcaes(x, y), name = "", dashStyle = "dot", color = "black",
-                showInLegend = FALSE) %>%
-  hc_add_series(s5, "line", hcaes(x, y), name = "Monetary Policy", color = "grey",
-                dashStyle = "dash") %>%
-  hc_title(text = "ACM based 10Y Term Premia - Germany") %>%
-  hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
-  hc_yAxis(title = list(text = "Yield & Term Premia"), min = -2, max = 6) %>%
-  hc_legend(enabled = TRUE) %>%
-  hc_boost(enabled = TRUE) %>%
-  hc_exporting(enabled = TRUE)
-
-Germany_Term_Premia_ACM
-
-
 #Plotting Interest Rate Projections
 #Start date - 1 month ahead of the last observation
-start <- plot_dates[T] + month(1)
-
+start <- ymd(plot_dates[T]) %m+% period("1 month")
 #End date - "Y" years ahead
-Y <- 10
-curr <- as.POSIXlt(plot_dates[T])
-end <- curr
-end$year <- end$year + Y
+Y <- 3
+end <- ymd(plot_dates[T]) %m+% period(paste(Y,"years"))
 plot_dates_proj <- seq(as.Date(start),as.Date(end), length.out = Y*12)
+
 plot(plot_dates_proj,ESTR[T,1:(Y*12)]*100,type = "l",
-     ylab = "Expected Rate",xlab = "Date", ylim = c(1.5,4),
-     main = "ACM Interest Rate Projection (10Y)")
+     ylab = "Expected Rate",xlab = "Date", ylim = c(1.5,3.5),
+     main = "ACM Interest Rate Projection (3Y)")

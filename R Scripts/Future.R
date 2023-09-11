@@ -1,5 +1,13 @@
 #Create subset for the period 2022-last date which we will plot
-recent_data <- na.trim(master_df,sides = "right")
+recent_data <- master_df %>%
+  select("Date", "Rate", "sum_Er", "sum_Er_cf","Yield_Germany", "Spread_Germany",
+         "TP_Germany", "TP_cf_Germany", "Yield_France", "Spread_France", "TP_France",
+         "TP_cf_France", "Yield_Spain", "Spread_Spain", "TP_Spain", "TP_cf_Spain",
+         "Yield_Italy", "Spread_Italy", "TP_Italy", "TP_cf_Italy",
+         "Q1_forecast", "Q2_forecast", "Q3_forecast", "Q4_forecast", "Q5_forecast", "Q6_forecast",
+         "Q7_forecast", "Q8_forecast", "Q9_forecast", "Q10_forecast", "Q11_forecast",
+         "Q12_forecast") %>%
+  na.trim(sides = "right")
 lr <- tail(recent_data,1) #Last Row
 recent_data <- recent_data %>% filter(Date >= (lr$Date - months(12)))
 

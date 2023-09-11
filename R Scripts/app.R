@@ -25,6 +25,7 @@ library(plm)
 
 source("Historical.R")
 source("Plots.R")
+source("ACM.R")
 source("Future.R")
 
 #FUNCTION TO ADD USER FORECAST BASED TERM PREMIA TO THE TABLE
@@ -61,7 +62,11 @@ ui <- navbarPage("Term Premia in the Euro Area",
            fluidRow(
              column(6, highchartOutput("france_tp_cf")),
              column(6, highchartOutput("spain_tp_cf"))
-           )
+           ),
+           h3("Case Study - Term Premia using Affine Term Structure Model"),
+           highchartOutput("germany_acm"),
+           highchartOutput("germany_acm_cf_tp"),
+           highchartOutput("germany_acm_cf_mp")
         ),
         tabPanel("Current Projections",
                  textOutput("desc3"),
@@ -172,6 +177,20 @@ server <- function(input, output) {
       Spain_Term_Premia
     })
     
+    output$germany_acm <- renderHighchart({
+      Germany_Term_Premia_ACM
+    })
+    
+    output$germany_acm_cf_tp <- 
+      renderHighchart({
+        Germany_ACM_CF_TP
+      })
+    
+    output$germany_acm_cf_mp <- 
+      renderHighchart({
+        Germany_ACM_CF_MP
+      })
+    
     
     output$desc3 <- renderText({
       string <- "In this section we present the estimates for the current value of the term premia for the four countries of
@@ -206,6 +225,10 @@ server <- function(input, output) {
                       type = "line", name = "Model estimate", color = "blue", lineWidth = 2, dashStyle = "Dash") %>%
         hc_add_series(data = data.frame(x = fut_date, y = fut_rate_consensus), hcaes(x = x, y = y),
                       type = "line", name = "Consensus forecast", color = "red", lineWidth = 2, dashStyle = "Dash") %>%
+        hc_add_series(data = data.frame(x = plot_dates[(T-3):T], y = fittedYields[(T-3):T,1]*100), hcaes(x = x, y = y),
+                      type = "line", name = "Historical_ACM (1M)", color = "black", lineWidth = 2, dashStyle = "Dash") %>%
+        hc_add_series(data = data.frame(x = plot_dates_proj, y = ESTR[T,1:36]*100), hcaes(x = x, y = y),
+                      type = "line", name = "ACM_Projection (1M)", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
         hc_add_series(data = data.frame(x = fut_date, y = append(lr$Rate, user_forecasts())), hcaes(x = x, y = y),
                       type = "line", name = "User forecast", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
         hc_legend(

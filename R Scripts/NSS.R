@@ -1,10 +1,5 @@
-# Load required libraries
-library(readxl)
-
-# Load Gurkaynak, Sack, Wright dataset.
-# This data is extracted from here: https://www.federalreserve.gov/pubs/feds/2006/200628/200628abs.html
 nss_yields <- function(filename, n_maturities) {
-  data <- read_excel(filename, col_types = c("date", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"))
+  data <- read_csv(filename)
   data <- data[complete.cases(data), ] # Remove rows with missing values
   data <- data[order(data$Date), ]
   rownames(data) <- NULL

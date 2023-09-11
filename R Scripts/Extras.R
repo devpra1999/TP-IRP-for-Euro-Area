@@ -7,10 +7,10 @@ Projection_ACM <- highchart() %>%
                 type = "line", name = "Model estimate", color = "blue", lineWidth = 2, dashStyle = "Dash") %>%
   hc_add_series(data = data.frame(x = fut_date, y = fut_rate_consensus), hcaes(x = x, y = y),
                 type = "line", name = "Consensus forecast", color = "red", lineWidth = 2, dashStyle = "Dash") %>%
-  hc_add_series(data = data.frame(x = plot_dates[(T-5):T], y = fittedYields[(T-5):T,1]*100), hcaes(x = x, y = y),
-                type = "line", name = "Historical_ACM_Fitted", color = "black", lineWidth = 2, dashStyle = "Dash") %>%
+  hc_add_series(data = data.frame(x = plot_dates[(T-3):T], y = fittedYields[(T-3):T,1]*100), hcaes(x = x, y = y),
+                type = "line", name = "Historical_ACM (1M)", color = "black", lineWidth = 2, dashStyle = "Dash") %>%
   hc_add_series(data = data.frame(x = plot_dates_proj, y = ESTR[T,1:36]*100), hcaes(x = x, y = y),
-                type = "line", name = "ACM_Projection", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
+                type = "line", name = "ACM_Projection (1M)", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
   hc_legend(
     layout = "horizontal",
     align = "center",

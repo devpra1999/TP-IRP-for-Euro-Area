@@ -169,3 +169,91 @@ dest_file <- "Data_Files/GCP-YY.csv"
 download.file(url, dest_file,quite = TRUE)
 
 #NSS parameters
+#BETA0
+#Use Bundesbank API to get the parameter time series in text format
+curl_command <- "curl -X 'GET' 'https://api.statistiken.bundesbank.de/rest/data/BBSIS/D.I.ZST.B0.EUR.S1311.B.A604._Z.R.A.A._Z._Z.A?startPeriod=2000-01-03&detail=dataonly' -H 'accept: text/csv'"
+output <- system(curl_command, intern = TRUE)
+#Convert into a dataframe
+data <- strsplit(output, "\n")
+data <- lapply(data, function(row) unlist(strsplit(row, ";")))
+data_frame <- as.data.frame(t(as.data.frame(data,row.names = NULL)))
+colnames(data_frame) <- data_frame[1,]
+BETA0 <- data_frame[-1,(n-3):(n-2)]
+BETA0$OBS_VALUE <- as.numeric(BETA0$OBS_VALUE)
+BETA0 <- BETA0 %>% fill(names(.),.direction = "down")
+rownames(BETA0) <- NULL
+colnames(BETA0) <- c("Date","BETA0")
+
+#Repeat for the rest of the parameters
+#BETA1
+curl_command <- "curl -X 'GET' 'https://api.statistiken.bundesbank.de/rest/data/BBSIS/D.I.ZST.B1.EUR.S1311.B.A604._Z.R.A.A._Z._Z.A?startPeriod=2000-01-03&detail=dataonly' -H 'accept: text/csv'"
+output <- system(curl_command, intern = TRUE)
+data <- strsplit(output, "\n")
+data <- lapply(data, function(row) unlist(strsplit(row, ";")))
+data_frame <- as.data.frame(t(as.data.frame(data)))
+colnames(data_frame) <- data_frame[1,]
+BETA1 <- data_frame[-1,(n-3):(n-2)]
+BETA1$OBS_VALUE <- as.numeric(BETA1$OBS_VALUE)
+BETA1 <- BETA1 %>% fill(names(.),.direction = "down")
+rownames(BETA1) <- NULL
+colnames(BETA1) <- c("Date","BETA1")
+
+#BETA2
+curl_command <- "curl -X 'GET' 'https://api.statistiken.bundesbank.de/rest/data/BBSIS/D.I.ZST.B2.EUR.S1311.B.A604._Z.R.A.A._Z._Z.A?startPeriod=2000-01-03&detail=dataonly' -H 'accept: text/csv'"
+output <- system(curl_command, intern = TRUE)
+data <- strsplit(output, "\n")
+data <- lapply(data, function(row) unlist(strsplit(row, ";")))
+data_frame <- as.data.frame(t(as.data.frame(data)))
+colnames(data_frame) <- data_frame[1,]
+BETA2 <- data_frame[-1,(n-3):(n-2)]
+BETA2$OBS_VALUE <- as.numeric(BETA2$OBS_VALUE)
+BETA2 <- BETA2 %>% fill(names(.),.direction = "down")
+rownames(BETA2) <- NULL
+colnames(BETA2) <- c("Date","BETA2")
+
+#BETA3
+curl_command <- "curl -X 'GET' 'https://api.statistiken.bundesbank.de/rest/data/BBSIS/D.I.ZST.B3.EUR.S1311.B.A604._Z.R.A.A._Z._Z.A?startPeriod=2000-01-03&detail=dataonly' -H 'accept: text/csv'"
+output <- system(curl_command, intern = TRUE)
+data <- strsplit(output, "\n")
+data <- lapply(data, function(row) unlist(strsplit(row, ";")))
+data_frame <- as.data.frame(t(as.data.frame(data)))
+colnames(data_frame) <- data_frame[1,]
+BETA3 <- data_frame[-1,(n-3):(n-2)]
+BETA3$OBS_VALUE <- as.numeric(BETA3$OBS_VALUE)
+BETA3 <- BETA3 %>% fill(names(.),.direction = "down")
+rownames(BETA3) <- NULL
+colnames(BETA3) <- c("Date","BETA3")
+#TAU1
+curl_command <- "curl -X 'GET' 'https://api.statistiken.bundesbank.de/rest/data/BBSIS/D.I.ZST.T1.EUR.S1311.B.A604._Z.R.A.A._Z._Z.A?startPeriod=2000-01-03&detail=dataonly' -H 'accept: text/csv'"
+output <- system(curl_command, intern = TRUE)
+data <- strsplit(output, "\n")
+data <- lapply(data, function(row) unlist(strsplit(row, ";")))
+data_frame <- as.data.frame(t(as.data.frame(data)))
+colnames(data_frame) <- data_frame[1,]
+TAU1 <- data_frame[-1,(n-3):(n-2)]
+TAU1$OBS_VALUE <- as.numeric(TAU1$OBS_VALUE)
+TAU1 <- TAU1 %>% fill(names(.),.direction = "down")
+rownames(TAU1) <- NULL
+colnames(TAU1) <- c("Date","TAU1")
+
+#TAU2
+curl_command <- "curl -X 'GET' 'https://api.statistiken.bundesbank.de/rest/data/BBSIS/D.I.ZST.T2.EUR.S1311.B.A604._Z.R.A.A._Z._Z.A?startPeriod=2000-01-03&detail=dataonly' -H 'accept: text/csv'"
+output <- system(curl_command, intern = TRUE)
+data <- strsplit(output, "\n")
+data <- lapply(data, function(row) unlist(strsplit(row, ";")))
+data_frame <- as.data.frame(t(as.data.frame(data)))
+colnames(data_frame) <- data_frame[1,]
+TAU2 <- data_frame[-1,(n-3):(n-2)]
+TAU2$OBS_VALUE <- as.numeric(TAU2$OBS_VALUE)
+TAU2 <- TAU2 %>% fill(names(.),.direction = "down")
+rownames(TAU2) <- NULL
+colnames(TAU2) <- c("Date","TAU2")
+
+#Merge all the parameter data frames
+df_list <- list(BETA0,BETA1,BETA2,BETA3,TAU1,TAU2)
+NSS_params <- df_list %>% reduce(inner_join,"Date")
+csv_file <- "Data_Files/gnss.csv"
+write.csv(NSS_params, file = csv_file, sep = ";", row.names = FALSE)
+
+
+

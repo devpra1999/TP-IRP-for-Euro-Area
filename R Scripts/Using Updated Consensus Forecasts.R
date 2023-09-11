@@ -1,10 +1,45 @@
+#Function for linear interpolation - standard linear interpolation functions do not work well if there are terminal NA values
+linear_interpolation <- function(x){
+  if (is.na(x[1])){
+    return(x)
+  }
+  curr <- 4
+  for (i in 5:length(x)){
+    if (is.na(x[i])){
+      if (i!=length(x)){
+        next
+      }
+      else{
+        temp <- x[curr]
+        for (j in (curr+1):i){
+          x[j] <- temp + diff
+          temp <- x[j]
+        }
+      }
+    }
+    else{
+      if ((i-curr)>1){
+        diff <- (x[i] - x[curr])/(i-curr)
+        temp <- x[curr]
+        for (j in (curr+1):(i-1)){
+          x[j] <- temp + diff
+          temp <- x[j]
+        }
+      }
+      curr <- i
+    }
+  }
+  return(x)
+}
+
 #Remove NAs and start dates from 2010
 df <- df %>% filter(!is.na(Yield)) %>% filter(Date >= "2010-04-01")
 
 #Interpolation for annual to quarterly data
-i <- grep("Q4_forecast", colnames(df))
+i <- grep("Q1_forecast", colnames(df))
 j <- grep("Q12_forecast", colnames(df))
-temp <- as.data.frame(t(na.spline(t(df[,i:j]))))
+#temp <- as.data.frame(t(na.spline(t(df[,i:j]))))
+temp <- as.data.frame(t(apply(df[,i:j],1,linear_interpolation)))
 colnames(temp) <- colnames(df[i:j])
 df <- cbind(df[,1:i-1],temp)
 

@@ -33,7 +33,7 @@ build_df <- function(long_yield, rate = Y_st){
     select(Date, Yield, Rate, Spread, Excess_Return, HPR, Q1_forecast, Q2_forecast, Q3_forecast, Q4_forecast,
            Q5_forecast, Q6_forecast, Q7_forecast, Q8_forecast, Q9_forecast, Q10_forecast,
            Q11_forecast, Q12_forecast) %>%
-    complete(Date = seq.Date(min(Date), max(Date), by = "month"))
+    tidyr::complete(Date = seq.Date(min(Date), max(Date), by = "month"))
   
   
   #We need to use leads to put the forecasted target period to the time the forecast was made

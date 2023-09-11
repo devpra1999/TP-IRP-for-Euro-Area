@@ -4,7 +4,8 @@ Data Source in SDW: null
 Collection:,Average of observations through period (A)
 Period\Unit:,[Percentage change ]
 ,,obs. status,obs. comment
-2023Jun,1.6,Normal value (A),
+2023Jul,2.1,Estimated value (E),
+2023Jun,1.6,Estimated value (E),
 2023May,2.9,Normal value (A),
 2023Apr,3.8,Normal value (A),
 2023Mar,3.1,Normal value (A),
@@ -322,3 +323,15 @@ Period\Unit:,[Percentage change ]
 1997Mar,2.2,Normal value (A),
 1997Feb,2.5,Normal value (A),
 1997Jan,2.8,Normal value (A),
+1996Dec,3.3,Normal value (A),
+1996Nov,3.3,Normal value (A),
+1996Oct,3.6,Normal value (A),
+1996Sep,3.6,Normal value (A),
+1996Aug,3.7,Normal value (A),
+1996Jul,3.7,Normal value (A),
+1996Jun,3.6,Normal value (A),
+1996May,3.8,Normal value (A),
+1996Apr,3.4,Normal value (A),
+1996Mar,3.3,Normal value (A),
+1996Feb,3.6,Normal value (A),
+1996Jan,3.8,Normal value (A),
