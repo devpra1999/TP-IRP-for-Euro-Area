@@ -51,9 +51,8 @@ ui <- navbarPage("Term Premia in the Euro Area",
         tabPanel("Methodology",
                  tags$iframe(style="height:800px; width:100%", src="Euro_Area_Term_Premia.pdf")),
         tabPanel("Historical Data",
-           htmlOutput("desc1"),
            highchartOutput("yieldplot"),
-           textOutput("desc2"),
+           htmlOutput("yield_decomposition"),
            p("Yield Decomposition using Consensus Forecasts",align = "center", style = "font-family: Lucida Grande, Lucida Sans Unicode; color: black; font-size: 18px"),
            fluidRow(
              column(6, highchartOutput("germany_tp_cf")),
@@ -62,16 +61,26 @@ ui <- navbarPage("Term Premia in the Euro Area",
            fluidRow(
              column(6, highchartOutput("france_tp_cf")),
              column(6, highchartOutput("spain_tp_cf"))
-           ),
-           h3("Case Study - Term Premia using Affine Term Structure Model"),
-           highchartOutput("germany_acm"),
-           highchartOutput("germany_acm_cf_tp"),
-           highchartOutput("germany_acm_cf_mp")
+           )
+#           h3("Case Study - Term Premia using Affine Term Structure Model"),
+#           htmlOutput("ACM"),
+#           highchartOutput("germany_acm"),
+#           htmlOutput("ACM_compare"),
+#           highchartOutput("germany_acm_cf_mp"),
+#           highchartOutput("germany_acm_cf_tp")
+        ),
+        tabPanel("Affine Model",
+                 h3("Case Study - Term Premia using Affine Term Structure Model"),
+                 htmlOutput("ACM"),
+                 highchartOutput("germany_acm"),
+                 htmlOutput("ACM_compare"),
+                 highchartOutput("germany_acm_cf_mp"),
+                 highchartOutput("germany_acm_cf_tp")
         ),
         tabPanel("Current Projections",
-                 textOutput("desc3"),
-                 hr(),
-                 textOutput("desc4"),
+                 h3("Expected Path of short-term rates"),
+                 highchartOutput("rateplot"),
+                 htmlOutput("prompt"),
                  h3("Your Forecasts for Short-Term Rates"),
                  fixedRow(
                    column(4, numericInput("F1", label = "1 quarter ahead", value = round(fut_rate_consensus[2], 1))),
@@ -94,66 +103,30 @@ ui <- navbarPage("Term Premia in the Euro Area",
                    column(4, numericInput("F12", label = "12 quarters ahead", value = round(fut_rate_consensus[13], 1)))
                  ),
                  actionButton("go", "Submit"),
-                 hr(),
-                 h3("Path for short-term rates"),
-                 highchartOutput("rateplot"),
+                 highchartOutput("rateplot_user"),
                  h3("Yield Decompostions"),
                  fluidRow(
                    column(12, align="center", tableOutput('table'))
                  )
-#           sidebarLayout(
-#             sidebarPanel(
-#               h1("Your Forecasts"),
-#               numericInput("F1", label = "Forecast for 1 quarter ahead", value = round(fut_rate_consensus[2], 1)),
-#               numericInput("F2", label = "Forecast for 2 quarters ahead", value = round(fut_rate_consensus[3], 1)),
-#               numericInput("F3", label = "Forecast for 3 quarters ahead", value = round(fut_rate_consensus[4], 1)),
-#               numericInput("F4", label = "Forecast for 4 quarters ahead", value = round(fut_rate_consensus[5], 1)),
-#               numericInput("F5", label = "Forecast for 5 quarters ahead", value = round(fut_rate_consensus[6], 1)),
-#               numericInput("F6", label = "Forecast for 6 quarters ahead", value = round(fut_rate_consensus[7], 1)),
-#               numericInput("F7", label = "Forecast for 7 quarters ahead", value = round(fut_rate_consensus[8], 1)),
-#               numericInput("F8", label = "Forecast for 8 quarters ahead", value = round(fut_rate_consensus[9], 1)),
-#               numericInput("F9", label = "Forecast for 9 quarters ahead", value = round(fut_rate_consensus[10], 1)),
-#               numericInput("F10", label = "Forecast for 10 quarters ahead", value = round(fut_rate_consensus[11], 1)),
-#               numericInput("F11", label = "Forecast for 11 quarters ahead", value = round(fut_rate_consensus[12], 1)),
-#               numericInput("F12", label = "Forecast for 12 quarters ahead", value = round(fut_rate_consensus[13], 1)),
-#               actionButton("go", "Submit"),
-#               width = 3
-#             ),
-#             mainPanel(
-#               textOutput("desc3"),
-#               hr(),
-#               textOutput("desc4"),
-#               hr(),
-#               highchartOutput("rateplot"),
-#               hr(),
-#               tableOutput("table"),
-#               width = 7
-#             )
-#           )
         )
 )
 
 server <- function(input, output) {
     #EXPLANATION + HISTORICAL ---------------------------------------------------------------
-    output$desc1 <- renderUI({
-      HTML("The following figures report the 10-year yields and yield decompositions
-      for Germany, France, Italy and Spain. The first plot compares the yields of 10 year bonds
-      for the four countries from 2010 to the present. The second plot shows the yield decompositions
-      separately for all of them. <br>
+    output$yield_decomposition <- renderUI({
+      HTML(
+      "The figure above shows the historical yields since 2010 for 10-year government bonds for
+      the major economies in the Euro Area - Germany, France, Italy and Spain. <br>
       <br>
-      The yield is decomposed into two parts - <br>
-      1. Monetary Policy component - It is the average expected monetary policy rate (short rate)
+      The 10-year yields can be decomposed into two parts - <br>
+      <b>1. Monetary Policy component</b> - It is the average expected monetary policy rate (short rate)
       over the residual life of the long-term bond. <br>
-      2. Term Premia - It can be understood as premia on buying a long term (10 year) bond over
+      <b>2. Term Premia</b> - It can be understood as premia on buying a long term (10 year) bond over
       buying roll-over short-term bonds over the period of the long-term bond. More detials are
       available in the Methodology section. <br>
       <br>
-      The next section shows the current projections for the interest rate computed term premia.
-      You can add your interest rate forecasts and get the resultant term premia estimates for the countries<br>
-      <br>
-      Note - The monetary policy rates are obtained using consensus forecasts for the short term rates from the
-      ECB Survey of Professional Forecasters (SPF). Since the consensus forecasts are available only quarterly (as opposed to the monthly data used for yields),
-      term premia estimates are computed only quarterly."
+      We construct estimates for the monetary policy component (and the term premia) using the consensus
+      forecasts for the expected path of short rates from the ECB survey of Professional Forecasters (SPF).<br><br>"
       )
     })
     
@@ -191,21 +164,74 @@ server <- function(input, output) {
         Germany_ACM_CF_MP
       })
     
-    
-    output$desc3 <- renderText({
-      string <- "In this section we present the estimates for the current value of the term premia for the four countries of
-      interest. The two default series for term premia are built by using the Expected Monetary Policy
-      component estimated respectively by the Consensus Forecast and the naive autoregressive model
-      for the change in policy rates. In addition, you have the option to add your forecasts for the three
-      months rates and see the term premia implied by them. The graph reports the path for monetary policy
-      rates while the Table provides the decomposition of current 10-year yields into Term Premia and Expected Monetary Policy."})
-      
-    output$desc4 <- renderText({
-      string <- "Please use the boxes below to input your forecasts for the short-term (3-month) rates in the
-      Euro Area for the specified quarter. Click submit to get the term premia estimate based on your forecast.
-      The default values in the boxes are the consensus forecasts for the respective quarter."
+    output$ACM <- renderUI({
+      HTML(
+        "The computation of the term premia requires the expected path of short
+        rates. These can be estimated using the term structure models. As a result
+        affine term structure models are a popular way of determing the term premia.<br>
+        <br>
+        <b>Adrian, Crump and Moench (2012)</b> propose a 3-step linear regression based 
+        approach to price the term structure, henceforth called the <b>ACM model</b>. We
+        use this approach to compute the term premia for Germany. The yields at 
+        different maturities, required by the model, are obtained using the  Nelson-Siegel-Svensson
+        (NSS) parameters provided by Bundesbank. The results are shown
+        below -"
+      )
     })
-  
+    
+    output$ACM_compare <- renderUI({
+      HTML(
+        "The <b>monetary policy (MP) component</b> is computed in 2 steps - (1) The expected 
+        short rates are extracted from the model, and (2) the MP component is calculated using 
+        the methodology used for the other forecasts. The <b>risk neutral yield</b>, on the 
+        other hand, is generated by setting the market price for risk to zero in the model.<br>
+        <br>
+        Both the curves follow each other closely. There are two instances of sharp deviations 
+        due to spikes in the MP component (generated by spikes in the 1M rates obtained from 
+        NSS interpolation). The term premia is calculated using the risk neutral yields 
+        (which are equivalent to the MP component).<br>
+        <br>
+        This affine-model-based MP component and term premia are compare below - "
+      )
+    })
+    
+    output$prompt <- renderUI({
+      HTML(
+        "The figure above plots the expected path of future short (monetary policy) 
+        rates using the naive model, consensus forecasts and ACM (affine) model. The 
+        first two are forecasts for 3-month rates, while the ACM model forecasts are 
+        for the 1-month rates.<br>
+        <br>
+        You can provide your own forecasts for the short-term (3 month) rates, and click
+        submit to get the current term premia estimates based on your forecasts for the 
+        Euro Area countries."
+      )
+    })
+    
+    output$rateplot <- renderHighchart({
+      highchart() %>%
+        hc_xAxis(type = "datetime", dateTimeLabelFormats = list(month = "%b %Y")) %>%
+        hc_yAxis(title = list(text = "Interest Rate"), min = -1, max = 5) %>%
+        hc_add_series(data = recent_data, hcaes(x = Date, y = Rate),
+                      type = "line", name = "Historical", color = "black", lineWidth = 2) %>%
+        hc_add_series(data = data.frame(x = fut_date, y = fut_rate_mod), hcaes(x = x, y = y),
+                      type = "line", name = "Model estimate", color = "blue", lineWidth = 2, dashStyle = "Dash") %>%
+        hc_add_series(data = data.frame(x = fut_date, y = fut_rate_consensus), hcaes(x = x, y = y),
+                      type = "line", name = "Consensus forecast", color = "red", lineWidth = 2, dashStyle = "Dash") %>%
+        hc_add_series(data = data.frame(x = plot_dates[(T-3):T], y = fittedYields[(T-3):T,1]*100), hcaes(x = x, y = y),
+                      type = "line", name = "Historical_ACM (1M)", color = "black", lineWidth = 2, dashStyle = "Dash") %>%
+        hc_add_series(data = data.frame(x = plot_dates_proj, y = ESTR[T,1:36]*100), hcaes(x = x, y = y),
+                      type = "line", name = "ACM_Projection (1M)", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
+        hc_legend(
+          layout = "horizontal",
+          align = "center",
+          verticalAlign = "bottom",
+          itemWidth = 200,
+          itemStyle = list(textOverflow = "ellipsis")
+        ) %>%
+        hc_boost(enabled = TRUE) %>%
+        hc_exporting(enabled = TRUE)
+    })
     
     #DEFINE REACTIVE FUNCTION FOR INPUTS-------------------------------------------------------
     user_forecasts <- eventReactive(input$go, {
@@ -215,7 +241,7 @@ server <- function(input, output) {
     
     
     #PLOTS AND TABLES WITH USER PROVIDED FORECASTS----------------------------------------------
-    output$rateplot <- renderHighchart({
+    output$rateplot_user <- renderHighchart({
       highchart() %>%
         hc_xAxis(type = "datetime", dateTimeLabelFormats = list(month = "%b %Y")) %>%
         hc_yAxis(title = list(text = "Interest Rate"), min = min(-1,user_forecasts()), max = max(5,user_forecasts())) %>%

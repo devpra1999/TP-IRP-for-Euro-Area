@@ -178,7 +178,7 @@ data <- strsplit(output, "\n")
 data <- lapply(data, function(row) unlist(strsplit(row, ";")))
 data_frame <- as.data.frame(t(as.data.frame(data,row.names = NULL)))
 colnames(data_frame) <- data_frame[1,]
-BETA0 <- data_frame[-1,(n-3):(n-2)]
+BETA0 <- data_frame[-1, ] %>% select("TIME_PERIOD","OBS_VALUE")
 BETA0$OBS_VALUE <- as.numeric(BETA0$OBS_VALUE)
 BETA0 <- BETA0 %>% fill(names(.),.direction = "down")
 rownames(BETA0) <- NULL
@@ -192,7 +192,7 @@ data <- strsplit(output, "\n")
 data <- lapply(data, function(row) unlist(strsplit(row, ";")))
 data_frame <- as.data.frame(t(as.data.frame(data)))
 colnames(data_frame) <- data_frame[1,]
-BETA1 <- data_frame[-1,(n-3):(n-2)]
+BETA1 <- data_frame[-1, ] %>% select("TIME_PERIOD","OBS_VALUE")
 BETA1$OBS_VALUE <- as.numeric(BETA1$OBS_VALUE)
 BETA1 <- BETA1 %>% fill(names(.),.direction = "down")
 rownames(BETA1) <- NULL
@@ -205,7 +205,7 @@ data <- strsplit(output, "\n")
 data <- lapply(data, function(row) unlist(strsplit(row, ";")))
 data_frame <- as.data.frame(t(as.data.frame(data)))
 colnames(data_frame) <- data_frame[1,]
-BETA2 <- data_frame[-1,(n-3):(n-2)]
+BETA2 <- data_frame[-1, ] %>% select("TIME_PERIOD","OBS_VALUE")
 BETA2$OBS_VALUE <- as.numeric(BETA2$OBS_VALUE)
 BETA2 <- BETA2 %>% fill(names(.),.direction = "down")
 rownames(BETA2) <- NULL
@@ -218,7 +218,7 @@ data <- strsplit(output, "\n")
 data <- lapply(data, function(row) unlist(strsplit(row, ";")))
 data_frame <- as.data.frame(t(as.data.frame(data)))
 colnames(data_frame) <- data_frame[1,]
-BETA3 <- data_frame[-1,(n-3):(n-2)]
+BETA3 <- data_frame[-1, ] %>% select("TIME_PERIOD","OBS_VALUE")
 BETA3$OBS_VALUE <- as.numeric(BETA3$OBS_VALUE)
 BETA3 <- BETA3 %>% fill(names(.),.direction = "down")
 rownames(BETA3) <- NULL
@@ -230,7 +230,7 @@ data <- strsplit(output, "\n")
 data <- lapply(data, function(row) unlist(strsplit(row, ";")))
 data_frame <- as.data.frame(t(as.data.frame(data)))
 colnames(data_frame) <- data_frame[1,]
-TAU1 <- data_frame[-1,(n-3):(n-2)]
+TAU1 <- data_frame[-1, ] %>% select("TIME_PERIOD","OBS_VALUE")
 TAU1$OBS_VALUE <- as.numeric(TAU1$OBS_VALUE)
 TAU1 <- TAU1 %>% fill(names(.),.direction = "down")
 rownames(TAU1) <- NULL
@@ -243,7 +243,7 @@ data <- strsplit(output, "\n")
 data <- lapply(data, function(row) unlist(strsplit(row, ";")))
 data_frame <- as.data.frame(t(as.data.frame(data)))
 colnames(data_frame) <- data_frame[1,]
-TAU2 <- data_frame[-1,(n-3):(n-2)]
+TAU2 <- data_frame[-1, ] %>% select("TIME_PERIOD","OBS_VALUE")
 TAU2$OBS_VALUE <- as.numeric(TAU2$OBS_VALUE)
 TAU2 <- TAU2 %>% fill(names(.),.direction = "down")
 rownames(TAU2) <- NULL
