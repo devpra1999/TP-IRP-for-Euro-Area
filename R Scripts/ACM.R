@@ -110,7 +110,7 @@ ESTR <- matrix(0,T,n)
 for (i in 1:n){
   ESTR[,i] <- (delta0 + t(delta1 %*% matrix.power(phi,i) %*% t(X)))/ttm[1]
   #Correction term - adding it does not make a difference - accounts for mu
-  correction <- 0
+  correction <- delta1 %*% mu
   for (j in 1:(i-1)){
     correction <- correction + delta1 %*% matrix.power(phi,j) %*% mu
   }
@@ -132,5 +132,4 @@ end <- ymd(plot_dates[T]) %m+% period(paste(Y,"years"))
 plot_dates_proj <- seq(as.Date(start),as.Date(end), length.out = Y*12)
 
 plot(plot_dates_proj,ESTR[T,1:(Y*12)]*100,type = "l",
-     ylab = "Expected Rate",xlab = "Date", ylim = c(1.5,3.5),
-     main = "ACM Interest Rate Projection (3Y)")
+    ylab = "Expected Rate",xlab = "Date", main = "ACM Interest Rate Projection (3Y)")
