@@ -22,6 +22,17 @@ library(tidyverse)
 library(highcharter)
 library(markdown)
 library(plm)
+library(psych)
+library(pracma)
+library(zoo)
+library(lubridate)
+library(dplyr)
+#library(MASS)
+library(highcharter)
+library(matrixcalc)
+library(matlib)
+library(dplyr)
+library(readxl)
 
 source("Historical.R")
 source("ACM.R")
@@ -31,7 +42,7 @@ source("Plots.R")
 #FUNCTION TO ADD USER FORECAST BASED TERM PREMIA TO THE TABLE
 add_user_for <- function(df,rate_forecast,T=40){
   df %>%
-    mutate(User_EM = (1 - 1/T)*(rate_forecast[1] - lr$Rate) +
+    mutate(User_MP = (1 - 1/T)*(rate_forecast[1] - lr$Rate) +
              (1 - 2/T)*(rate_forecast[2] - rate_forecast[1]) +
              (1 - 3/T)*(rate_forecast[3] - rate_forecast[2]) +
              (1 - 4/T)*(rate_forecast[4] - rate_forecast[3]) +
@@ -44,13 +55,14 @@ add_user_for <- function(df,rate_forecast,T=40){
              (1 - 11/T)*(rate_forecast[11] - rate_forecast[10]) +
              (1 - 12/T)*(rate_forecast[12] - rate_forecast[11]) +
              lr$Rate,
-           User_TP = Yield_10Y - User_EM)
+           User_TP = Yield_10Y - User_MP) %>%
+    select(Country, Yield_10Y, User_MP,User_TP,everything())
 }
 
 ui <- navbarPage("Term Premia in the Euro Area",
         tabPanel("Methodology",
                  tags$iframe(style="height:800px; width:100%", src="Euro_Area_Term_Premia.pdf")),
-        tabPanel("Historical Yield Decompositions using Consensus Forecasts",
+        tabPanel("Yield Decompositions (Consensus)",
            highchartOutput("yieldplot"),
            htmlOutput("yield_decomposition"),
            p("Yield Decomposition using Consensus Forecasts",align = "center", style = "font-family: Lucida Grande, Lucida Sans Unicode; color: black; font-size: 18px"),
@@ -69,8 +81,8 @@ ui <- navbarPage("Term Premia in the Euro Area",
 #           highchartOutput("germany_acm_cf_mp"),
 #           highchartOutput("germany_acm_cf_tp")
         ),
-        tabPanel("Historical Yield Decompositions using Affine Model",
-                 h3("Case Study - Term Premia using Affine Term Structure Model"),
+        tabPanel("Yield Decompositions (ATSM)",
+                 h3("Case Study - Term Premia using Affine Term Structure Model (ATSM)"),
                  htmlOutput("ACM"),
                  highchartOutput("germany_acm"),
                  htmlOutput("ACM_compare"),
@@ -80,6 +92,7 @@ ui <- navbarPage("Term Premia in the Euro Area",
         tabPanel("Current Projections",
                  h3("Expected Path of short-term rates"),
                  highchartOutput("rateplot"),
+                 htmlOutput("proj_exp"),
                  fluidRow(
                    column(12, align="center", tableOutput('table'))
                  ),
@@ -194,18 +207,23 @@ server <- function(input, output) {
         NSS interpolation). The term premia is calculated using the risk neutral yields 
         (which are equivalent to the MP component).<br>
         <br>
-        This affine-model-based MP component and term premia are compare below - "
+        The MP component and term premia from the affine-based model, ACM, and from the Consensus 
+        Forecasts are compared below - "
+      )
+    })
+    
+    output$proj_exp <- renderUI({
+      HTML(
+        "The figure above plots the expected path of future short (monetary policy) 
+        rates using the naive model, consensus forecasts and ACM (affine) model. The 
+        table below lists the 10Y yield decompositions into the monetary policy component 
+        (MP) and the term premia (TP) computed using the 3 methods."
       )
     })
     
     output$prompt <- renderUI({
       HTML(
-        "The figure above plots the expected path of future short (monetary policy) 
-        rates using the naive model, consensus forecasts and ACM (affine) model. The 
-        first two are forecasts for 3-month rates, while the ACM model forecasts are 
-        for the 1-month rates.<br>
-        <br>
-        You can provide your own forecasts for the short-term (3 month) rates, and click
+        "You can provide your own forecasts for the short-term (3 month) rates, and click
         submit to get the current term premia estimates based on your forecasts for the 
         Euro Area countries. The default rates in the input boxes are the consensus forecasts
          for the respective period."
@@ -238,10 +256,14 @@ server <- function(input, output) {
                       type = "line", name = "Model estimate", color = "blue", lineWidth = 2, dashStyle = "Dash") %>%
         hc_add_series(data = data.frame(x = fut_date, y = fut_rate_consensus), hcaes(x = x, y = y),
                       type = "line", name = "Consensus forecast", color = "red", lineWidth = 2, dashStyle = "Dash") %>%
-        hc_add_series(data = data.frame(x = plot_dates[(T-3):T], y = fittedYields[(T-3):T,1]*100), hcaes(x = x, y = y),
-                      type = "line", name = "Historical_ACM (1M)", color = "black", lineWidth = 2, dashStyle = "Dash") %>%
-        hc_add_series(data = data.frame(x = plot_dates_proj, y = ESTR[T,1:36]*100), hcaes(x = x, y = y),
-                      type = "line", name = "ACM_Projection (1M)", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
+        #hc_add_series(data = data.frame(x = plot_dates[(T-3):T], y = fittedYields[(T-3):T,1]*100), hcaes(x = x, y = y),
+        #              type = "line", name = "Historical_ACM (1M)", color = "black", lineWidth = 2, dashStyle = "Dash") %>%
+        #hc_add_series(data = data.frame(x = plot_dates_proj, y = ESTR[T,1:36]*100), hcaes(x = x, y = y),
+        #              type = "line", name = "ACM_Projection (1M)", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
+        hc_add_series(data = data.frame(x = plot_dates[(T-14):T], y = fittedYields[(T-14):T,3]*100), hcaes(x = x, y = y),
+                      type = "line", name = "Historical_ACM (3M)", color = "black", lineWidth = 2, dashStyle = "Dash") %>%
+        hc_add_series(data = data.frame(x = plot_dates_proj_3, y = append(ESTR_3[T,seq(3, by = 3, length.out = 12)],fittedYields[T,1],after=0)*100), hcaes(x = x, y = y),
+                      type = "line", name = "ACM_Projection (3M)", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
         hc_add_series(data = data.frame(x = fut_date, y = append(lr$Rate, user_forecasts())), hcaes(x = x, y = y),
                       type = "line", name = "User forecast", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
         hc_legend(

@@ -152,7 +152,7 @@ s3$y <- round(s3$y,2)
 s4 <- as.data.frame(cbind(as.Date(plot_dates),rep(0,length(plot_dates))))
 names(s4) <- c("x","y")
 s4$x <- as.Date(s4$x)
-s5 <- as.data.frame(cbind(plot_dates,MP_ACM*100))
+s5 <- as.data.frame(cbind(plot_dates,MP_ACM_3*100))
 names(s5) <- c("x","y")
 s5$x <- as.Date(s5$x)
 s5$y <- round(s5$y,2)
@@ -188,7 +188,7 @@ Germany_ACM_CF_TP <- highchart() %>%
   hc_add_series(s2, "line", hcaes(x, y), name = "Consensus TP", color = "blue") %>%
   hc_add_series(s4, "line", hcaes(x, y), name = "", dashStyle = "dot", color = "black",
                 showInLegend = FALSE) %>%
-  hc_title(text = "ACM vs CF Term Premia - Germany") %>%
+  hc_title(text = "ACM vs Consensus Term Premia - Germany") %>%
   hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
   hc_yAxis(title = list(text = "Yield & Term Premia"), min = -2, max = 4) %>%
   hc_legend(enabled = TRUE) %>%
@@ -211,7 +211,7 @@ Germany_ACM_CF_MP <- highchart() %>%
   hc_add_series(s2, "line", hcaes(x, y), name = "Consensus MP", color = "blue") %>%
   hc_add_series(s4, "line", hcaes(x, y), name = "", dashStyle = "dot", color = "black",
                 showInLegend = FALSE) %>%
-  hc_title(text = "ACM vs CF Monetary Policy Component - Germany") %>%
+  hc_title(text = "ACM vs Consensus Monetary Policy Component - Germany") %>%
   hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
   hc_yAxis(title = list(text = "Yield & Term Premia"), min = -2, max = 4) %>%
   hc_legend(enabled = TRUE) %>%
@@ -227,10 +227,14 @@ Projections <- highchart() %>%
                 type = "line", name = "Naive Model estimate", color = "blue", lineWidth = 2, dashStyle = "Dash") %>%
   hc_add_series(data = data.frame(x = fut_date, y = fut_rate_consensus), hcaes(x = x, y = y),
                 type = "line", name = "Consensus forecast", color = "red", lineWidth = 2, dashStyle = "Dash") %>%
-  hc_add_series(data = data.frame(x = plot_dates[(T-14):T], y = fittedYields[(T-14):T,1]*100), hcaes(x = x, y = y),
-                type = "line", name = "ACM Model Fitted 1M", color = "black", lineWidth = 2, dashStyle = "Dash") %>%
-  hc_add_series(data = data.frame(x = plot_dates_proj, y = append(ESTR[T,1:36],fittedYields[T,1],after=0)*100), hcaes(x = x, y = y),
-                type = "line", name = "ACM_Projected_1M", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
+  #hc_add_series(data = data.frame(x = plot_dates[(T-3):T], y = fittedYields[(T-3):T,1]*100), hcaes(x = x, y = y),
+  #              type = "line", name = "Historical_ACM (1M)", color = "black", lineWidth = 2, dashStyle = "Dash") %>%
+  #hc_add_series(data = data.frame(x = plot_dates_proj, y = ESTR[T,1:36]*100), hcaes(x = x, y = y),
+  #              type = "line", name = "ACM_Projection (1M)", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
+  hc_add_series(data = data.frame(x = plot_dates[(T-14):T], y = fittedYields[(T-14):T,3]*100), hcaes(x = x, y = y),
+                type = "line", name = "Historical_ACM (3M)", color = "black", lineWidth = 2, dashStyle = "Dash") %>%
+  hc_add_series(data = data.frame(x = plot_dates_proj_3, y = append(ESTR_3[T,seq(3, by = 3, length.out = 12)],fittedYields[T,1],after=0)*100), hcaes(x = x, y = y),
+                type = "line", name = "ACM_Projection (3M)", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
   hc_legend(
     layout = "horizontal",
     align = "center",
