@@ -36,19 +36,24 @@ fut_rate_consensus[2:13] <- as.numeric(as.vector(lr[1,i:(i+11)]))
 Countries <- c("Germany","France","Spain","Italy")
 
 Yield_10Y <- c(lr$Yield_Germany, lr$Yield_France, lr$Yield_Spain, lr$Yield_Italy)
-Model_ER <- fut_rate_mod[2:5]
-Model_EM <- c(lr$Yield_Germany-lr$TP_Germany, lr$Yield_France-lr$TP_France,
+NaiveModel_ER <- fut_rate_mod[2:5]
+NaiveModel_EM <- c(lr$Yield_Germany-lr$TP_Germany, lr$Yield_France-lr$TP_France,
               lr$Yield_Spain-lr$TP_Spain, lr$Yield_Italy-lr$TP_Italy)
-Model_TP <- c(lr$TP_Germany, lr$TP_France, lr$TP_Spain, lr$TP_Italy)
+NaiveModel_TP <- c(lr$TP_Germany, lr$TP_France, lr$TP_Spain, lr$TP_Italy)
 Consensus_ER <- fut_rate_consensus[2:13]
 Consensus_EM <- c(lr$Yield_Germany-lr$TP_cf_Germany,  lr$Yield_France-lr$TP_cf_France,
                   lr$Yield_Spain-lr$TP_cf_Spain, lr$Yield_Italy-lr$TP_cf_Italy)
 Consensus_TP <-  c(lr$TP_cf_Germany, lr$TP_cf_France, lr$TP_cf_Spain, lr$TP_cf_Italy)
 
-User_EM <- rep(NA,4)
-User_TP <- rep(NA,4)
+ACM_EM <- rep(NA,4)
+ACM_TP <- rep(NA,4)
+ACM_EM[1] <- RiskFreeYields[dim(RiskFreeYields)[1],120]*100
+ACM_TP[1] <- termpremia[dim(termpremia)[1],120]*100
 
-main_table <- data.frame(Countries, Yield_10Y, Model_EM, Model_TP, Consensus_EM,
-                         Consensus_TP,User_EM, User_TP)
+#User_EM <- rep(NA,4)
+#User_TP <- rep(NA,4)
+
+main_table <- data.frame(Countries, Yield_10Y, NaiveModel_EM, NaiveModel_TP, Consensus_EM,
+                         Consensus_TP,ACM_EM,ACM_TP)
 
 #rm(list=ls()[! ls() %in% c("master_df","Rate_df", "mod", "main_table", "recent_data", "lr", "fut_date","fut_rate_mod","fut_rate_consensus")])

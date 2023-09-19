@@ -50,7 +50,7 @@ add_user_for <- function(df,rate_forecast,T=40){
 ui <- navbarPage("Term Premia in the Euro Area",
         tabPanel("Methodology",
                  tags$iframe(style="height:800px; width:100%", src="Euro_Area_Term_Premia.pdf")),
-        tabPanel("Historical Data",
+        tabPanel("Historical Yield Decompositions using Consensus Forecasts",
            highchartOutput("yieldplot"),
            htmlOutput("yield_decomposition"),
            p("Yield Decomposition using Consensus Forecasts",align = "center", style = "font-family: Lucida Grande, Lucida Sans Unicode; color: black; font-size: 18px"),
@@ -69,7 +69,7 @@ ui <- navbarPage("Term Premia in the Euro Area",
 #           highchartOutput("germany_acm_cf_mp"),
 #           highchartOutput("germany_acm_cf_tp")
         ),
-        tabPanel("Affine Model",
+        tabPanel("Historical Yield Decompositions using Affine Model",
                  h3("Case Study - Term Premia using Affine Term Structure Model"),
                  htmlOutput("ACM"),
                  highchartOutput("germany_acm"),
@@ -80,6 +80,9 @@ ui <- navbarPage("Term Premia in the Euro Area",
         tabPanel("Current Projections",
                  h3("Expected Path of short-term rates"),
                  highchartOutput("rateplot"),
+                 fluidRow(
+                   column(12, align="center", tableOutput('table'))
+                 ),
                  htmlOutput("prompt"),
                  h3("Your Forecasts for Short-Term Rates"),
                  fixedRow(
@@ -106,7 +109,7 @@ ui <- navbarPage("Term Premia in the Euro Area",
                  highchartOutput("rateplot_user"),
                  h3("Yield Decompostions"),
                  fluidRow(
-                   column(12, align="center", tableOutput('table'))
+                   column(12, align="center", tableOutput('table_user'))
                  )
         )
 )
@@ -204,34 +207,18 @@ server <- function(input, output) {
         <br>
         You can provide your own forecasts for the short-term (3 month) rates, and click
         submit to get the current term premia estimates based on your forecasts for the 
-        Euro Area countries."
+        Euro Area countries. The default rates in the input boxes are the consensus forecasts
+         for the respective period."
       )
     })
     
     output$rateplot <- renderHighchart({
-      highchart() %>%
-        hc_xAxis(type = "datetime", dateTimeLabelFormats = list(month = "%b %Y")) %>%
-        hc_yAxis(title = list(text = "Interest Rate"), min = -1, max = 5) %>%
-        hc_add_series(data = recent_data, hcaes(x = Date, y = Rate),
-                      type = "line", name = "Historical", color = "black", lineWidth = 2) %>%
-        hc_add_series(data = data.frame(x = fut_date, y = fut_rate_mod), hcaes(x = x, y = y),
-                      type = "line", name = "Model estimate", color = "blue", lineWidth = 2, dashStyle = "Dash") %>%
-        hc_add_series(data = data.frame(x = fut_date, y = fut_rate_consensus), hcaes(x = x, y = y),
-                      type = "line", name = "Consensus forecast", color = "red", lineWidth = 2, dashStyle = "Dash") %>%
-        hc_add_series(data = data.frame(x = plot_dates[(T-3):T], y = fittedYields[(T-3):T,1]*100), hcaes(x = x, y = y),
-                      type = "line", name = "Historical_ACM (1M)", color = "black", lineWidth = 2, dashStyle = "Dash") %>%
-        hc_add_series(data = data.frame(x = plot_dates_proj, y = ESTR[T,1:36]*100), hcaes(x = x, y = y),
-                      type = "line", name = "ACM_Projection (1M)", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
-        hc_legend(
-          layout = "horizontal",
-          align = "center",
-          verticalAlign = "bottom",
-          itemWidth = 200,
-          itemStyle = list(textOverflow = "ellipsis")
-        ) %>%
-        hc_boost(enabled = TRUE) %>%
-        hc_exporting(enabled = TRUE)
+      Projections
     })
+    
+    output$table <- renderTable({
+      main_table
+    }, bordered = TRUE, align = "c")
     
     #DEFINE REACTIVE FUNCTION FOR INPUTS-------------------------------------------------------
     user_forecasts <- eventReactive(input$go, {
@@ -268,7 +255,7 @@ server <- function(input, output) {
         hc_exporting(enabled = TRUE)
     })
     
-    output$table <- renderTable({
+    output$table_user <- renderTable({
       add_user_for(main_table,user_forecasts())
     }, bordered = TRUE, align = "c")
 }

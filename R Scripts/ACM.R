@@ -26,6 +26,7 @@ rx_maturities = c(6,18,24,36,48,60,84,120)
 ttm = c(1:N)*(1/12)
 logPrices = t(t(-rawYields)*ttm)
 rf =  -1*logPrices[1:T,1]
+rf_3 =  -1*logPrices[1:T,3]
 rx =  logPrices[2:T, 1:(N-1)] - logPrices[1:(T-1), 2:N] - rf[-T]
 
 # K Principal Components
@@ -74,6 +75,9 @@ delta0 <- coef(mod3)[1]
 delta1 <- coef(mod3)[-1]
 A[1] = -delta0 + 0.5*(sigmasq_ret)
 B[, 1] = - delta1
+mod3_3 <- lm(rf_3~X)
+delta0_3 <- coef(mod3_3)[1]
+delta1_3 <- coef(mod3_3)[-1]
 for (i in 2:N){
   A[i]  = A[i-1] + t(B[, i-1]) %*% (mu-lambda0) + 0.5 * (t(B[, i-1]) %*% Sigma %*% B[, i-1] + sigmasq_ret) - delta0
   B[,i] = t(B[, i-1]) %*% (phi - lambda1) - delta1
@@ -114,7 +118,7 @@ for (i in 1:n){
   for (j in 1:(i-1)){
     correction <- correction + delta1 %*% matrix.power(phi,j) %*% mu
   }
-  ESTR[,i] <- ESTR[,i] + matrix(correction,1,T)
+  ESTR[,i] <- ESTR[,i] + matrix(correction,1,T)/ttm[1]
 }
 
 #Monetary Policy Component from ACM model as per our methodology 
@@ -123,13 +127,31 @@ for (i in 2:n){
   MP_ACM <- MP_ACM + (1-i/n)*(ESTR[,i] - ESTR[,i-1])
 }
 
+n <- 120
+ESTR_3 <- matrix(0,T,n)
+for (i in 3:n){
+  ESTR_3[,i] <- (delta0_3 + t(delta1_3 %*% matrix.power(phi,i) %*% t(X)))/ttm[3]
+  #Correction term - adding it does not make a difference - accounts for mu
+  correction <- delta1_3 %*% mu
+  for (j in 1:(i-1)){
+    correction <- correction + delta1_3 %*% matrix.power(phi,j) %*% mu
+  }
+  ESTR_3[,i] <- ESTR_3[,i] + matrix(correction,1,T)/ttm[3]
+}
+n <- 40
+MP_ACM_3 <- ESTR_3[,3] + (1-1/n) * (ESTR_3[,3] - fittedYields[,3])
+for (i in seq(6,120,3)){
+  MP_ACM_3 <- MP_ACM_3 + (1-i/(3*n))*(ESTR_3[,i] - ESTR_3[,i-3])
+}
+
 #Plotting Interest Rate Projections
 #Start date - 1 month ahead of the last observation
-start <- ymd(plot_dates[T]) %m+% period("1 month")
+start <- ymd(plot_dates[T])
+start_3 <- ymd(plot_dates[T])
+
 #End date - "Y" years ahead
 Y <- 3
 end <- ymd(plot_dates[T]) %m+% period(paste(Y,"years"))
-plot_dates_proj <- seq(as.Date(start),as.Date(end), length.out = Y*12)
 
-plot(plot_dates_proj,ESTR[T,1:(Y*12)]*100,type = "l",
-    ylab = "Expected Rate",xlab = "Date", main = "ACM Interest Rate Projection (3Y)")
+plot_dates_proj <- seq(as.Date(start),as.Date(end), length.out = Y*12 + 1)
+plot_dates_proj_3 <- seq(as.Date(start_3),as.Date(end), length.out = Y*4 + 1)

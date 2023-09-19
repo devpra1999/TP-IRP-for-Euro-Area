@@ -165,7 +165,7 @@ Germany_Term_Premia_ACM <- highchart() %>%
                 showInLegend = FALSE) %>%
   hc_add_series(s5, "line", hcaes(x, y), name = "Monetary Policy", color = "grey",
                 dashStyle = "dash") %>%
-  hc_title(text = "ACM based 10Y Term Premia - Germany") %>%
+  hc_title(text = "Yield Decomposition using ACM Model - Germany") %>%
   hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
   hc_yAxis(title = list(text = "Yield & Term Premia"), min = -2, max = 6) %>%
   hc_legend(enabled = TRUE) %>%
@@ -215,6 +215,52 @@ Germany_ACM_CF_MP <- highchart() %>%
   hc_xAxis(type = "datetime", title = list(text = "Date")) %>%
   hc_yAxis(title = list(text = "Yield & Term Premia"), min = -2, max = 4) %>%
   hc_legend(enabled = TRUE) %>%
+  hc_boost(enabled = TRUE) %>%
+  hc_exporting(enabled = TRUE)
+
+Projections <- highchart() %>%
+  hc_xAxis(type = "datetime", dateTimeLabelFormats = list(month = "%b %Y")) %>%
+  hc_yAxis(title = list(text = "Interest Rate"), min = -1, max = 5) %>%
+  hc_add_series(data = recent_data, hcaes(x = Date, y = Rate),
+                type = "line", name = "Observed 3M rates", color = "black", lineWidth = 2) %>%
+  hc_add_series(data = data.frame(x = fut_date, y = fut_rate_mod), hcaes(x = x, y = y),
+                type = "line", name = "Naive Model estimate", color = "blue", lineWidth = 2, dashStyle = "Dash") %>%
+  hc_add_series(data = data.frame(x = fut_date, y = fut_rate_consensus), hcaes(x = x, y = y),
+                type = "line", name = "Consensus forecast", color = "red", lineWidth = 2, dashStyle = "Dash") %>%
+  hc_add_series(data = data.frame(x = plot_dates[(T-14):T], y = fittedYields[(T-14):T,1]*100), hcaes(x = x, y = y),
+                type = "line", name = "ACM Model Fitted 1M", color = "black", lineWidth = 2, dashStyle = "Dash") %>%
+  hc_add_series(data = data.frame(x = plot_dates_proj, y = append(ESTR[T,1:36],fittedYields[T,1],after=0)*100), hcaes(x = x, y = y),
+                type = "line", name = "ACM_Projected_1M", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
+  hc_legend(
+    layout = "horizontal",
+    align = "center",
+    verticalAlign = "bottom",
+    itemWidth = 200,
+    itemStyle = list(textOverflow = "ellipsis")
+  ) %>%
+  hc_boost(enabled = TRUE) %>%
+  hc_exporting(enabled = TRUE)
+
+Projections_3 <- highchart() %>%
+  hc_xAxis(type = "datetime", dateTimeLabelFormats = list(month = "%b %Y")) %>%
+  hc_yAxis(title = list(text = "Interest Rate"), min = -1, max = 5) %>%
+  hc_add_series(data = recent_data, hcaes(x = Date, y = Rate),
+                type = "line", name = "Observed 3M rates", color = "black", lineWidth = 2) %>%
+  hc_add_series(data = data.frame(x = fut_date, y = fut_rate_mod), hcaes(x = x, y = y),
+                type = "line", name = "Naive Model estimate", color = "blue", lineWidth = 2, dashStyle = "Dash") %>%
+  hc_add_series(data = data.frame(x = fut_date, y = fut_rate_consensus), hcaes(x = x, y = y),
+                type = "line", name = "Consensus forecast", color = "red", lineWidth = 2, dashStyle = "Dash") %>%
+  hc_add_series(data = data.frame(x = plot_dates[(T-14):T], y = fittedYields[(T-14):T,3]*100), hcaes(x = x, y = y),
+                type = "line", name = "ACM Model Fitted 3M", color = "black", lineWidth = 2, dashStyle = "Dash") %>%
+  hc_add_series(data = data.frame(x = plot_dates_proj_3, y = append(ESTR_3[T,seq(from = 3, length.out = (Y*4), by = 3)],fittedYields[T,3], after = 0)*100), hcaes(x = x, y = y),
+                type = "line", name = "ACM_Projected_3M", color = "brown", lineWidth = 2, dashStyle = "Dash") %>%
+  hc_legend(
+    layout = "horizontal",
+    align = "center",
+    verticalAlign = "bottom",
+    itemWidth = 200,
+    itemStyle = list(textOverflow = "ellipsis")
+  ) %>%
   hc_boost(enabled = TRUE) %>%
   hc_exporting(enabled = TRUE)
   
