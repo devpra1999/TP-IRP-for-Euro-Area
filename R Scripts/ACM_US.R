@@ -1,0 +1,145 @@
+#Zero Coupon Yields
+N = 120
+source("NSS.R")
+L <- nss_yields("Data_Files/USnss.csv",N)
+rawYields <- L$rawYields/100
+plot_dates_US <- L$plot_dates
+Yields <- as.matrix(rawYields)
+Yields <- zoo(Yields,plot_dates_US)
+colnames(Yields) <- paste("n",seq(1,N),sep = "_")
+T = nrow(Yields)
+
+# Use excess returns at these maturities to estimate the model.
+rx_maturities = c(6,18,24,36,48,60,84,120) 
+ttm = c(1:N)*(1/12)
+logPrices = t(t(-rawYields)*ttm)
+rf =  -1*logPrices[1:T,1]
+#rf_3 =  -1*logPrices[1:T,3]
+rx =  logPrices[2:T, 1:(N-1)] - logPrices[1:(T-1), 2:N] - rf[-T]
+
+# K Principal Components
+K=5
+demeanedyield = scale(Yields,scale = FALSE)
+k = prcomp((demeanedyield))
+yieldPCs = demeanedyield %*% (k$rotation)
+
+#Step 1 - estimate VAR(1) for the time series of pricing factors
+X <- zoo(yieldPCs[,1:K],plot_dates_US)
+X_t1 <-  X[2:T,] 
+X_t <-  X[1:(T-1),]
+mod1 <- lm(X_t1 ~ X_t)
+mu <- coef(mod1)[1,]
+phi <- t(coef(mod1)[-1,])
+v <- mod1$residuals
+Sigma <-  t(v)%*%v/nrow(v)
+
+#Step 2 - regress log excess returns
+rx_maturities <- c(6, 18, 24, 36, 48, 60, 84, 120)
+selected_rx <- t(rx[,rx_maturities-1])
+VX <- as.matrix(bind_cols(v,X_t))
+mod2 <- lm(t(selected_rx) ~ VX)
+coefficients <- coef(mod2)
+
+a <- coefficients[1,]
+beta <- coefficients[2:(K+1), ]
+c <- coefficients[(K+2):nrow(coefficients),]
+
+E <- mod2$residuals
+sigmasq_ret = tr(t(E) %*% E)/(nrow(E)*ncol(E))
+
+#Step 3 - Run cross-sectional regressions
+quad_form <- function(b){
+  c(outer(b,b))
+}
+BStar <- t(apply(t(beta),1,quad_form))
+lambda0 <- Ginv(t(beta)) %*% (a + 0.5*((BStar %*% c(Sigma)) + sigmasq_ret))
+lambda1 <- Ginv(t(beta)) %*% t(c)
+
+#Recursions for bond pricing
+A <- rep(0,N)
+B <- matrix(0,K,N)
+mod3 <- lm(rf ~ X)
+delta0 <- coef(mod3)[1]
+delta1 <- coef(mod3)[-1]
+A[1] = -delta0 + 0.5*(sigmasq_ret)
+B[, 1] = - delta1
+#mod3_3 <- lm(rf_3~X)
+#delta0_3 <- coef(mod3_3)[1]
+#delta1_3 <- coef(mod3_3)[-1]
+for (i in 2:N){
+  A[i]  = A[i-1] + t(B[, i-1]) %*% (mu-lambda0) + 0.5 * (t(B[, i-1]) %*% Sigma %*% B[, i-1] + sigmasq_ret) - delta0
+  B[,i] = t(B[, i-1]) %*% (phi - lambda1) - delta1
+}
+
+
+#Recursions for Risk Free Yields
+A_rf <- rep(0,N)
+B_rf <- matrix(0,K,N)
+A_rf[1] = -delta0 + 0.5*(sigmasq_ret)
+B_rf[, 1] = - delta1
+lambda0 = matrix(0,K,1)
+lambda1 = matrix(0,K,K)
+for (i in 2:N){
+  A_rf[i]  = A_rf[i-1] + t(B_rf[, i-1]) %*% (mu-lambda0) + 0.5 * (t(B_rf[, i-1]) %*% Sigma %*% B_rf[, i-1] + sigmasq_ret) - delta0
+  B_rf[,i] = t(B_rf[, i-1]) %*% (phi - lambda1) - delta1
+}
+
+#FITTED YIELDS
+fittedLogPrices_US = t(as.vector(t(A)) + t(B) %*% t(X))
+fittedYields_US = - t(t(fittedLogPrices_US) / ttm)
+
+#RISK NEUTRAL YIELDS
+RiskFreeLogPrices_US = t(as.vector(t(A_rf)) + t(B_rf) %*% t(X))
+RiskFreeYields_US = - t(t(RiskFreeLogPrices_US) / ttm)
+
+#TERM PREMIA
+termpremia_US = fittedYields_US - RiskFreeYields_US
+
+#Computing model expected short rates
+#We make a Txn matrix with each row containing 1 to "n" months ahead model implied rates
+n <- 120 #Time till which forecasts are made
+ESTR_US <- matrix(0,T,n)
+for (i in 1:n){
+  ESTR_US[,i] <- (delta0 + t(delta1 %*% matrix.power(phi,i) %*% t(X)))/ttm[1]
+  #Correction term - adding it does not make a difference - accounts for mu
+  correction <- delta1 %*% mu
+  for (j in 1:(i-1)){
+    correction <- correction + delta1 %*% matrix.power(phi,j) %*% mu
+  }
+  ESTR_US[,i] <- ESTR_US[,i] + matrix(correction,1,T)/ttm[1]
+}
+
+#Monetary Policy Component from ACM model as per our methodology 
+MP_ACM_US <- ESTR_US[,1] + (1-1/n) * (ESTR_US[,1] - fittedYields_US[,1])
+for (i in 2:n){
+  MP_ACM_US <- MP_ACM_US + (1-i/n)*(ESTR_US[,i] - ESTR_US[,i-1])
+}
+
+#n <- 120
+#ESTR_3 <- matrix(0,T,n)
+#for (i in 3:n){
+#  ESTR_3[,i] <- (delta0_3 + t(delta1_3 %*% matrix.power(phi,i) %*% t(X)))/ttm[3]
+#  #Correction term - adding it does not make a difference - accounts for mu
+#  correction <- delta1_3 %*% mu
+#  for (j in 1:(i-1)){
+#    correction <- correction + delta1_3 %*% matrix.power(phi,j) %*% mu
+#  }
+#  ESTR_3[,i] <- ESTR_3[,i] + matrix(correction,1,T)/ttm[3]
+#}
+#n <- 40
+#MP_ACM_3 <- ESTR_3[,3] + (1-1/n) * (ESTR_3[,3] - fittedYields[,3])
+#for (i in seq(6,120,3)){
+#  MP_ACM_3 <- MP_ACM_3 + (1-i/(3*n))*(ESTR_3[,i] - ESTR_3[,i-3])
+#}
+
+#Plotting Interest Rate Projections
+#Start date - 1 month ahead of the last observation
+start <- ymd(plot_dates_US[T])
+#start_3 <- ymd(plot_dates_US[T])
+
+#End date - "Y" years ahead
+Y <- 3
+end <- ymd(plot_dates_US[T]) %m+% period(paste(Y,"years"))
+
+plot_dates_US_proj <- seq(as.Date(start),as.Date(end), length.out = Y*12 + 1)
+#plot_dates_US_US_proj_3 <- seq(as.Date(start_3),as.Date(end), length.out = Y*4 + 1)

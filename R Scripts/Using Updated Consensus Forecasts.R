@@ -1,36 +1,37 @@
-#Function for linear interpolation - standard linear interpolation functions do not work well if there are terminal NA values
-linear_interpolation <- function(x){
-  if (is.na(x[1])){
-    return(x)
-  }
-  curr <- 4
-  for (i in 5:length(x)){
-    if (is.na(x[i])){
-      if (i!=length(x)){
-        next
-      }
-      else{
-        temp <- x[curr]
-        for (j in (curr+1):i){
-          x[j] <- temp + diff
-          temp <- x[j]
+linear_interpolation <- function(x) {
+  n <- length(x)
+  non_na_indices <- which(!is.na(x))
+  if (length(non_na_indices) == 0) return(x)  # If all values are NA, return x
+  curr <- non_na_indices[1] 
+  last_diff <- NA
+  for (i in (curr + 1):n) {
+    if (is.na(x[i])) {
+      next_non_na <- which(!is.na(x[i:n]))[1] + (i - 1)
+      if (is.na(next_non_na) || next_non_na > n) {  
+        # No more non-NA values, Use last known `diff` for forward fill
+        if (!is.na(last_diff)) {
+          temp <- x[curr]
+          for (j in (curr + 1):n) {
+            x[j] <- temp + last_diff
+            temp <- x[j]
+          }
         }
+        break
       }
-    }
-    else{
-      if ((i-curr)>1){
-        diff <- (x[i] - x[curr])/(i-curr)
-        temp <- x[curr]
-        for (j in (curr+1):(i-1)){
-          x[j] <- temp + diff
-          temp <- x[j]
-        }
+      last_diff <- (x[next_non_na] - x[curr]) / (next_non_na - curr)
+      # Fill missing values between `curr` and `next_non_na`
+      temp <- x[curr]
+      for (j in (curr + 1):(next_non_na - 1)) {
+        x[j] <- temp + last_diff
+        temp <- x[j]
       }
-      curr <- i
-    }
+      curr <- next_non_na  # Update `curr` to the new non-NA value
+    } else {curr <- i}
   }
   return(x)
 }
+
+
 
 #Remove NAs and start dates from 2010
 df <- df %>% filter(!is.na(Yield)) %>% filter(Date >= "2010-04-01")
@@ -39,9 +40,12 @@ df <- df %>% filter(!is.na(Yield)) %>% filter(Date >= "2010-04-01")
 i <- grep("Q1_forecast", colnames(df))
 j <- grep("Q12_forecast", colnames(df))
 #temp <- as.data.frame(t(na.spline(t(df[,i:j]))))
-temp <- as.data.frame(t(apply(df[,i:j],1,linear_interpolation)))
-colnames(temp) <- colnames(df[i:j])
-df <- cbind(df[,1:i-1],temp)
+#temp <- as.data.frame(t(apply(df[,i:j],1,linear_interpolation)))
+for (k in 1:nrow(df)){
+  df[k,i:j] <- t(linear_interpolation(as.numeric(df[k,i:j])))
+}
+#colnames(temp) <- colnames(df[i:j])
+#df <- cbind(df[,1:i-1],temp)
 
 #CALCULATING TERM PREMIA USING CONSENSUS FORECASTS
 T <- 40
@@ -63,7 +67,7 @@ df$TP_cf <- df$Spread - df$sum_Er_cf
 
 # Final dataframe - columns reordered
 df <- df %>%
-  select(Date, Yield, Rate, Spread, Excess_Return, HPR, TP, TP_cf, sum_Er, sum_Er_cf, Q1_forecast,
+  select(Date, Yield, Rate, Spread, TP_cf, sum_Er_cf, Q1_forecast,
          Q2_forecast, Q3_forecast, Q4_forecast, Q5_forecast, Q6_forecast, Q7_forecast,
          Q8_forecast, Q9_forecast, Q10_forecast, Q11_forecast, Q12_forecast)
 

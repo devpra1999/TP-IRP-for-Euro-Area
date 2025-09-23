@@ -2,7 +2,7 @@
 #Or equivalently dy_t = rho*dy_t-1 + e_t
 
 #Estimation of coefficient for the lag (rho)
-dt = 3
+dt = 1
 mod <- lm(Rate_df$FD_Rate ~ dplyr::lag(Rate_df$FD_Rate,dt) - 1)
 rho = mod$coefficients[1]
 
@@ -28,7 +28,7 @@ df$TP <- df$Spread - sum_Er
 df$sum_Er <- sum_Er
 
 df <- df %>%
-  select(Date, Yield, Rate, Spread, Excess_Return, HPR, sum_Er, TP, Q1_forecast, Q2_forecast, Q3_forecast, Q4_forecast,
+  select(Date, Yield, Rate, Spread, sum_Er, TP, Q1_forecast, Q2_forecast, Q3_forecast, Q4_forecast,
          Q5_forecast, Q6_forecast, Q7_forecast, Q8_forecast, Q9_forecast, Q10_forecast,
          Q11_forecast, Q12_forecast)
 

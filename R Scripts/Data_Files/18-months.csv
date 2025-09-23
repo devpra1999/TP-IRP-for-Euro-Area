@@ -1,20 +1,17 @@
-Data Source in SDW: null
-,SPF.A.U2.ASSU.IR.P18M.Q.AVG
-,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey
-Collection:,Average of observations through period (A)
-Period\Unit:,[Percent per annum ]
-,,obs. status
-2024,4.05,Forecast value (F)
-2023,1.53,Forecast value (F)
-2022,0.00,Forecast value (F)
-2021,-0.08,Forecast value (F)
-2020,0.01,Forecast value (F)
-2019,0.14,Forecast value (F)
-2018,0.04,Forecast value (F)
-2017,-0.00,Forecast value (F)
-2016,0.06,Forecast value (F)
-2015,0.17,Forecast value (F)
-2014,0.46,Forecast value (F)
-2013,0.74,Forecast value (F)
-2012,2.20,Forecast value (F)
-2011,1.34,Forecast value (F)
+KEY,FREQ,REF_AREA,FCT_TOPIC,FCT_BREAKDOWN,FCT_HORIZON,SURVEY_FREQ,FCT_SOURCE,TIME_PERIOD,OBS_VALUE,OBS_STATUS,OBS_CONF,OBS_PRE_BREAK,OBS_COM,SURVEY_ROUND,TIME_FORMAT,COLLECTION,COMPILING_ORG,DISS_ORG,DECIMALS,SOURCE_AGENCY,TITLE,TITLE_COMPL,UNIT,UNIT_MULT
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2011,1.3439673913043482,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2012,2.1971590909090906,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2013,0.7430000000000001,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2014,0.4552222222222222,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2015,0.16810000000000008,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2016,0.0617708333333333,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2017,-0.004565217391304345,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2018,0.04034374999999999,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2019,0.13730952380816328,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2020,0.008604651162790697,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2021,-0.07777777777777778,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2022,0,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2023,1.5291666666666666,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2024,4.049236724565217,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2025,2.985702162790698,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0
+SPF.A.U2.ASSU.IR.P18M.Q.AVG,A,U2,ASSU,IR,P18M,Q,AVG,2026,1.836223404255319,F,F,,,,P1Y,A,,,2,4F0,Euro area - Assumptions for - Average of Interest rate - Target period ends 18 months after survey cycle begins,Euro area (changing composition) - Assumptions - Interest rate - Target period ends 18 months after survey cycle begins - Quarterly survey,PCPA,0

@@ -10,6 +10,7 @@ nss_yields <- function(filename, n_maturities) {
                   arrange(Date) %>%
                   filter(row_number()==1) 
   
+  data$Date <- floor_date(data$Date,unit = "month")
   # Nelson, Svensson, Siegel yield curve parameterization
   nss_yield <- function(n) {
     Beta0 <- data$BETA0

@@ -5,6 +5,8 @@ library(tidyr)
 
 #Read all the data files
 source("Loading Data.R")
+Y_st <- Y_st[seq(1,nrow(Y_st),by=3),]
+f_3 <- rbind(f_3,c(as.Date("2024-12-01"),as.numeric(2.75)))
 
 #Fetch the function for building database - each country has a different database
 source("Build_Database.R")
@@ -36,10 +38,7 @@ for (z in 1:length(long_yield_list)){
 for (i in 1:length(country_list)){
   df_list[[i]] <- plyr::rename(df_list[[i]],c(Yield = paste("Yield",country_list[i],sep="_"),
                                           Spread = paste("Spread",country_list[i],sep="_"),
-                                          TP = paste("TP",country_list[i],sep="_"),
-                                          TP_cf = paste("TP_cf",country_list[i],sep="_"),
-                                          HPR = paste("HPR",country_list[i],sep="_"),
-                                          Excess_Return = paste("Excess_Return",country_list[i],sep="_")))
+                                          TP_cf = paste("TP_cf",country_list[i],sep="_")))
   
   temp <- paste("df",country_list[i],sep = "_")
   assign(temp,df_list[[i]])
@@ -47,21 +46,22 @@ for (i in 1:length(country_list)){
 
 #MASTER DATASET-------------------------------------------------------------------
 master_df <- Reduce(function (...) { merge(..., by = , all = FALSE) },df_list)
-col_order <- c("Date", "Rate", "sum_Er", "sum_Er_cf","Yield_Germany", "Spread_Germany", "HPR_Germany",
-               "TP_Germany", "TP_cf_Germany", "Yield_France", "Spread_France", "HPR_France", "TP_France",
-               "TP_cf_France", "Yield_Spain", "Spread_Spain", "HPR_Spain", "TP_Spain", "TP_cf_Spain",
-               "Yield_Italy", "Spread_Italy", "HPR_Italy", "TP_Italy", "TP_cf_Italy",
-               "Excess_Return_Germany", "Excess_Return_France", "Excess_Return_Italy", "Excess_Return_Spain", 
-               "Q1_forecast", "Q2_forecast", "Q3_forecast", "Q4_forecast", "Q5_forecast", "Q6_forecast",
-               "Q7_forecast", "Q8_forecast", "Q9_forecast", "Q10_forecast", "Q11_forecast",
-               "Q12_forecast")
+col_order <- c("Date", "Rate", "sum_Er_cf","Yield_Germany", "Spread_Germany", "TP_cf_Germany",
+               "Yield_France", "Spread_France", "TP_cf_France", "Yield_Spain", "Spread_Spain",
+               "TP_cf_Spain", "Yield_Italy", "Spread_Italy", "TP_cf_Italy", "Q1_forecast",
+               "Q2_forecast", "Q3_forecast", "Q4_forecast", "Q5_forecast", "Q6_forecast",
+               "Q7_forecast", "Q8_forecast", "Q9_forecast", "Q10_forecast", "Q11_forecast","Q12_forecast")
 
 master_df <- master_df[,col_order]
 master_df <- master_df %>% filter(!is.na(Yield_Germany),
                                   !is.na(Yield_France),
                                   !is.na(Yield_Spain),
                                   !is.na(Yield_Italy))
+big4_y.10Y <- merge(merge(merge(Y_G_10,Y_F_10, by = "Date"),Y_S_10, by = "Date"),Y_I_10, by = "Date")
+big4_y.10Y.ts <- xts(big4_y.10Y[,2:5],order.by = as.Date(big4_y.10Y[,1]))
+colnames(big4_y.10Y.ts) <- c("DE_n10","FR_n10","ES_n10","IT_n10")
 
-#rm(list=ls()[! ls() %in% c("master_df","Rate_df", "mod", "macro_table")])
+rm(list=ls()[! ls() %in% c("master_df","Rate_df", "mod", "big4_y.10Y.ts")])
+master_df$Date <- as.Date(master_df$Date)
 
 
